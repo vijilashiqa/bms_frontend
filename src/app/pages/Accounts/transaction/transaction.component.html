@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+    <button class="close" aria-label="Close" (click)="closeModal()">
+  <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="table-wrapper">
+  <table class="table table-hover table-striped">
+    <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+      <th *ngIf="role.getroleid()>=775">Reseller Type</th>
+      <th *ngIf="role.getroleid()>=775">Reseller Business Name</th>
+      <th *ngIf="role.getroleid()>=775">Reseller Name</th>
+      <th>Invoice ID</th>
+      <th>Transaction</th>
+      <th>Balance</th>
+      <th>Amount</th>
+    </tr>
+    <tr *ngFor="let item of transdata">
+      <td *ngIf="role.getroleid()>=775">{{item.role==444 ? 'Bulk Reseller':item.role==333 ? 'Deposit Reseller':item.role==666?'Sub
+        ISP Bulk':item.role==555 ? 'Sub ISP Deposit':item.role==551 ? 'Sub Distributor Deposit':item.role==661
+        ? 'Sub Distributor Bulk':'Hotel'}}</td>
+      <td  *ngIf="role.getroleid()>=775">{{item.company}}</td>
+      <td  *ngIf="role.getroleid()>=775">{{item.resellername}}</td>
+      <td style="text-align: center;">{{item.invid}}</td>
+      <td>{{item.rflag==1 ? 'Deduction':'Deposit'}}</td>
+      <td>{{'Rs.'+" "+item.before_balance_amt}}</td>
+      <td>{{item.rflag==1 ? 'Rs.'+" "+'-'+""+item.amt: 'Rs.'+" "+'+'+""+item.amt}}</td>
+    </tr>
+   </table>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-md btn-success " style="margin:auto;" (click)="closeModal()">OK</button>
+</div>

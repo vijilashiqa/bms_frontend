@@ -1,0 +1,27 @@
+// .ngb-tabs > ul.li.active > a,
+//         .ngb-tabs > ul.li.active > a:hover,
+//         .ngb-tabs > ul.li.active > a:focus {
+//           color: #555555;
+//           cursor: default;
+//           background-color: #ffffff;
+//           border: 1px solid #dddddd;
+//           border-bottom-color: transparent;
+//           } 
+.table-wrapper{
+  overflow-y: scroll;
+  height: 500px;
+}
+
+.table-wrapper th{
+    position: sticky;
+    top: -1px;
+    background-color: violet;
+    white-space: nowrap;
+    z-index:998;
+}
+.table-wrapper td{
+  white-space: nowrap;
+}
+.table-wrapper{
+  background: white;
+}

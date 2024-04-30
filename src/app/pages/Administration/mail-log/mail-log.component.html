@@ -1,0 +1,126 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>user Mail Log
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <button *ngIf="role.getroleid()>=775" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/administration/ott-plan']">Add</button>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showProfileReseller();showUser();resel_type='';resel_name='';user_name='';" (keyUp)="showBusiness($event)"
+            placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="(role.getroleid()>=775)||(role.getroleid() > 444)">
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" addclass="form-control"
+            (changed)="showReseller();showUser();resel_name='';user_name='';" (keyUp)="showProfileReseller($event)"
+            optValues="menu_name" placeholder='Select Reseller Type' optId="role" [item]="profile">
+          </auto-completen>
+          <small style="color: blueviolet;">Select Profile</small>
+        </div>
+        <div class="col-sm-3" *ngIf="(role.getroleid()>=775)||(role.getroleid() > 444)">
+          <label>Reseller Name</label>
+          <auto-completen [(ngModel)]="resel_name" addclass="form-control" optValues="company"
+            (keyUp)="showReseller($event)"
+            (changed)="showUser();user_name='';"
+            placeholder='Select Reseller' id="id" [item]="resel">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Profile ID</label>
+          <auto-completen [(ngModel)]="user_name" (keyUp)="showUser($event)" 
+            addclass="form-control" optValues="profileid" placeholder='Select Subs AccountID' optId="uid"
+            [item]="cust">
+          </auto-completen>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label>Start Date</label>
+          <input type="date" [(ngModel)]="start_date" class="form-control"/>
+        </div>
+        <div class="col-sm-3">
+          <label>End Date</label>
+          <input type="date" [(ngModel)]="end_date" class="form-control"/>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-md btn-success middle" (click)='page=1;list();'
+      style="margin: auto; display: block;">Search</button>
+    </div>
+    <toaster-container [toasterconfig]></toaster-container>
+    <label class="left">
+      <h5>Total Count : {{count}}</h5>
+    </label>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+    <table #table class="table table-hover table-striped" cellspacing="0">
+      <thead style="background-color:rgb(189, 204, 186);">
+        <tr style="background-color : #01a7ee;color:white;font-size: medium;">
+          <th>ID</th>
+          <th *ngIf="role.getroleid()>777">Business</th>
+          <th>Reseller</th>
+          <th>User ProfileID</th>
+          <th>Email</th>
+          <th>Subject</th>
+          <th>Message</th>
+          <th>Sent Date</th>
+        </tr>
+      </thead>
+      <tr *ngFor="let item of pagedItems">
+        <td>{{item.logid}}</td>
+        <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+        <td>{{item.company}}</td>
+        <td style="text-transform:none">{{item.cust_profile_id}}</td>
+        <td style="text-transform:none">{{item.emailto}}</td>
+        <td>{{item.sub}}</td>
+        <td>
+          <div [innerHTML]="item.emailmsg"></div>
+        </td>
+        <!-- <td>{{item.emailmsg}}</td> -->
+        <td>{{item.c_date | date:'d MMM y h:mm:ss a'}}</td>
+      </tr>
+      <tr>
+        <td colspan="4" *ngIf="pagedItems==''">NO DATA FOUND</td>
+      </tr>
+    </table>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,162 @@
+<div class="col-md-12">
+    <nb-card>
+       <nb-card-header>Traffic Data Report</nb-card-header>
+       <nb-card-body>
+         <ngb-tabset>
+            <ngb-tab title="Traffic Report">
+               <ng-template ngbTabContent>
+                  <div class="row">
+                     <div class="col-sm-4">
+                        <label>From Date</label>
+                        <input type="text" [(ngModel)]="from_date" [owlDateTime]="from_date_layout"
+                           [owlDateTimeTrigger]="from_date_layout" name="from_date" placeholder="Select Date "
+                           class="form-control" for />
+                        <owl-date-time [pickerType]="'calendar'" #from_date_layout></owl-date-time>
+                     </div>
+                     <div class="col-sm-4">
+                        <label>To Date</label>
+                        <input type="text" [(ngModel)]="to_date" [owlDateTime]="to_date_layout"
+                           [owlDateTimeTrigger]="to_date_layout" name="to_date" placeholder="Select Date "
+                           class="form-control" />
+                        <owl-date-time [pickerType]="'calendar'" #to_date_layout></owl-date-time>
+                     </div>
+                     <div class="col-sm-2" style="padding-top: 28px;">
+                        <label></label>
+                        <button type="button" class="btn btn-md btn-success " (click)='trafficreport();'>Search</button>
+                     </div>
+                  </div>
+                  <hr style="border: 0px;">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="pagination">
+                           <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                              <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+                              <a [ngClass]="{disabled:pager.currentPage === 1}"
+                                 (click)="page=page-1;getlist();">Previous</a>
+                              <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                                 (click)="getlist(page)">{{page}}</a>
+                              <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                                 (click)="page=page+1;getlist();">Next</a>
+                              <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                                 (click)="page=pager.totalPages;getlist();">Last</a>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+                  <table class="table table-bordered table-striped">
+                     <thead class="success">
+                        <th style="text-align: left;" colspan="7" class="black-muted-bg"><b> Total Count :
+                           </b>{{trafcount}}</th>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td style="text-align: center;" class="changesize"><b> Toal Download <br><i
+                                    class="fa fa-inr"></i>
+                              </b>
+                           </td>
+                           <td style="text-align: center;" class="changesize"><b> Total Upload <br><i
+                                    class="fa fa-inr"></i>
+                              </b>
+                           </td>
+                           <td style="text-align: center;" class="changesize"><b> Overall Total <br><i
+                                    class="fa fa-inr"></i>
+                              </b>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td style="text-align: center;"> {{totdl || 0 }}</td>
+                           <td style="text-align: center;"> {{totul || 0 }}</td>
+                           <td style="text-align: center;"> {{overaltot || 0 }}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+                  <div class="table-wrapper">
+                     <table class="table table-hover table-striped">
+                        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+                           <th>start Time</th>
+                           <th>End Time</th>
+                           <th>Online Time</th>
+                           <th>Protocol Type</th>
+                           <th>Fram IP</th>
+                           <th>Nas IP</th>
+                           <th>Download</th>
+                           <th>Upload</th>
+                           <th>Total</th>
+                           <th>Terminate Cause</th>
+                        </tr>
+                        <tr>
+                           <td colspan="10" *ngIf="pagedItems==''">NO DATA AVAILABLE</td>
+                        </tr>
+                        <tr *ngFor="let item of pagedItems">
+                           <td>{{item.acctstarttime | date:'d MMM y h:mm:ss a'}}</td>
+                           <td>{{item.acctstoptime | date:'d MMM y h:mm:ss a'}}</td>
+                           <td>{{item.time}}</td>
+                           <td>{{item.protocoltype}}</td>
+                           <td>{{item.framedipaddress}}</td>
+                           <td>{{item.nasipaddress}}</td>
+                           <td>{{item.upload}}</td>
+                           <td>{{item.download}}</td>
+                           <td>{{item.total}}</td>
+                           <td>{{item.acctterminatecause==''?'--':item.acctterminatecause}}</td>
+                        </tr>
+                     </table>
+                  </div>
+                  <br>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="pagination">
+                           <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                              <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+                              <a [ngClass]="{disabled:pager.currentPage === 1}"
+                                 (click)="page=page-1;getlist();">Previous</a>
+                              <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                                 (click)="getlist(page)">{{page}}</a>
+                              <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                                 (click)="page=page+1;getlist();">Next</a>
+                              <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                                 (click)="page=pager.totalPages;getlist();">Last</a>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </ng-template>
+            </ngb-tab>
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="getImage()"><i (click)="getImage()" class="fas fa-sync"></i>&nbsp;Graph</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <div class="row">
+                     <div class="col-sm-6">
+                        <nb-card>
+                           <nb-card-header style="background-color:#01a7ee;padding: 10px;">DAY</nb-card-header>
+                           <img [src]='img_result ? img_result.day:""' />
+                        </nb-card>
+                     </div>
+                     <div class="col-sm-6">
+                        <nb-card>
+                           <nb-card-header style="background-color:#01a7ee;padding:10px;">WEEk</nb-card-header>
+                           <img [src]='img_result ? img_result.week:""' />
+                        </nb-card>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-sm-6">
+                        <nb-card>
+                           <nb-card-header style="background-color:#01a7ee;padding: 10px;">MONTH</nb-card-header>
+                           <img [src]='img_result ? img_result.month:""' />
+                        </nb-card>
+                     </div>
+                     <div class="col-sm-6">
+                        <nb-card>
+                           <nb-card-header style="background-color: #01a7ee;padding: 10px;">YEAR</nb-card-header>
+                           <img [src]='img_result ? img_result.year:""' />
+                        </nb-card>
+                     </div>
+                  </div>
+               </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+       </nb-card-body>
+    </nb-card>
+</div>

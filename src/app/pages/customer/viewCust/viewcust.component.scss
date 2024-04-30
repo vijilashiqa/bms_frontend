@@ -1,0 +1,94 @@
+.ngb-tabs > ul.li.active > a,
+.ngb-tabs > ul.li.active > a:hover,
+.ngb-tabs > ul.li.active > a:focus {
+color: #555555;
+cursor: default;
+background-color: #ffffff;
+border: 1px solid #dddddd;
+border-bottom-color: transparent;
+} 
+.table-wrapper{
+overflow-y: scroll;
+height: 500px;
+}
+.table-wrapper th{
+position: sticky;
+top: -1px;
+}
+.table-wrapper{
+background: white;
+}
+.table-wrapper table{
+border-collapse: collapse;
+width: 100%;
+}
+.table-wrapper th{
+background:#01a7eee5;
+}
+.table-wrapper table td {
+white-space: nowrap;
+}
+.table-wrapper table th {
+white-space: nowrap;
+z-index:998;
+}
+//   .custom-class .modal-content{
+//     height :1px;
+// }
+ngx-flip{
+height: 300px;
+width:100%
+
+}
+.front{
+height: 100%;
+display: block;
+    text-align: -webkit-center;
+ 
+    overflow: hidden;
+}
+.back{
+height: 100%;
+display: block;
+ text-align: -webkit-center;
+   
+    overflow: hidden;
+}
+.next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 10px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+  background: #ffffffb8;
+}
+.fa-check-circle:before {
+    content: "\f058";
+    
+   }
+   .fa-ban:before{
+   color:red;
+   }
+
+   .my-own-toastr-class {
+    width: 100%;
+ }
+
+ .table-scroll{
+  overflow-y: scroll;
+  height: 1200px;
+}
+ 

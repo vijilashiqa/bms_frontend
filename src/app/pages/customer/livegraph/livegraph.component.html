@@ -1,0 +1,65 @@
+ <ngx-loading [show]="loading"
+  [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+</ngx-loading>
+
+<nb-card>
+   <nb-card-header style=" padding: 0.15rem;">
+    <div class="row" style="background-color:#01a7ee;margin-left:0px;width:100%">
+      <div class="col-sm-8">
+        <label style="margin-left: 9px; margin-top: 14px;padding-bottom: 7px; ">Live Graph</label>
+      </div>
+      <div class="col-sm-4">
+        <select (change)="getGraph()" [(ngModel)]="gtime" class="form-control">
+          <option value="" selected>Select Time</option>
+          <option value="1">1 Min</option>
+          <option value="3">3 Min</option>
+          <option value="5">5 Min</option>
+        </select>
+
+
+      </div>
+    </div>
+    <div style="width:100%;">
+      <nb-card style="border: none;">
+        <nb-card-body style="background-color:#000000;overflow: hidden;">
+          <canvas id="myChart" width="900" height="450" style="background-color: black;" #mychart></canvas>
+        </nb-card-body>
+      </nb-card>
+
+      <div class="row">
+        <div class="col-sm-4" style="text-align: center;" >
+          Upload:&nbsp;<span style="color:#fb6284">{{ul}}&nbsp;MB</span>
+        </div>
+        <div class="col-sm-4" style="text-align: center;">
+          Download:&nbsp;<span style="color:#17a7f4 ;">{{dl}}&nbsp;MB</span>
+        </div>
+        <div class="col-sm-4">
+          <button (click)="closeModal()" style="float: right" type="submit" class="btn btn-md btn-danger">Close</button>
+        </div>
+      </div>
+    </div>
+  </nb-card-header>
+  <div class="col-sm-4">
+    <button (click)="closeModal()" style="float: center" type="submit" class="btn btn-md btn-danger">Close</button> 
+   </div>
+</nb-card> 
+
+<!-- <div class="modal-header">
+  
+  <button class="close" aria-label="Close" (click)="closeModal()">
+     <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+ <nb-card>
+  <div style="width:100%">
+    <nb-card style="border:none">
+      <nb-card-body style="background-color:#b4a5a5;overflow: hidden;">
+        The page you are trying to access is unavailable right now.We apologize for the inconvenience.
+       </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-sm-4">
+    <button (click)="closeModal()" style="float: center" type="submit" class="btn btn-md btn-danger">Close</button> 
+   </div>
+ </nb-card> -->

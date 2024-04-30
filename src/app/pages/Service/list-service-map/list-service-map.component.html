@@ -1,0 +1,26 @@
+<nb-card>
+  <nb-card-header>List Service Mapping</nb-card-header>
+  <nb-card-body>
+  <toaster-container [toasterconfig]="config"></toaster-container>
+      <button class="btn btn-sm btn-success" [routerLink]="['/pages/service/add-service-map']">Add</button>
+    <hr style="border: 0px;">
+    <table class="table">
+      <tr>
+        <th>Action</th>
+        <th>Circle</th>
+        <th>Reseller Name</th>
+        <th>Nas Name</th>
+        <th>Service</th>
+        <th>Status</th>
+      </tr>
+       <tr *ngFor="let item of datas">
+        <td><a (click)="Edit_User(item.id);" style="cursor: pointer;"> <i class="nb-edit" > </i> Edit </a></td>
+        <td>{{item.groupname}}</td>
+        <td>{{item.user_login_id}}</td>
+        <td>{{item.shortname}}</td>
+        <td>{{item.srvid}}</td>
+        <td>{{item.status==1?'Active':'Inactive'}}</td>
+      </tr>
+    </table>
+  </nb-card-body>
+</nb-card>

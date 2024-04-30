@@ -1,0 +1,143 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>{{item ? 'Edit' : 'Add' }} IP Pool</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form [formGroup]="AddIPForm" class="form-horizontal" (ngSubmit)="addIPPool();">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <nb-card>
+                <nb-card-header style="background-color :  #01a7ee; height:40px!important">IP POOL CREATION
+                </nb-card-header>
+                <nb-card-body>
+                  <div class="form-group row">
+                    <div class="col-sm-6" *ngIf="role.getroleid()>777">
+                      <label>ISP Name <span style="color:red;">*</span></label>
+                      <select formControlName="bus_id"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddIPForm.controls.bus_id.invalid&&submit}"
+                        (change)="GroupName()">
+                        <option value="" selected>Select Business Name</option>
+                        <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+                      </select>
+                      <small *ngIf="AddIPForm.controls.bus_id.invalid&&submit" class="form-text error">Business name
+                        is Required!</small>
+                    </div>
+                    <div class="col-sm-6">
+                      <label>Circle<span style="color:red;">*</span></label>
+                      <select name="group" formControlName="groupid"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddIPForm.controls.groupid.invalid&&submit}"
+                        (change)="Nas()">
+                        <option value="" selected>Select Circle</option>
+                        <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+                      </select>
+                      <small *ngIf="AddIPForm.hasError('required','groupid')&&submit" class="form-text error">Circle Name is
+                        required! </small>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>NAS <span style="color:red;">*</span></label>
+                      <auto-completen
+                        [addclass]="{'form-control':true,'form-control-danger':AddIPForm.controls.nasname.invalid&&submit}"
+                         optValues="shortname" formControlName="nasname" (keyUp)="Nas($event)"
+                        placeholder='Select NAS' id="id" [item]="anas">
+                     </auto-completen>
+                      <small *ngIf="AddIPForm.hasError('required','nasname')&&submit" class="form-text error">nas
+                        is required! </small>
+                    </div>
+                    <div class="col-sm-6">
+                      <label>Pool Name <span style="color:red;">*</span></label>
+                      <input type="text" name="PoolName" formControlName="PoolName" placeholder="Pool Name"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddIPForm.controls.PoolName.invalid&&submit}" />
+                        <!-- <span class="form-text error"
+                        style="text-align: right;float: right;color: red; font-size: 10px !important;">PoolName should be same as Mikrotick
+                        !</span> -->
+                      <small *ngIf="AddIPForm.controls.PoolName.invalid&&submit" class="form-text error">PoolName is Required!</small>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label></label>
+                      <label class="custom-control custom-radio">
+                        <input formControlName="type" name="type" class="custom-control-input" type="radio" value="0" />
+                        <span class="custom-control-indicator"></span>Docsis
+                      </label>
+                    </div>
+                    <div class="col-sm-6">
+                      <label></label>
+                      <label class="custom-control custom-radio">
+                        <input formControlName="type" name="type" class="custom-control-input" type="radio" value="1" />
+                        <span class="custom-control-indicator"></span>Radius
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>IP Netmask <span style="color:red;">*</span></label>
+                      <input type="text" name="ip_add" formControlName="ip_add" placeholder="0.0.0.0/24"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddIPForm.controls.ip_add.invalid&&submit}" />
+                      <small *ngIf="AddIPForm.controls.invalid&&submit" class="form-text error">Ip Netmask is
+                        Required!</small>
+                    </div>
+                    <div class="col-sm-6" (click)="GenerateIppool();">
+                      <label></label><br>
+                      <button type="button" class="btn  btn-primary">check</button>
+                    </div>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+            <div class="col-md-6">
+              <nb-card>
+                <nb-card-header style="background-color :  #01a7ee; height:40px!important">IP POOL ADDRESS
+                </nb-card-header>
+                <nb-card-body>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>First IP</label>
+                      <input type="text" name="FirstIp" formControlName="FirstIp" placeholder="First IP"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddIPForm.controls.FirstIp.invalid&&submit}"
+                        readonly />
+                    </div>
+                    <div class="col-sm-6">
+                      <label>Last IP</label>
+                      <input type="text" name="LastIp" formControlName="LastIp" placeholder="Last IP"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddIPForm.controls.LastIp.invalid&&submit}"
+                        readonly>
+                    </div>
+                  </div>
+                  <!-- <div class="form-group row"> -->
+                  <!-- <div class="col-sm-6">
+            <label>GateWay</label>
+            <input type="text" name="gate" formControlName="gate" placeholder="GateWay" [ngClass]="{'form-control' : true,'form-control-danger':AddIPForm.controls.gate.invalid&&submit}"/>
+          </div> -->
+                  <!-- </div> -->
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>Next Pool</label>
+                      <select
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddIPForm.controls.NextPool.invalid&&submit}"
+                        name="NextPool" formControlName="NextPool">
+                        <option value="0">None</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-6">
+                      <label>Description</label>
+                      <textarea name="Description" formControlName="Description" placeholder="Description"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddIPForm.controls.Description.invalid&&submit}"></textarea>
+                    </div>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">{{item ? 'Update': 'Create'}}</button>
+            <button class="btn btn-md btn-danger" [routerLink]="['/pages/ippool/ippoolList']">Back</button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

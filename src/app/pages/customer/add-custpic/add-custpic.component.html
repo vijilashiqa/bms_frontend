@@ -1,0 +1,201 @@
+<div class="col-md-12">
+   <nb-card>
+      <nb-card-header style="background-color :  #01a7ee">Capture {{picflag==1 ? 'Subsciber Pic':picflag==2 ? 'ID
+         Proof': 'Address Proof'}}</nb-card-header>
+      <nb-card-body>
+         <toaster-container [toasterconfig]="config"></toaster-container>
+         <form [formGroup]="AddPicForm" class="form-horizontal">
+            <div class="modal-body">
+               <div class="form-group row" *ngIf="picflag=='1'">
+                  <div class="col-sm-6" *ngIf="!hide_cam">
+                     <webcam [height]="500" [width]="500" [trigger]="triggerObservable"
+                        (imageCapture)="handleImage($event)" *ngIf="showWebcam" [allowCameraSwitch]="allowCameraSwitch"
+                        [switchCamera]="nextWebcamObservable" [videoOptions]="videoOptions" [imageQuality]="1"
+                        (cameraSwitched)="cameraWasSwitched($event)" (initError)="handleInitError($event)"></webcam>
+                     <br />
+                     <div class="form-group row">
+                        <div class="col-sm-3">
+                           <button class="btn btn-md btn-success" (click)='triggerSnapshot()'
+                              style="text-align:center;cursor: pointer;font-weight:bold;font-size: large ; padding: 4px;border-radius: 3px;
+                              border-radius: 3px; color: #fafffb;background-color: #2b2d34 ;border: 2px solid #00abf3;">
+                              Snapme <i style="color: yellow;white-space: nowrap;" class="fa fa-camera"></i></button>
+                        </div>&nbsp;
+                        <div class="col-sm-3">
+                           <button class="btn btn-md btn-success" (click)='showNextWebcam(true)'
+                              style="cursor: pointer;text-align:center;font-weight:bold;font-size: large ;padding: 4px; border-radius:3px; color: #fafffb;background-color: #2b2d34 ;border: 2px solid #00abf3; ">
+                              Rear&nbsp;&nbsp; <i style="color: yellow;" class="fa fa-retweet "></i></button>
+                        </div>
+                        <div class="col-sm-3">
+                           <button class="btn btn-md btn-success" (click)="confirm()"
+                              style="cursor: pointer;text-align:center;font-weight:bold;font-size: large ;border-radius: 3px;
+                              border-radius: 3px; padding: 4px; color: #fafffb;background-color: #2b2d34 ;border: 2px solid #00abf3;">
+                              Confirm
+                              <i style="color: yellow;" class="fa fa-check "></i>
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                     <div class="snapshot" *ngIf="webcamImage">
+                        <img style="width: 500px;height: 375px;" [src]="webcamImage.imageAsDataUrl" />
+                     </div>
+
+                     <h4 *ngIf="errors.length > 0">Messages:</h4>
+                     <ul *ngFor="let error of errors">
+                        <li>{{error | json}}</li>
+                     </ul>
+                  </div>
+               </div>
+               <div class="form-group row" *ngIf="picflag=='3' || picflag=='2'">
+                  <div class="col-sm-8">
+                     <nb-checkbox formControlName="same_proof">Address&ID Proofs are Same</nb-checkbox>
+                  </div>
+               </div>
+
+               <div class="form-group row">
+                  <div class="col-sm-4" *ngIf="picflag=='3'">
+                     <label>Address Proof <span style="color:red;">*</span></label>
+                     <select formControlName="addr_proof"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddPicForm.controls.addr_proof.invalid&&submit}">
+                        <option value="" selected>Select Address Proof</option>
+                        <option value="1">Aadhaar Card</option>
+                        <option value="2" *ngIf="AddPicForm.value['same_proof'] == false">Ration Card</option>
+                        <option value="3">Voter ID</option>
+                        <option value="4" *ngIf="AddPicForm.value['same_proof'] == false">Passport</option>
+                        <option value="5" *ngIf="AddPicForm.value['same_proof'] == false">Gas Bill </option>
+                        <option value="6" *ngIf="AddPicForm.value['same_proof'] == false">EB Bill </option>
+                        <option value="7" *ngIf="AddPicForm.value['same_proof'] == false">Water Bill </option>
+                        <option value="8" *ngIf="AddPicForm.value['same_proof'] == false">Home Tax Bill </option>
+                     </select>
+                     <small  style="color: blueviolet;"><b>(Water Bill ,EB bill,Gas Bill & Home Tax shouldn't be older than 3 Months)</b></small>
+                     <small *ngIf="AddPicForm.controls.addr_proof.invalid&&submit" class="form-text error">Address Proof is
+                        Required!</small>
+                  </div>
+                  <div class="col-sm-4" *ngIf="picflag=='2'">
+                     <label>ID Proof Type <span style="color:red;">*</span></label>
+                     <select
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddPicForm.controls.Proof.invalid&&submit}"
+                        formControlName="Proof">
+                        <option value="" selected>Select Proof Type</option>
+                        <option value="0">Aadhaar Card</option>
+                        <option value="1">Ration Card</option>
+                        <option value="2">Pan Card</option>
+                     </select>
+                     <small *ngIf="AddPicForm.controls.Proof.invalid&&submit" class="form-text error">Proof
+                        type is
+                        required! </small>
+                  </div>
+                  <div class="col-sm-4" *ngIf="picflag =='2' || this.AddPicForm.value['same_proof'] == true">
+                     <label>Proof ID <span style="color:red;">*</span></label>
+                     <input type="text" formControlName="ProofID" placeholder="ProofID "
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddPicForm.controls.ProofID.invalid&&submit}" />
+                     <small *ngIf="AddPicForm.controls.ProofID.invalid&&submit" class="form-text error">Proof
+                        is required! </small>
+                  </div>
+
+               </div>
+               <div class="form-group row" [hidden]="picflag=='1'">
+                  <div class="col-sm-4" *ngIf="AddPicForm.value['addr_proof']!=''||AddPicForm.value['Proof']!=''">
+                     <nb-checkbox formControlName="front">Proof Front</nb-checkbox>
+                  </div>
+               </div>
+               <div class="form-group row">
+                  <div class="col-sm-6" *ngIf="AddPicForm.value['front']==true && !hide_cam1">
+                     <div class="hide">
+                        <webcam [height]="500" [width]="500" [trigger]="frontObservable"
+                           (imageCapture)="frontImage($event)" *ngIf="showWebcam"
+                           [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+                           [videoOptions]="videoOptions" [imageQuality]="1"
+                           (cameraSwitched)="frontcameraWasSwitched($event)" (initError)="fronthandleInitError($event)">
+                        </webcam>
+                     </div>
+                     <br />
+                     <div class="form-group row">
+                        <div class="col-sm-3">
+                           <button class="btn btn-md btn-success" (click)='frontSnapshot()'
+                              style="text-align:center;cursor: pointer;font-weight:bold;font-size: large ; padding: 4px;border-radius: 3px;
+                              border-radius: 3px; color: #fafffb;background-color: #2b2d34 ;border: 2px solid #00abf3;">
+                              Snapme <i style="color: yellow;white-space: nowrap;" class="fa fa-camera"></i></button>
+                        </div>&nbsp;
+                        <div class="col-sm-3">
+                           <button class="btn btn-md btn-success" (click)='frontNextWebcam(true)'
+                              style="cursor: pointer;text-align:center;font-weight:bold;font-size: large ;border-radius: 3px;
+                              border-radius: 3px;padding: 4px; color: #fafffb;background-color: #2b2d34 ;border: 2px solid #00abf3;">
+                              Rear&nbsp;&nbsp; <i style="color: yellow;" class="fa fa-retweet "></i></button>
+                        </div>&nbsp;
+                        <div class="col-sm-3">
+                           <button class="btn btn-md btn-success" (click)="confirm1()"
+                              style="cursor: pointer;text-align:center;font-weight:bold;font-size: large ;border-radius: 3px;
+                              border-radius: 3px; padding: 4px; color: #fafffb;background-color: #2b2d34 ;border: 2px solid #00abf3;">
+                              Confirm
+                              <i style="color: yellow;" class="fa fa-check "></i>
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                     <div class="snapshot" *ngIf="addressfront">
+                        <img style="width: 500px;height: 375px;" [src]="addressfront.imageAsDataUrl" />
+                     </div>
+                     <h4 *ngIf="errors.length > 0">Messages:</h4>
+                     <ul *ngFor="let error of errors">
+                        <li>{{error | json}}</li>
+                     </ul>
+                  </div>
+               </div>
+               <div class="form-group row" [hidden]="picflag=='1'">
+                  <div class="col-sm-4" *ngIf="AddPicForm.value['addr_proof']!=''||AddPicForm.value['Proof']!=''">
+                     <nb-checkbox formControlName="back">Proof Back</nb-checkbox>
+                  </div>
+               </div>
+               <div class="form-group row">
+                  <div class="col-sm-6" *ngIf="AddPicForm.value['back']==true && !hide_cam2">
+                     <div class="hide">
+                        <webcam [height]="500" [width]="500" [trigger]="backObservable"
+                           (imageCapture)="backImage($event)" *ngIf="showWebcam" [allowCameraSwitch]="allowCameraSwitch"
+                           [switchCamera]="nextWebcamObservable" [videoOptions]="videoOptions" [imageQuality]="1"
+                           (cameraSwitched)="backcameraWasSwitched($event)" (initError)="backhandleInitError($event)">
+                        </webcam>
+                     </div>
+                     <br />
+                     <div class="form-group row">
+                        <div class="col-sm-3">
+                           <button class="btn btn-md btn-success" (click)='backSnapshot()'
+                              style="text-align:center;cursor: pointer;font-size: large ;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb;background-color: #2b2d34 ;border: 2px solid #00abf3;">
+                              Snap me <i style="color: yellow;white-space: nowrap;" class="fa fa-camera"></i></button>
+                        </div>&nbsp;
+                        <div class="col-sm-3">
+                           <button class="btn btn-md btn-success" (click)='backNextWebcam(true)'
+                              style="cursor: pointer;text-align:center;font-size: large ;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb;background-color: #2b2d34 ;border: 2px solid #00abf3;">
+                              Rear&nbsp;&nbsp; <i style="color: yellow;" class="fa fa-retweet "></i></button>
+                        </div>&nbsp;
+                        <div class="col-sm-3">
+                           <button class="btn btn-md btn-success" (click)="confirm2()"
+                              style="cursor: pointer;text-align:center;font-size: large ;font-weight:bold; border-radius: 3px;
+                              border-radius: 3px;padding: 4px; color: #fafffb;background-color: #2b2d34 ;border: 2px solid #00abf3;">
+                              Confirm
+                              <i style="color: yellow;" class="fa fa-check "></i>
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                     <div class="snapshot" *ngIf="addressback">
+                        <img style="width: 500px;height: 375px;" [src]="addressback.imageAsDataUrl" />
+                     </div>
+                     <h4 *ngIf="errors.length > 0">Messages:</h4>
+                     <ul *ngFor="let error of errors">
+                        <li>{{error | json}}</li>
+                     </ul>
+                  </div>
+               </div>
+
+               <div class="modal-footer">
+                  <button type="submit" class="btn btn-md btn-success" (click)="addpic()">Add </button>
+                  <button class="btn btn-mid btn-danger" (click)="cancel()">Back</button>
+               </div>
+            </div>
+         </form>
+      </nb-card-body>
+   </nb-card>
+</div>

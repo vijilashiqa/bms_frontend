@@ -1,0 +1,81 @@
+// .table-wrapper{
+//     position: sticky;
+//     top:-1px;
+//  }
+
+ #table-wrapper {
+    position:relative;
+  }
+  #table-scroll {
+    height: 400px;;
+    overflow:scroll;  
+    margin-top:20px;
+  }
+  #table-wrapper table {
+    width:100%;
+  
+  }
+  #table-wrapper table * {
+    // background:yellow;
+    color:black;
+  }
+  #table-wrapper table thead th .text {
+    position:absolute;   
+    top:-20px;
+    z-index:2;
+    height:100px;
+    width:35%;
+    border:1px solid red;
+  }
+
+
+  :host ::ng-deep.cke_top {
+    // border-bottom: 1px solid #4b4b4b  ;
+    // background: #a4abb3; 
+    // padding: 6px 8px 2px ; 
+    // white-space: normal; 
+    background-color:  #CCEAEE   ;
+    border-bottom-color: #181818  ;
+    border-bottom: 2px solid #181818; 
+}
+:host ::ng-deep.cke_bottom {
+    // border-bottom: 1px solid #4b4b4b  ;
+    // background: #a4abb3; 
+    // padding: 6px 8px 2px ; 
+    // white-space: normal; 
+    background-color:  #CCEAEE   ;
+    border-top-color: #181818  ;
+    border-top: 2px solid #181818; 
+}
+
+// :host ::ng-deep.cke_1 .cke_button_on {
+//     background-color: #eed294 ; 
+//     border-color: #eed294; 
+// }
+ 
+:host ::ng-deep.cke_button_on {
+    background-color: #eed294 ; 
+   border-color: #eed294; 
+}
+
+
+:host ::ng-deep.cke_reset {
+   width: auto ; 
+}
+
+// :host ::ng-deep.cke_1.cke_chrome {
+//     // border-color: #181818  ;
+//     display: block;
+//     border: 2px solid #181818; 
+//     padding: 0;
+// }
+:host ::ng-deep.cke_chrome {
+   display: block;
+   border: 2px solid #181818; 
+   padding: 0;
+}
+
+:host ::ng-deep.ck-editor__editable {
+   min-height: 500px !important;
+}
+

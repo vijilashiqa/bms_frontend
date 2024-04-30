@@ -1,0 +1,25 @@
+<nb-card-header style="background-color: #ba7fec;">
+  <div class="header-container">
+    <div class="icon">
+      <i class="fas fa-rupee-sign"></i>
+    </div>
+    <span class="title">Balance</span>
+  </div>
+</nb-card-header>
+<nb-card-body class="p-3">
+  <div class="info">
+    <div class="row">
+      <div class="period latest">
+        <label style="text-align: left;font-size: medium;"><b>Balance</b></label>
+        <div class="value">
+          <b  style="font-size: larger;font-family: 'Roboto';">{{balance == null ? 0 : (balance | currency:'INR':'symbol') }}</b>
+          <!-- <i  class="fas fa-rupee-sign" style="font-size: larger;">{{balance == null ? 0 : balance }}</i> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</nb-card-body>
+<nb-card-footer >
+  <button type="button" class="btn btn-xs btn-primary " style="float: right;" (click)='recharge(1)'>TopUp </button>
+</nb-card-footer>

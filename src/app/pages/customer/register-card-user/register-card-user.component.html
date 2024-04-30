@@ -1,0 +1,134 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>Registered Card User
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+
+
+    <toaster-container [toasterconfig]></toaster-container>
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showReseller();changeclear(1)" (keyUp)="showBuisness($event)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Reseller</label>
+          <auto-completen [(ngModel)]="resel_name" addclass="form-control" optValues="company" (keyUp)="showReseller($event)"
+            placeholder='Select Reseller' id="mid" [item]="resel">
+          </auto-completen>
+        </div>
+
+        <div class="col-sm-3">
+          <label>User Mobile</label>
+          <input type="number" placeholder="Enter Mobile Number" [(ngModel)]="mobile" class="form-control" />
+        </div>
+
+        <div class="col-sm-3">
+          <label>User Email</label>
+          <input type="text" placeholder="Enter Email Number" [(ngModel)]="email" class="form-control" />
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label>OTP Status</label>
+          <select [(ngModel)]="otp_status" class="form-control" placeholder="Select OTP Status">
+            <option value="" selected>Select OTP Status</option>
+            <option value="0">Initiated</option>
+            <option value="1">Sent</option>
+           </select>
+        </div>
+        <div class="col-sm-3">
+          <label>Account Status</label>
+          <select [(ngModel)]="acct_status" class="form-control" placeholder="Select Account Status">
+            <option value="" selected>Select Account Status</option>
+            <option value="0">Initiated</option>
+            <option value="1">Activated</option>
+           </select>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='list();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <label class="left">
+      <h5>Total Count : {{count}}</h5>
+    </label>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-bordered table-striped" id="myTable">
+        <tr style="background-color :  #2a72be;color:white;font-size: medium; vertical-align:middle !important ;">
+          <th style="border: 2px solid #aeb8b9;color: white; text-align: center;" rowspan="2">ID</th>
+          <!-- <th style="border: 2px solid #aeb8b9;color: white; text-align: center;" rowspan="2"
+            *ngIf="role.getroleid() > 777">BUSINESS</th> -->
+          <th style="border: 2px solid #aeb8b9;color: white; text-align: center;" rowspan="2"  *ngIf="role.getroleid() >= 775">RESELLER</th>
+          <th style="border: 1px solid #aeb8b9;color: white; text-align: center;" colspan="5">USER INFO</th>
+          <th style="border: 1px solid #aeb8b9;color: white; text-align: center;" colspan="2">OTT INFO</th>
+          <th style="border: 1px solid #aeb8b9;color: white; text-align: center;" rowspan="2">ACCOUNT STATUS</th>
+ 
+
+        </tr>
+        <tr style="background-color :  #2a72be;color:white;">
+          <th style="border: 1px solid #aeb8b9;color: white;text-align: center;">UID</th>
+          <th style="border: 1px solid #aeb8b9;color: white;text-align: center;">PROFILEID</th>
+          <th style="border: 1px solid #aeb8b9;color: white;text-align: center;">NAME</th>
+          <th style="border: 1px solid #aeb8b9;color: white;text-align: center;">EMAIL</th>
+          <th style="border: 1px solid #aeb8b9;color: white;text-align: center;">MOBILE</th>
+          <th style="border: 1px solid #aeb8b9;color: white;text-align: center;">OTP</th>
+          <th style="border: 1px solid #aeb8b9;color: white;text-align: center;">STATUS</th>
+        </tr>
+
+        <tr *ngFor="let item of pagedItems">
+
+          <td>{{item.id}}</td>
+          <!-- <td>{{item.busname}}</td> -->
+          <td *ngIf="role.getroleid() >= 775">{{item.company}}</td>
+          <td>{{item.uid || 0}}</td>
+          <td>{{item.profileid || '--'}}</td>
+          <td>{{item.user_fname|| '--'}}</td>
+          <td>{{item.mobileno|| '--'}}</td>
+          <td>{{item.emailid || '--'}}</td>
+          <td>{{item.otp || '--'}}</td>
+          <td><b>{{item.otpstatus == 0? 'Initiated': item.otpstatus == 1? 'Sent': '--'}}</b></td>
+          <td><b>{{item.acctstatus == 0? 'Initiated': item.acctstatus == 1? 'Activated': '--'}}</b></td>
+        </tr>
+
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

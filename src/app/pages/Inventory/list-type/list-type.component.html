@@ -1,0 +1,32 @@
+<nb-card>
+  <nb-card-header>List Type</nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <label   > <h5>Total Count: {{tot}}</h5></label>
+    <hr style="border: 0px;">
+    <div class="row" style="padding-left: 10px;">
+      <div style="padding: 2px;">
+        <button *ngIf="!role.getmenurole(610)" class="btn btn-sm btn-success" (click)='Addtype()'>Add</button>
+      </div>
+    </div>
+    <hr style="border: 0px;">
+    <table class="table table-hover table-striped">
+      <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+        <th *ngIf="!role.getmenurole(611)">Action</th>
+        <th *ngIf="role.getroleid()>777">ISP Name</th>
+        <th *ngIf="role.getroleid()>=775">Circle</th>
+        <th *ngIf="role.getroleid()>=775">Reseller Name</th>
+        <th> Type</th>
+        <th>Status</th>
+      </tr>
+      <tr *ngFor="let item of datas">
+        <td *ngIf="!role.getmenurole(611)"><a (click)="Edittype(item);"><i class="nb-edit"></i>Edit</a></td>
+        <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+        <td *ngIf="role.getroleid()>=775">{{item.groupname}}</td>
+        <td *ngIf="role.getroleid()>=775">{{item.company}}</td>
+        <td>{{item.type_name}}</td>
+        <td>{{item.status== 1 ? 'Active' : 'Deactive'}}</td>
+      </tr>
+    </table>
+  </nb-card-body>
+</nb-card>

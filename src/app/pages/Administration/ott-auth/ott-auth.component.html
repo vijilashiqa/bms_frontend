@@ -1,0 +1,120 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>{{id ? 'Edit':'Add'}} OTT Authentication</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]></toaster-container>
+      <form [formGroup]="OTTAuthForm" class="form-horizontal" (ngSubmit)="addAdminuser();">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-4" *ngIf="role.getroleid()>777">
+              <label>ISP Name <span style="color:red;">*</span></label>
+              <select formControlName="bus_id"
+                [ngClass]="{'form-control':true,'form-control-danger':OTTAuthForm.controls.bus_id.invalid&&submit}"
+                (change)="GroupName()">
+                <option value="" selected>Select ISP Name</option>
+                <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+              </select>
+              <small *ngIf="OTTAuthForm.controls.bus_id.invalid&&submit" class="form-text error">Business name is
+                Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+              <label>Circle(Optional)</label>
+              <select formControlName="groupid"
+                [ngClass]="{'form-control':true,'form-control-danger':OTTAuthForm.controls.groupid.invalid&&submit}">
+                <option value="" selected="">Select Circle</option>
+                <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+              </select>
+              <small *ngIf="OTTAuthForm.controls.groupid.invalid&&submit" class="form-text error">Group Name is
+                Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775" [hidden]='id'>
+              <label>Create Type <span style="color:red;">*</span></label>
+              <select formControlName="create_type"
+                [ngClass]="{'form-control':true,'form-control-danger':OTTAuthForm.controls.create_type.invalid&&submit}"
+                (change)="infovalid()">
+                <option value="" selected>Select Create Type</option>
+                <option value="0">Individual Creation</option>
+                <option value="1">Bulk Creation</option>
+              </select>
+              <small *ngIf="OTTAuthForm.controls.create_type.invalid&&submit" class="form-text error">ISP Create Type is
+                Required!</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4" *ngIf="OTTAuthForm.value['create_type']=='1'">
+              <a href="/assets/public/OTT_Details.xlsx" target="_blank" download><b>Download Sample Here</b></a>
+            </div>
+            <div class="col-sm-4" *ngIf="OTTAuthForm.value['create_type']=='1'">
+              <label>OTT Details</label>
+              <input type="file" (change)="changeListener($event.target.files[0])" class="form-control" accept=".xlsx">
+            </div>
+          </div>
+          <div class="row" class="form-group row" *ngIf="OTTAuthForm.value['create_type']=='0'  || id">
+            <div class="col-md-12">
+              <nb-card status="info">
+                <nb-card-header style="background-color :  #01a7ee;">OTT Details</nb-card-header>
+                <nb-card-body>
+                  <div class="form-group row" *ngIf="OTTAuthForm.value['create_type']=='0'  || id">
+                    <div class="col-sm-3">
+                      <label>OTT Name <span style="color:red;">*</span> </label>
+                      <select formControlName="ott_name" 
+                      [ngClass]="{'form-control':true,'form-control-danger':OTTAuthForm.controls.ott_name.invalid&&submit}">
+                        <option value="" selected>Select OTT Name</option>
+                        <option *ngFor="let item of ottdata" [ngValue]="item.ott_id">{{item.ott_platform}}</option>
+                      </select>                      
+                      <small *ngIf="OTTAuthForm.controls.ott_name.invalid&&submit" class="form-text error">OTT Name
+                        is required! </small>
+                    </div>
+                    <div class="col-sm-3">
+                      <label>Username <span style="color:red;">*</span></label>
+                      <input type="text" name="username" [readonly]='isReadonly' formControlName="username" placeholder="UserName"
+                        [ngClass]="{'form-control' : true,'form-control-danger':OTTAuthForm.controls.username.invalid&&submit}" />
+                      <small *ngIf="OTTAuthForm.controls.username.invalid&&submit" class="form-text error">UserName is
+                        required! </small>
+                    </div>
+                    <div class="col-sm-3" [hidden] = "id">
+                      <label>Password <span style="color:red;">*</span></label>
+                      <input type="password" placeholder="Password" formControlName="password"
+                      [ngClass]="{'form-control':true,'form-control-danger':OTTAuthForm.controls.password.invalid&&submit}">
+                      <small *ngIf="OTTAuthForm.controls.password.invalid&&submit" class="form-text error">Password is Required!</small>
+                    </div>
+                    <div class="col-sm-3" *ngIf="id">
+                      <label>Password <span style="color:red;">*</span></label>
+                      <input type="text" readonly placeholder="Password" formControlName="password"
+                      [ngClass]="{'form-control':true,'form-control-danger':OTTAuthForm.controls.password.invalid&&submit}">
+                      <small *ngIf="OTTAuthForm.controls.password.invalid&&submit" class="form-text error">Password is Required!</small>
+                    </div>
+                    <div class="col-sm-3" [hidden]="id">
+                      <label>ConFirm Password <span style="color:red;">*</span></label>
+                      <input type="password" name="CPassword" formControlName="CPassword" placeholder="ConFirm Password"
+                        [ngClass]="{'form-control':true,'form-control-danger':OTTAuthForm.value['password']!=OTTAuthForm.value['CPassword']}" />
+                      <small *ngIf="OTTAuthForm.value['password']!=OTTAuthForm.value['CPassword']" class="form-text error">Password
+                        does not match! </small>
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="OTTAuthForm.value['create_type']=='0'|| id">
+                    <div class="col-sm-3">
+                      <label>Status</label>
+                      <select formControlName="status" 
+                      [ngClass]="{'form-control':true,'form-control-danger':OTTAuthForm.controls.status.invalid&&submit}">
+                        <option value="" selected>Select Status</option>
+                        <option value="0">Not Assigned</option>
+                        <option value="1">Assigned</option>
+                        <option value="2">Used</option>
+                        <option value="3">Not Used</option>
+                      </select>
+                    </div>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">{{id ? 'Update': 'Create'}}</button>
+            <button class="btn btn-md btn-danger" [routerLink]="['/pages/administration/list-ottauth']">Back</button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

@@ -1,0 +1,506 @@
+<div class="modal-header" style="background-color :  #01a7ee">
+   <span>{{ modalHeader }}
+      <div class="col-sm-9" id="hidemobile">
+         <select [(ngModel)]="show_inv" class="form-control" style="background: white;width: 25%; margin-top: -25px;
+   margin-left: 578px;height: fit-content;font-weight:bold;text-transform:uppercase;">
+            <option value="1" selected>Single</option>
+            <option value="2">Double </option>
+         </select>
+      </div>
+      <div class="col-sm-9" id="hidedesktop">
+         <select [(ngModel)]="show_inv" class="form-control" style="background: white;width: 39%; margin-top: -23px;
+   margin-left: 150px;height: fit-content;font-weight:bold;text-transform:uppercase;">
+            <option value="1" selected>Single</option>
+            <option value="2">Double </option>
+         </select>
+      </div>
+   </span>
+   <button class="close" aria-label="Close" (click)="activeModal.close()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<div class="modal-body" style="overflow: overlay;width:100%;white-space: break-spaces;">
+   <div id="main_cont" style="background-color: #FFFFFF;">
+      <div id="pdfTable" #pdfTable style="background-color: #FFFFFF;">
+         <div class="page">
+            <div id="hidemobile">
+               <table style="width: 100%;">
+                  <tbody>
+                     <div style="font-weight: 700;text-align: center;">INVOICE</div>
+                     <div class="row">
+                        <div class="col-sm-6 col-xs-6" style="float:left">
+                           <p style="color: darkblue;margin-bottom: 2px;font-weight: 400;">
+                              <img style="width:180px;" src="/assets/images/Bluelotus_logo_bold4.png"><br>
+                              <!-- <span style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{data?data.busname:'--'}}
+                        </span>
+                        <br> -->
+                              <span style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{bus_address ?
+                                 bus_address:'--'}}<br>
+                              </span>
+                           </p>
+                        </div>
+                        <div class="col-sm-6 col-xs-6" style="float:right" *ngIf="logo">
+                           <div class="imgstyle">
+                              <img style="width:180px;height:120px;margin-top:12px;"
+                                 [src]="logo?logo['reseller_logo']:''" /><br>
+                           </div>
+                        </div>
+                     </div>
+
+                  </tbody>
+               </table>
+            </div>
+            <div id="hidedesktop">
+               <table style="width: 100%;">
+                  <tbody>
+                     <div style="font-weight: 700;text-align: center;">INVOICE</div>
+                     <div class="row">
+                        <div class="col-sm-6 col-xs-6" style="float:left">
+                           <p style="color: darkblue;margin-bottom: 2px;font-weight: 400;">
+                              <img style="width:90px;" src="/assets/images/Bluelotus_logo_bold4.png"><br>
+                              <!-- <span style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{data?data.busname:'--'}}
+                           </span>
+                           <br> -->
+                              <span
+                                 style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{bus_address?bus_address:'--'}}<br>
+                              </span>
+                           </p>
+                        </div>
+                        <div class="col-sm-6 col-xs-6" style="float:right">
+                           <div class="imgstylemobile">
+                              <img style="width:90px;height:75px;margin-top:1px;margin-left: 245px;float:right"
+                                 [src]="logo?logo['reseller_logo']:''" /><br>
+                           </div>
+                        </div>
+                     </div>
+
+                  </tbody>
+               </table>
+            </div>
+            <table style="border: 1px solid black;border-collapse: collapse; width:100%;">
+               <div class="row">
+                  <div class="col-sm-6">
+                     <td>
+                        <table>
+                           <tbody>
+                              <tr>
+                                 <td>Name</td>
+                                 <td>:{{data?data.user_name:''}}</td>
+                              </tr>
+                              <tr *ngIf="views==2||views==4">
+                                 <td>Company Name</td>
+                                 <td>:{{data?data.sub_company:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Address</td>
+                                 <td style="white-space: break-spaces;">:{{data?data.address:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Mobile No</td>
+                                 <td>:{{data?data.mobile:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Customer GST No</td>
+                                 <td>
+                                    :&nbsp;&nbsp;{{data?data.recipient_gst_number==null?'--':data.recipient_gst_number:''}}
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>Service Type</td>
+                                 <td>:{{data ? data.service_name:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Paid Status</td>
+                                 <!-- <td>
+                                    <span *ngIf="paystatus==1"
+                                       style="background-color:red;font-weight:bold;border-radius: 3px;padding-right: 6px;padding-left: 6px;color:black;">Unpaid</span>
+                                    <span *ngIf="paystatus==2 "
+                                       style="background-color:green;font-weight:bold;border-radius: 3px;padding-right: 6px;padding-left: 6px;color:black;">Paid</span>
+                                 </td> -->
+                                 <td>{{paystatus ==1? 'Unpaid': 'Paid'}}</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </td>
+                  </div>
+                  <div class="col-sm-6">
+                     <td style="text-align:left; ">
+                        <table>
+                           <tbody>
+                              <tr>
+                                 <td>Username</td>
+                                 <td>:{{data?data.userid:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Invoice No</td>
+                                 <td>:{{data?data.billno:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Invoice Date</td>
+                                 <!--                                  <td>:{{data?data.inv_date | date : 'd MMM y h:mm:ss a':''}}</td>
+ -->
+                                 <td>{{data ? (data.inv_date | date : 'd MMM y h:mm:ss a'):'N/A'}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Billing Period</td>
+                                 <td>:{{data?data.period:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Paid Date</td>
+                                 <td>{{data ? data.paydate=='0000-00-00 00:00:00'?'--':(data.paydate | date : 'd MMM y
+                                    h:mm:ss
+                                    a'):'N/A'}}</td>
+                                 <!-- <td>:{{data?data.paydate | date : 'd MMM y h:mm:ss a':''}}</td> -->
+                              </tr>
+                           </tbody>
+                        </table>
+                     </td>
+                  </div>
+               </div>
+            </table>
+            <br>
+            <table style="border: 1px solid black;border-collapse: collapse; width: 100%">
+               <thead>
+                  <tr>
+                     <td colspan="8" style="font-weight: 900;">
+                        Billing Information
+                     </td>
+                  </tr>
+                  <tr>
+                     <th style="text-align: center;border: 1px solid black;">SI.NO</th>
+                     <th style="text-align: center;border: 1px solid black;">Service<br> Name</th>
+                     <th style="text-align: center;border: 1px solid black;">Invoice Amount</th>
+                     <th style="text-align: center;border: 1px solid black;">IGST</th>
+                     <th style="text-align: center;border: 1px solid black;">CGST</th>
+                     <th style="text-align: center;border: 1px solid black;">SGST</th>
+                     <th style="text-align: center;border: 1px solid black;">Tax Amount</th>
+                     <th style="text-align: center;border: 1px solid black;">Total Amount</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td style="text-align: center;border: 1px solid black;">1</td>
+                     <td style="text-align: center;border: 1px solid black;word-break:break-all;">
+                        {{data?data.srvname:''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.invoice_amount:''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.igst+""+'%':''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.cgst+""+'%':''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.sgst+""+'%':''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.tax_amount:''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.total_amount:''}}</td>
+                  </tr>
+               </tbody>
+            </table>
+            <br>
+            <table style="border:1px solid black;border-collapse: collapse;width: 100%;" *ngIf="views==4||views==3">
+               <thead style="border:1px solid black;">
+                  <tr>
+                     <th style="text-align: center;border:1px solid black;">Receipt Number</th>
+                     <th style="text-align: center;border:1px solid black;">Receipt Date</th>
+                     <th style="text-align: center;border:1px solid black;">Amount Paid</th>
+                     <th style="text-align: center;border:1px solid black;">Status</th>
+                  </tr>
+               </thead>
+               <tbody style="border: 1px solid black;border-collapse: collapse;">
+                  <tr *ngFor="let item of receiptdata">
+                     <td style="text-align: center;border: 1px solid black;">
+                        {{item?item.receipt_num==null?'--':item.receipt_num:''}}
+                     </td>
+                     <td style="text-align: center;border: 1px solid black;">
+
+                        {{item ? (item.receipt_date | date : 'd MMM y '):'N/A'}}
+                     </td>
+                     <td style="text-align: center;border: 1px solid black;">
+                        {{item?item.received_amt==null?'--':item.received_amt:''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">
+                        {{item?item.rstatus==1? 'Issued':'Cancelled':'--'}}</td>
+                  </tr>
+               </tbody>
+            </table>
+            <table style="width:100%;">
+               <div class="row">
+                  <div class="col-sm-6">
+                     <td>
+                        <table>
+                           <tbody>
+                              <tr>
+                                 PAN NO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{{data ? data.pan_no : '--'}}
+                                 <br>GST NO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{{data ? data.bgstno :
+                                 '--'}}
+                                 <br>HSN/SAC No:{{data ? data.hsn : '--'}}
+                              </tr>
+                           </tbody>
+                        </table>
+                     </td>
+                  </div>
+                  <div class="col-sm-6" style="text-align: -webkit-right;">
+                     <td>
+                        <table>
+                           <tbody>
+                              <tr>
+                                 <img *ngIf="data ? data.inv_status==3:''"
+                                    style="width:100px;float:right;transform: rotate(29deg);"
+                                    src="/assets/images/c1.png">
+
+                              </tr>
+                           </tbody>
+                        </table>
+                     </td>
+                  </div>
+               </div>
+            </table>
+            <div style="text-align: center;">
+               This is Computer Generated Invoice no Signature required
+            </div>
+            <!-- <div style="text-align: center;">Thankyou for being Our Business Partner</div> -->
+
+
+            <!-- <img *ngIf="data ? data.inv_status==3:''" style="width:100px;float:right;transform: rotate(20deg);" src="/assets/images/c1.png"> Line 203-->
+            <div style="border: none; border-top:dotted;"></div>
+            <table *ngIf="show_inv ==2" style="width: 100%;">
+               <tbody>
+
+
+                  <div id="hidemobile">
+                     <table style="width: 100%;">
+                        <tbody>
+                           <div style="font-weight: 700;text-align: center;">INVOICE</div>
+                           <div class="row">
+                              <div class="col-sm-6 col-xs-6" style="float:left">
+                                 <p style="color: darkblue;margin-bottom: 2px;font-weight: 400;">
+                                    <img style="width:180px;" src="/assets/images/Bluelotus_logo_bold4.png"><br>
+                                    <!-- <span style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{data?data.busname:'--'}}
+                                 </span>
+                                 <br> -->
+                                    <span
+                                       style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{bus_address?bus_address:'--'}}<br>
+                                    </span>
+                                 </p>
+                              </div>
+                              <div class="col-sm-6 col-xs-6" style="float:right" *ngIf="logo">
+                                 <div class="imgstyle">
+                                    <img style="width:180px;height:120px;margin-top:12px;"
+                                       [src]="logo?logo['reseller_logo']:''" /><br>
+                                 </div>
+                              </div>
+                           </div>
+
+                        </tbody>
+                     </table>
+                  </div>
+                  <div id="hidedesktop">
+                     <table style="width: 100%;">
+                        <tbody>
+                           <div style="font-weight: 700;text-align: center;">INVOICE</div>
+                           <div class="row">
+                              <div class="col-sm-6 col-xs-6" style="float:left">
+                                 <p style="color: darkblue;margin-bottom: 2px;font-weight: 400;">
+                                    <img style="width:90px;" src="/assets/images/Bluelotus_logo_bold4.png"><br>
+                                    <!-- <span style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{data?data.busname:'--'}}
+                                    </span>
+                                    <br> -->
+                                    <span
+                                       style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{bus_address?bus_address:'--'}}<br>
+                                    </span>
+                                 </p>
+                              </div>
+                              <div class="col-sm-6 col-xs-6" style="float:right">
+                                 <div class="imgstylemobile">
+                                    <img style="width:90px;height:75px;margin-top:1px;margin-left: 245px;float:right"
+                                       [src]="logo?logo['reseller_logo']:''" /><br>
+                                 </div>
+                              </div>
+                           </div>
+
+                        </tbody>
+                     </table>
+                  </div>
+
+               </tbody>
+            </table>
+            <table *ngIf="show_inv ==2" style="border: 1px solid black;border-collapse: collapse; width:100%;">
+               <div class="row">
+                  <div class="col-sm-6">
+                     <td>
+                        <table>
+                           <tbody>
+                              <tr>
+                                 <td>Name</td>
+                                 <td>:{{data?data.user_name:''}}</td>
+                              </tr>
+                              <tr *ngIf="views==2||views==4">
+                                 <td>Company Name</td>
+                                 <td>:{{data?data.sub_company:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Address</td>
+                                 <td style="white-space: break-spaces;">:{{data?data.address:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Mobile No</td>
+                                 <td>:{{data?data.mobile:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Customer GST No</td>
+                                 <td>
+                                    :&nbsp;&nbsp;{{data?data.recipient_gst_number==null?'--':data.recipient_gst_number:''}}
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>Service Type</td>
+                                 <td>:{{data?data.service_name:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Paid Status</td>
+                                 <td>
+                                    <span *ngIf="paystatus==1"
+                                       style="background-color:red;font-weight:bold;border-radius: 3px;padding-right: 6px;padding-left: 6px;color:black;">Unpaid</span>
+                                    <span *ngIf="paystatus==2 "
+                                       style="background-color:green;font-weight:bold;border-radius: 3px;padding-right: 6px;padding-left: 6px;color:black;">Paid</span>
+                                 </td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </td>
+                  </div>
+                  <div class="col-sm-6">
+                     <td style="text-align:left; ">
+                        <table>
+                           <tbody>
+                              <tr>
+                                 <td>Username</td>
+                                 <td>:{{data?data.userid:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Invoice No</td>
+                                 <td>:{{data?data.billno:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Invoice Date</td>
+
+                                 <td>{{data ? (data.inv_date | date : 'd MMM y h:mm:ss a'):'N/A'}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Billing Period</td>
+                                 <td>:{{data?data.period:''}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Paid Date</td>
+                                 <td>{{data ? data.paydate=='0000-00-00 00:00:00'?'--':(data.paydate | date : 'd MMM y
+                                    h:mm:ss
+                                    a'):'N/A'}}</td>
+
+                              </tr>
+                           </tbody>
+                        </table>
+                     </td>
+                  </div>
+               </div>
+            </table>
+            <br>
+            <table *ngIf="show_inv ==2" style="border: 1px solid black;border-collapse: collapse;width: 100%;">
+               <thead style=" border: 1px solid black;">
+                  <tr>
+                     <td colspan="8" style="font-weight: 900;">
+                        Billing Information
+                     </td>
+                  </tr>
+                  <tr>
+                     <th style="text-align: center;border: 1px solid black;">SI.NO</th>
+                     <th style="text-align: center;border: 1px solid black;">Service<br> Name</th>
+                     <th style="text-align: center;border: 1px solid black;">Invoice Amount</th>
+                     <th style="text-align: center;border: 1px solid black;">IGST</th>
+                     <th style="text-align: center;border: 1px solid black;">CGST</th>
+                     <th style="text-align: center;border: 1px solid black;">SGST</th>
+                     <th style="text-align: center;border: 1px solid black;">Tax Amount</th>
+                     <th style="text-align: center;border: 1px solid black;">Total Amount</th>
+                  </tr>
+               </thead>
+
+               <tbody>
+                  <tr>
+                     <td style="text-align: center;border: 1px solid black;">1</td>
+                     <td style="text-align: center;border: 1px solid black;word-break:break-all;">
+                        {{data?data.srvname:''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.invoice_amount:''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.igst+""+'%':''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.cgst+""+'%':''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.sgst+""+'%':''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.tax_amount:''}}</td>
+                     <td style="text-align: center;border: 1px solid black;">{{data?data.total_amount:''}}</td>
+                  </tr>
+               </tbody>
+            </table>
+            <br>
+            <table style="border:1px solid black;border-collapse: collapse;width: 100%;"
+               *ngIf="(views==4||views==3) && show_inv ==2">
+               <thead style="border:1px solid black;">
+                  <tr>
+                     <th style="text-align: center;border:1px solid black;">Receipt Number</th>
+                     <th style="text-align: center;border:1px solid black;">Receipt Date</th>
+                     <th style="text-align: center;border:1px solid black;">Amount Paid</th>
+                     <th style="text-align: center;border:1px solid black;">Status</th>
+                  </tr>
+               </thead>
+               <tbody style="border: 1px solid black;border-collapse: collapse;">
+                  <tr *ngFor="let item of receiptdata">
+                     <td style="text-align: center;border: 1px solid black;">
+                        {{item?item.receipt_num==null?'--':item.receipt_num:''}}
+                     </td>
+                     <td style="text-align: center;border: 1px solid black;">
+
+                        {{item ? (item.receipt_date | date : 'd MMM y'):'N/A'}}
+                     </td>
+                     <td style="text-align: center;border: 1px solid black;">
+                        {{item?item.received_amt==null?'--':item.received_amt:''}}</td>
+                     <td style="text-align: center;border: 1px solid black;" *ngIf="item.rstatus!=2">
+                        {{item?item.rstatus==1? 'Issued':'Cancelled':'--'}}</td>
+                  </tr>
+               </tbody>
+            </table>
+            <table *ngIf="show_inv ==2" style="width:100%;">
+               <div class="row">
+                  <div class="col-sm-6">
+                     <td>
+                        <table>
+                           <tbody>
+                              <tr>
+                                 PAN NO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{{data ? data.pan_no : '--'}}
+                                 <br>GST NO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{{data ? data.bgstno :
+                                 '--'}}
+                                 <br>HSN/SAC No:{{data ? data.hsn : '--'}}
+                              </tr>
+                           </tbody>
+                        </table>
+                     </td>
+                  </div>
+                  <div class="col-sm-6" style="text-align: -webkit-right;">
+                     <td>
+                        <table>
+                           <tbody>
+                              <tr>
+                                 <img *ngIf="data ? data.inv_status==3:''"
+                                    style="width:100px;float:right;transform: rotate(29deg);"
+                                    src="/assets/images/c1.png">
+
+                              </tr>
+                           </tbody>
+                        </table>
+                     </td>
+                  </div>
+               </div>
+            </table>
+            <!-- <div *ngIf="show_inv ==2" style="text-align: center;">Thankyou for being Our Business Partner</div> -->
+            <!-- <div *ngIf="show_inv ==2" style="text-align: center;">***
+               This is a Computer Generated Invoice and requires no Seal and Sign***
+            </div> -->
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal-footer">
+   <button type="submit" class="btn btn-md btn-success" (click)="print();">Print</button>
+   <!-- <button type="submit" id="hidedesktop" class="btn btn-md btn-info" (click)="downloadAsPDF();">Download</button> -->
+   <button type="submit" class="btn btn-md btn-info" (click)="downloadAsPDF();">Download</button>
+   <button type="button" class="btn btn-md btn-danger" (click)="activeModal.close();">Cancel</button>
+</div>

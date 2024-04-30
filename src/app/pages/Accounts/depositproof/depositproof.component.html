@@ -1,0 +1,12 @@
+<ngx-loading [show]="loading"
+  [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+</ngx-loading>
+  <div class="modal-header" style="width: 100%;background: #01a7ee">
+    <span style="font-weight: 600;">{{ modalHeader }}</span>
+    <button class="close" aria-label="Close" (click)="closeModal()">
+      <span style="font-weight: 600" aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-content">
+    <img  [src]='img_result ? img_result.pay_proof:""' />
+  </div>

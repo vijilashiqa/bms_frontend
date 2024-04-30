@@ -1,0 +1,97 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>
+    Revenue Share Details
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]></toaster-container>
+
+    <div class="modal-body">
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>Business Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            placeholder='Select Business' (keyUp)="showBusiness($event)"
+            (changed)="showResellerName();changebusiness();" id="id" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <!-- *ngIf="role.getroleid()>=775" -->
+          <label>Reseller</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company"
+            (changed)="showRevenueShare();showShareType();" (keyUp)="showResellerName($event)"
+            placeholder='Select Reseller' id="id" [item]="res1">
+          </auto-completen>
+        </div>
+
+      </div>
+
+    </div>
+    <toaster-container [toasterconfig]></toaster-container>
+    <div class="row" *ngIf="res_name">
+      <div class="col-md-12">
+        <label class="left">
+          <h5>Sharing Type : {{ share_type == 1? 'COMMON SHARING' : 'PACKAGE-WISE SHARING'}}</h5>
+        </label>
+        <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+      </div>
+    </div>
+    <hr style="border: 0px;">
+    <div class=table-wrapper *ngIf="res_name">
+      <table border="2px" bordercolor="#01a7ee" class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th>Service Name</th>
+          <th>Plan Price</th>
+          <th *ngIf="share_type == 1">Isp Share</th>
+          <th *ngIf="share_type == 1">Subisp Share</th>
+          <th *ngIf="share_type == 1">Subdist Share</th>
+          <th *ngIf="share_type == 1">Reseller Share</th>
+
+        </tr>
+        <tr *ngFor="let item of srv_details">
+          <td>{{item.srvname}}</td>
+          <td>
+            <table border="3px" bordercolor="#01a7ee">
+              <!-- <h4 align="center">Nested Table</h4> -->
+              <tr style="font-weight: 900;">
+                <td>TimeUnit</td>
+                <td>Price</td>
+                <td>Tax</td>
+                <td>Status</td>
+                <td *ngIf="share_type == 2">Isp Share</td>
+                <td *ngIf="share_type == 2">Subisp Share</td>
+                <td *ngIf="share_type == 2">Subdist Share</td>
+                <td *ngIf="share_type == 2">Reseller Share</td>
+              </tr>
+              <tr *ngFor="let plan of item.subplan">
+                <td>{{plan.type == 0 ? plan.time_unit + "Days" : plan.time_unit + "Months"}}</td>
+                <td><i class="fas fa-rupee-sign">&nbsp;{{plan.amount}}</i></td>
+                <td>{{plan.tax_type == 0 ? 'Exclusive': 'Inclusive'}}</td>
+                <td>{{plan.status == 1 ? 'Active': 'Inactive'}}</td>
+                <td style="font-weight:bold;color:#181818" *ngIf="share_type == 2">{{plan.isp_share}}&nbsp;<b>%</b></td>
+                <td style="font-weight:bold;color:#181818" *ngIf="share_type == 2">{{plan.sub_isp_share}}&nbsp;<b>%</b>
+                </td>
+                <td style="font-weight:bold;color:#181818" *ngIf="share_type == 2">{{plan.sub_dist_share}}&nbsp;<b>%</b>
+                </td>
+                <td style="font-weight:bold;color:#181818" *ngIf="share_type == 2">{{plan.reseller_share}}&nbsp;<b>%</b>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td style="font-weight:bold;color:#181818" *ngIf="share_type == 1">{{ item.mispshare || 0 }}&nbsp;<b>%</b>
+          </td>
+          <td style="font-weight:bold;color:#181818" *ngIf="share_type == 1">{{ item.msubispshare || 0 }}&nbsp;<b>%</b>
+          </td>
+          <td style="font-weight:bold;color:#181818" *ngIf="share_type == 1">{{ item.msubdistshare || 0 }}&nbsp;<b>%</b>
+          </td>
+          <td style="font-weight:bold;color:#181818" *ngIf="share_type == 1">{{ item.mreselshare || 0}}&nbsp;<b>%</b>
+          </td>
+
+        </tr>
+      </table>
+    </div>
+    <br><br><br><br><br><br><br><br><br><br><br>
+  </nb-card-body>
+</nb-card>

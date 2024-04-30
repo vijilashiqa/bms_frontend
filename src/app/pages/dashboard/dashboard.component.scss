@@ -1,0 +1,151 @@
+@import '../../@theme/styles/themes';
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~@nebular/theme/styles/global/breakpoints';
+
+@include nb-install-component() {
+  .solar-card nb-card-header {
+    border: none;
+    padding-bottom: 0;
+  }
+
+  @include media-breakpoint-down(sm) {
+    ngx-traffic {
+      display: none;
+    }
+  }
+
+  @include media-breakpoint-down(is) {
+    /deep/ nb-card.large-card {
+      height: nb-theme(card-height-medium);
+    }
+  }
+  @include nb-install-component() {
+  
+    ngx-barcharts,
+  
+   
+
+  /deep/ .echart {
+    height: 100%;
+    width: 100%;
+  }
+}
+ .user-activity-list li {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    color: nb-theme(color-fg);
+    padding: nb-theme(card-padding);
+    border-bottom:
+      nb-theme(list-item-border-width)
+      nb-theme(card-header-border-type)
+      nb-theme(separator);
+
+    &:first-child {
+      border-top:
+        nb-theme(list-item-border-width)
+        nb-theme(card-header-border-type)
+        nb-theme(separator);
+    }
+
+    &:hover {
+      background-color: nb-theme(layout-bg);
+
+      &::before {
+        position: absolute;
+        content: '';
+        height: 100%;
+        width: 6px;
+        left: 0;
+        top: 0;
+        background-color: nb-theme(color-success);
+        border-radius: nb-theme(radius);
+      }
+    }
+  }
+
+.adapted { background-color: rgba(10,5,8,0) }
+
+}
+
+.table-wrapper{
+  overflow-y: scroll;
+  height: auto;
+}
+
+.table-wrapper th{
+    position: sticky;
+    top: -1px;
+}
+
+.fa-file-excel:before {
+  content: "\f1c3";
+  color: palegreen;
+}
+
+ngx-flip{
+  height: 300px;
+  width:100%
+  
+  }
+  .front{
+  height: 100%;
+  display: block;
+      text-align: -webkit-center;
+   
+      overflow: hidden;
+  }
+  .back{
+  height: 100%;
+  display: block;
+   text-align: -webkit-center;
+     
+      overflow: hidden;
+  }
+  .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 10px;
+    margin-top: -22px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+  }
+  
+  /* Position the "next button" to the right */
+  .next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+    background: #ffffffb8;
+  }
+
+.btn.btn-primary:hover {
+  background-color:#73a1ff!important;
+  font-weight:700!important;
+  color:white;
+
+}
+
+.btn.btn-primary:focus {
+  background-color:#73a1ff!important;
+  font-weight:700!important;
+  color:white;
+}
+
+.btn.btn-primary:active {
+  background-color:#73a1ff!important;
+  font-weight:700!important;
+  color:white;
+
+}
+
+.address{
+  white-space: break-spaces;
+}

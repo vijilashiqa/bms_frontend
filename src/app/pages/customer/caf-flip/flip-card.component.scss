@@ -1,0 +1,37 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  .nb-arrow-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    
+    @include nb-rtl(right, auto);
+    @include nb-rtl(left, 0);
+    padding: 1.5rem;
+    cursor: pointer;
+  }
+
+  ::ng-deep .flipped {
+    .back-container {
+      .nb-arrow-right {
+        transform: scaleX(-1);
+      }
+    }
+
+    .front-container {
+      .nb-arrow-right {
+        display: none;
+        color: black;
+        font-weight: 900;
+      }
+    }
+  }
+}
+//  .modal-content{
+//  height:1px;
+//  }
+
+// .custom_class .modal-content{
+//   height:1px;
+//   }

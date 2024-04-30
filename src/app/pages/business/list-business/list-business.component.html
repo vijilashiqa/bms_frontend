@@ -1,0 +1,106 @@
+<nb-card>
+  <nb-card-header>
+    List Business
+    <a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;"
+      (click)="search=!search;"><i class="fa fa-search"></i></a>
+      <a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+        (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]></toaster-container>
+    <button *ngIf="!role.getmenurole(102)" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/business/add-business']">Add</button>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>Business Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            placeholder='Select Business' (keyUp)="showBusName($event)" (changed)="showBusMob();changeclear(1)" id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>State</label>
+          <auto-completen optValues="name" (changed)="showDistrict();city=''" placeholder='Select state' [(ngModel)]="state"
+            addclass="form-control" id="state" [item]="stat">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>City</label>
+          <auto-completen optValues="name" (keyUp)="showDistrict($event)" placeholder='Select City'
+            [(ngModel)]="city" addclass="form-control" id="city" [item]="cit">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Mobile Number</label>
+          <auto-completen optValues="mobile" placeholder='Select Mobile Number' [(ngModel)]="bus_mob"
+            addclass="form-control" id="bus_mob" [item]="mob">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <toaster-container [toasterconfig]></toaster-container>
+    <div class="row">
+      <div class="col-md-12">
+        <label class="left">
+          <h5>Total Count : {{count}}</h5>
+        </label>
+        <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+      </div>
+    </div>
+    <hr style="border: 0px;">
+    <div class=table-wrapper>
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th *ngIf="((!role.getmenurole(103)) || (!role.getmenurole(105)) )">Action</th>
+          <th *ngIf="role.getroleid()>777">Business Name</th>
+          <th>Service Type</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>State</th>
+          <th>City</th>
+          <th>Mobile Number</th>
+          <th>Landline Number</th>
+          <th>GST Number</th>
+          <th>IGST</th>
+          <th>CGST</th>
+          <th>SGST</th>
+          <th>Hot Bucket</th>
+        </tr>
+        <tr *ngFor="let item of buslist">
+          <td *ngIf="((!role.getmenurole(103)) || (!role.getmenurole(105)))" style=" padding: 1px;" class=" last" data-title="'Action'">
+            <div class="dropdown ghost-dropdown" ngbDropdown>
+              <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;" class="btn btn-primary btn-icon" type="button"
+                ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75px;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                <li *ngIf="!role.getmenurole(105)" class="dropdown-item" title="Logo" (click)="view_logo(item.id)"><i
+                    style="font-size: 20px;" class="far fa-eye "></i>&nbsp;Logo</li>
+                <li *ngIf="!role.getmenurole(103)" class="dropdown-item" title="Edit" (click)="Edit_User(item.id)"><i
+                    style="font-size: 20px;" class="nb-edit"></i>&nbsp;Edit</li>
+              </ul>
+            </div>
+          </td>
+          <!-- <td *ngIf="!role.getmenurole(103)"><a (click)="Edit_User(item.id);" style="cursor: pointer;"> <i
+                class="nb-edit"> </i> Edit </a></td> -->
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td>{{item.service_name}}</td>
+          <td>{{item.firstname}}</td>
+          <td>{{item.lastname}}</td>
+          <td>{{item.state}}</td>
+          <td>{{item.city}}</td>
+          <td>{{item.mobile}}</td>
+          <td>{{item.phone}}</td>
+          <td>{{item.gst}}</td>
+          <td>{{item.igst+" "+'%'}}</td>
+          <td>{{item.cgst+" "+'%'}}</td>
+          <td>{{item.sgst+" "+'%'}}</td>
+          <td>{{item.hot_bucket == 1 ? 'Enable':'Disable'}}</td>
+        </tr>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

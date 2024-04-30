@@ -1,0 +1,247 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="editNasForm" (ngSubmit)="editNas();">
+  <div class="modal-body">
+    <ngx-loading [show]="loading"
+		[config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+	 </ngx-loading>
+    <div class="col-md-12">
+      <nb-card>
+        <nb-card-header style="background-color :  #01a7ee; height:40px!important">NAS CREATION</nb-card-header>
+        <nb-card-body>
+          <div class="input-group">
+            <div class="col-sm-6" *ngIf="role.getroleid()>777"><br>
+              <label>ISP Name <span style="color:red;">*</span></label>
+              <!-- <auto-completen formControlName="bus_id"
+                [addclass]="{'form-control':true,'form-control-danger':editNasForm.controls.bus_id.invalid&&submit}"
+                optValues="busname" (changed)="GroupName()" placeholder='Select ISP' id="bus_id" [item]="busname">
+              </auto-completen> -->
+              <select formControlName="bus_id"
+                [ngClass]="{'form-control':true,'form-control-danger':editNasForm.controls.bus_id.invalid&&submit}"
+                (change)="GroupName()">
+                <option value="" selected>Select ISP Name</option>
+                <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+              </select>
+              <small *ngIf="editNasForm.controls.bus_id.invalid&&submit" class="form-text error">ISP name is
+                Required!</small>
+            </div>
+            <div class="col-sm-6" *ngIf="role.getroleid()>=775"><br>
+              <label>Circle <span style="color:red;">*</span></label>
+              <select formControlName="groupid"
+                [ngClass]="{'form-control':true,'form-control-danger':editNasForm.controls.groupid.invalid&&submit}">
+                <option value="" selected="">Select Circle</option>
+                <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+              </select>
+              <small *ngIf="editNasForm.controls.groupid.invalid&&submit" class="form-text error">Circle Name is
+                Required!</small>
+            </div>
+          </div>
+          <br>
+          <div class="input-group">
+            <div class="col-sm-6"><br>
+              <label>Nas Name <span style="color:red;">*</span></label>
+              <input type="text" name="nasname" formControlName="nasname" placeholder="Nas Name *"
+                [ngClass]="{'form-control' : true,'form-control-danger':editNasForm.controls.nasname.invalid&&submit}" />
+              <small *ngIf="editNasForm.controls.nasname.invalid&&submit" class="form-text error"> Nas Name is required!
+              </small>
+            </div>
+            <div class="col-sm-6"><br>
+              <label>IP Address <span style="color:red;">*</span></label>
+              <input type="text" name="ip" formControlName="ip" placeholder="IP address *"
+                [ngClass]="{'form-control' : true,'form-control-danger':editNasForm.controls.ip.invalid&&submit}" />
+              <small *ngIf="editNasForm.hasError('required','ip')&&submit" class="form-text error"> Ip is required!
+              </small>
+              <small *ngIf="editNasForm.hasError('pattern','ip')&&submit" class="form-text error"> Ip is Invalid!
+              </small>
+            </div>
+          </div>
+          <div class="input-group" >
+            <div class="col-sm-6">
+               <label>Ping Status</label>
+               <select formControlName="ping_status" (change)="pingchange()"
+               [ngClass]="{'form-control':true,'form-control-danger':editNasForm.controls.ping_status.invalid&&submit}">
+                  <option value="1">Enable</option>
+                  <option value="0">Disable</option>
+               </select>
+               <small *ngIf="editNasForm.controls.ping_status.invalid&&submit" class="form-text error">Pingstatus is Required</small>
+            </div>
+            <div class="col-sm-6" *ngIf="editNasForm.value['ping_status']==1">
+               <label>Web Port <span style="color:red;">*</span></label>
+               <input type="text" formControlName="port" placeholder="WEB PORT" 
+               [ngClass]="{'form-control':true,'form-control-danger':editNasForm.controls.port.invalid&&submit}">
+               <small *ngIf="editNasForm.controls.port.invalid&&submit" class="form-text error">Port is Required</small>
+            </div>
+         </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+    <br>
+    <div class="col-md-12">
+      <nb-card>
+        <nb-card-header style="background-color :  #01a7ee; height:40px!important">CATEGORY</nb-card-header>
+        <nb-card-body>
+          <div class="input-group">
+            <div class="col-sm-6"><br>
+              <label>Nas Type <span style="color:red;">*</span></label>
+              <select
+                [ngClass]="{'form-control' : true,'form-control-danger':editNasForm.controls.type.invalid&&submit}"
+                name="type" formControlName="type" (change)="onChange();">
+                <option value="0">Mikrotik</option>
+                <option value="1">StarOS</option>
+                <option value="2">ChilliSpot</option>
+                <option value="3">Cisco</option>
+                <option value="4">pfSense</option>
+                <option value="255">Other</option>
+              </select>
+              <small *ngIf="editNasForm.controls.type.invalid&&submit" class="form-text error"> Type is required!
+              </small>
+            </div>
+            <div class="col-sm-6"><br>
+              <label>Secret Password <span style="color:red;">*</span></label>
+              <input type="password" name="secret" formControlName="secret"
+                placeholder="New Secret *(Mikrotik,ChilliSpot,Cisco)"
+                [ngClass]="{'form-control' : true,'form-control-danger':editNasForm.controls.secret.invalid&&submit}" />
+              <!-- <small *ngIf="editNasForm.hasError('pattern','secret')&&submit" class="form-text error"> Secret should Not Contail Capitals!
+              </small> -->
+            </div>
+          </div>
+          <br>
+          <div class="input-group" *ngIf="editNasForm.value['type']==1">
+            <div class="col-sm-6"><br>
+              <label>Password <span style="color:red;">*</span></label>
+              <input type="password" name="password" formControlName="password" placeholder="Password * (StarOS Only)"
+                [ngClass]="{'form-control' : true,'form-control-danger':editNasForm.controls.password.invalid&&submit}" />
+              <small *ngIf="editNasForm.controls.password.invalid&&submit" class="form-text error"> Password is
+                required!
+              </small>
+            </div>
+          </div>
+          <br>
+          <div class="row ">
+            <div *ngIf="editNasForm.value['type']==0" class="input-group">
+              <div class="col-sm-4">
+                <b>Dynamic data rate:</b>
+              </div>
+              <div class="col-sm-8">
+                <table>
+                  <td>
+                    <label class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" value="0" formControlName="coamode"
+                        name="coamode">
+                      <span class="custom-control-indicator"></span>Disabled
+                    </label>
+                  </td>
+                  <td>
+                    <label class="custom-control custom-radio">
+                      <input type="radio" value="1" class="custom-control-input" formControlName="coamode"
+                        name="coamode">
+                      <span class="custom-control-indicator"></span>Mikrotik API (< MT v6)</label>
+                  </td>
+                  <td>
+                    <label class="custom-control custom-radio">
+                      <input type="radio" value="2" class="custom-control-input" formControlName="coamode"
+                        name="coamode">
+                      <span class="custom-control-indicator"></span>CoA (MT 6+)</label>
+                  </td>
+                </table>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row ">
+            <div *ngIf="editNasForm.value['type']==0 " class="input-group">
+              <div class="col-sm-4">
+                <b>Api Version:</b>
+              </div>
+              <div class="col-sm-8">
+                <table>
+                  <td>
+                    <label class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" value="0" formControlName="api_ver"
+                        name="api_ver">
+                      <span class="custom-control-indicator"></span>Pre 6.45.1
+                    </label>
+                  </td>
+                  <td>
+                    <label class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" value="1" formControlName="api_ver"
+                        name="api_ver">
+                      <span class="custom-control-indicator"></span>6.45.1 or Newer
+                    </label>
+                  </td>
+                </table>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div *ngIf="editNasForm.value['type']==0" class="input-group">
+            <div class="col-sm-6">
+              <label>API Username <span style="color:red;">*</span></label>
+              <input
+                [ngClass]="{'form-control' : true,'form-control-danger':editNasForm.controls.apiusername.invalid&&submit}"
+                formControlName="apiusername" name="apiusername" type="text" placeholder="API Username * (Mikrotik)"
+                size="30" maxlength="60">
+              <small *ngIf="editNasForm.controls.apiusername.invalid&&submit" class="form-text error"> API Username is
+                required! </small>
+            </div>
+            <div class="col-sm-6">
+              <label>API Password <span style="color:red;">*</span></label>
+              <input name="apipassword" formControlName="apipassword" type="password"
+                [ngClass]="{'form-control' : true,'form-control-danger':editNasForm.controls.apipassword.invalid&&submit}"
+                placeholder="New API password * (Mikrotik)" size="30" maxlength="60">
+              <small *ngIf="editNasForm.controls.apipassword.invalid&&submit" class="form-text error"> API Password is
+                required! </small>
+            </div>
+          </div>
+          <br>
+          <div class="row ">
+            <div *ngIf="editNasForm.value['type']==3" class="input-group">
+              <div class="col-sm-4">
+                <b>Cisco bandwidth support:</b>
+              </div>
+              <div class="col-sm-8">
+                <table>
+                  <td>
+                    <label class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" value="0" formControlName="ciscobwmode"
+                        name="ciscobwmode">
+                      <span class="custom-control-indicator"></span>None
+                    </label>
+                  </td>
+                  <td>
+                    <label class="custom-control custom-radio">
+                      <input type="radio" value="1" class="custom-control-input" formControlName="ciscobwmode"
+                        name="ciscobwmode">
+                      <span class="custom-control-indicator"></span> Rate limit</label>
+                  </td>
+                  <td>
+                    <label class="custom-control custom-radio">
+                      <input type="radio" value="2" class="custom-control-input" formControlName="ciscobwmode"
+                        name="ciscobwmode">
+                      <span class="custom-control-indicator"></span>Policy map
+                    </label>
+                  </td>
+                </table>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="input-group">
+            <div class="col-sm-6">
+              <label>Description</label>
+              <input name="descr" formControlName="descr" type="text" class="form-control" placeholder="Description"
+                maxlength="200">
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-md btn-success">Update</button>
+    </div>
+  </div>
+</form>

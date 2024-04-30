@@ -1,0 +1,36 @@
+<ngx-loading [show]="loading"
+  [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+</ngx-loading>
+<div class="modal-header" style="background-color :  #01a7ee">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="ChangeSerForm" (ngSubmit)="changesersubmit()">
+  <div class="modal-body">
+    <table style="width: 100%">
+      <tr>
+        <th>Service Name <span style="color:red;">*</span></th>
+        <td>
+          <auto-completen
+          [addclass]="{'form-control' : true,'form-control-danger':ChangeSerForm.controls.srv_id.invalid&&submit}"
+          optValues="srvname" placeholder='Select Service Name' (keyUp)="Service($event)" formControlName="srv_id" optId="srvid" [item]="pack">
+        </auto-completen>
+        <small *ngIf="ChangeSerForm.controls.srv_id.invalid&&submit" class="form-text error">Service Name Is
+          Required!</small>
+        </td>
+      </tr>
+      <tr>
+        <th>Reason <span style="color:red;">*</span></th>
+        <td>
+          <input type="text" formControlName="reason"
+          [ngClass]="{'form-control' : true,'form-control-danger':ChangeSerForm.controls.reason.invalid&&submit}">
+          <small *ngIf="ChangeSerForm.controls.reason.invalid&&submit" class="form-text error">Reason Is
+            Required!</small>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <button type="submit" class="btn btn-md btn-success" style="margin: auto; display: block;">Update</button>
+</form>

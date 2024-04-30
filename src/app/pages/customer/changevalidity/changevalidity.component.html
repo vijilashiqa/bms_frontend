@@ -1,0 +1,34 @@
+<ngx-loading [show]="loading"
+  [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+</ngx-loading>
+<div class="modal-header" style="background-color :  #01a7ee">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="ChangevalidityForm" (ngSubmit)="changevaliditysubmit()">
+  <div class="modal-body">
+    <table style="width: 100%">
+      <tr>
+        <th>Expiry <span style="color:red;">*</span></th>
+        <td>
+          <input type="datetime-local" formControlName="validity" placeholder="Expiry Date "
+          [ngClass]="{'form-control' : true,'form-control-danger':ChangevalidityForm.controls.validity.invalid&&submit}" />
+          <small *ngIf="ChangevalidityForm.controls.validity.invalid&&submit" class="form-text error">Expiry Date Is
+          Required!</small>
+        </td>
+      </tr>
+      <tr>
+        <th>Reason <span style="color:red;">*</span></th>
+        <td>
+          <input type="text" formControlName="reason"
+          [ngClass]="{'form-control' : true,'form-control-danger':ChangevalidityForm.controls.reason.invalid&&submit}">
+          <small *ngIf="ChangevalidityForm.controls.reason.invalid&&submit" class="form-text error">Reason Is
+            Required!</small>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <button type="submit" class="btn btn-md btn-success" style="margin: auto; display: block;">Update</button>
+</form>

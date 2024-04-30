@@ -1,0 +1,24 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <!-- <toaster-container [toasterconfig]="config"> </toaster-container> -->
+   <!-- <toaster-container toaster-options="{'time-out': 3000, 'close-button':true, 'position-class':'toast-top-full-width'}"></toaster-container> -->
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="CancelInvForm" (ngSubmit)="invoicecancel()">
+   <div class="modal-body">
+      <div class="form-group row">
+         <div class="col-sm-12">
+            <label>Cancel Reason <span style="color:red;">*</span></label>
+            <textarea formControlName="reason" placeholder="Cancel Reason"
+            [ngClass]="{'form-control':true,'form-control-danger':CancelInvForm.controls.reason.invalid&&submit}"></textarea>
+            <small *ngIf="CancelInvForm.controls.reason.invalid&&submit" class="form-text error">Reason is 
+               is required! </small>
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer" >
+      <button type="submit"  class="btn btn-md btn-primary">Update</button>
+   </div>
+</form>

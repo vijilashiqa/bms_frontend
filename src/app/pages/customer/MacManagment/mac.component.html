@@ -1,0 +1,64 @@
+<ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+<div class="modal-header" style="background-color :  #01a7ee">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="MacForm" (ngSubmit)="macsubmit()">
+  <div class="modal-body">
+    <table style="width: 100%">
+      <tr [hidden]="item.expiry_status==0">
+        <th >Status</th>
+        <td style=" height: 50px;">
+          <span *ngIf="item.online_status==1&&item.expiry_status==1"
+            style="background-color:#42f456;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Online</span>
+          <span *ngIf="item.online_status==0&&item.expiry_status==1"
+            style="background-color:#565656 ;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Offline</span>
+        </td> 
+      </tr>
+      <tr [hidden]="item.online_status==1&&item.expiry_status==1">
+        <th>Expiry Status</th>
+        <td style=" height: 50px;">
+          <span *ngIf="item.expiry_status==1&&item.online_status==0"
+            style="background-color:  #0380fc;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Active</span>
+          <span *ngIf="item.expiry_status==0"
+            style="background-color:#ffa100;color:white;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Expired</span>
+        </td>
+      </tr>
+      <tr>
+        <th>Login Type</th>
+        <td style=" height: 50px;">
+          <select formControlName="login_type" (change)="macvalid()"
+            [ngClass]="{'form-control':true,'form-control-danger':MacForm.controls.login_type.invalid&&submit}">
+            <option value="0">Regular</option>
+            <option value="1">MAC</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th>Current Mac</th>
+        <td style=" height: 50px;"><input type="text" formControlName="currentmac" placeholder="Mac"
+            [ngClass]="{'form-control' : true,'form-control-danger':MacForm.controls.currentmac.invalid&&submit}" />
+        </td>
+        <td *ngIf="item.online_status==1 && item.expiry_status==1">
+          <button type="button" (click)="bindmap()" class="btn  btn-primary">Copy</button>
+        </td>
+      </tr>
+      <tr *ngIf="item.acctype==0 && MacForm.value['login_type']=='1'">
+        <th>Login Mac</th>
+        <td style=" height: 50px;"><input type="text" formControlName="login_mac"
+            [ngClass]="{'form-control':true,'form-control-danger':MacForm.controls.login_mac.invalid&&submit}">
+          <small *ngIf="MacForm.hasError('required',login_mac)&&submit" class="form-text error">Login Mac is
+            Required!</small>
+          <small *ngIf="MacForm.hasError('pattern',login_mac)&&submit" class="form-text error">Check Mac Address
+            Format</small>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+  <button type="submit" class="btn btn-md btn-success" style="margin: auto; display: block;">Update</button>
+</form>

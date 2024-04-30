@@ -1,0 +1,93 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="activeModal.close(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="AddModelForm" class="form-horizontal" (ngSubmit)="addmodel();">
+  <div class="modal-body">
+    <div class="form-group row">
+      <div class="col-sm-3" *ngIf="role.getroleid()>777">
+        <label>ISP Name <span style="color:red;">*</span></label>
+        <select formControlName="bus_id"
+					[ngClass]="{'form-control':true,'form-control-danger':AddModelForm.controls.bus_id.invalid&&submit}" (change)="GroupName();profile()">
+					<option value="" selected>Select ISP Name</option>
+					<option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+				</select>
+				<small *ngIf="AddModelForm.controls.bus_id.invalid&&submit" class="form-text error">Business name is
+					Required!</small>
+      </div>
+      <div class="col-sm-3" *ngIf="role.getroleid()>775">
+				<label>Circle <span style="color:red;">*</span></label>
+				<select formControlName="groupid" 
+					[ngClass]="{'form-control':true,'form-control-danger':AddModelForm.controls.groupid.invalid&&submit}">
+					<option value="" selected="">Select Circle</option>
+					<option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+				</select>
+				<small *ngIf="AddModelForm.controls.groupid.invalid&&submit" class="form-text error">Circle Name is
+					Required!</small>
+      </div>
+      <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+        <label>Reseller Type <span style="color:red;">*</span></label>
+        <select name="Role" formControlName="Role"
+          [ngClass]="{'form-control' : true,'form-control-danger':AddModelForm.controls.Role.invalid&&submit}"
+          (change)="showReseller() ">
+          <option value="" selected>Select Reseller Type</option>
+          <option *ngFor="let item of pro" [ngValue]="item.role">{{item.menu_name}}</option>
+        </select>
+        <small *ngIf="AddModelForm.controls.Role.invalid&&submit" class="form-text error">Profile Is
+          Required!</small>
+      </div>
+      <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+        <label>Reseller Name <span style="color:red;">*</span></label>
+        <auto-completen [addclass]="{'form-control':true,'form-control-danger':AddModelForm.controls.reseller.invalid&&submit}"
+          addclass="form-control" optValues="company" formControlName="reseller" (keyUp)="showReseller($event)"
+          placeholder='Select Reseller' id="id" [item]="resell">
+        </auto-completen>
+        <small *ngIf="AddModelForm.hasError('required','reseller')&&submit" class="form-text error">Reseller
+           is required! </small>
+     </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-3">
+        <label>Make Name <span style="color:red;">*</span></label>
+        <select name="makename" formControlName="makename"
+          [ngClass]="{'form-control' : true,'form-control-danger':AddModelForm.controls.makename.invalid&&submit}">
+          <option value="" selected>Select Make Name </option>
+          <option *ngFor='let item of make_name' [ngValue]=item.make_id>{{item.make_name}}</option>
+        </select>
+        <small *ngIf="AddModelForm.hasError('required','makename')&&submit" class="form-text error">Select required
+          Make Name!</small>
+      </div>
+      <div class="col-sm-3">
+        <label>Type <span style="color:red;">*</span></label>
+        <select name="model_type" formControlName="model_type" placeholder="Type"
+          [ngClass]="{'form-control' : true,'form-control-danger':AddModelForm.controls.model_type.invalid&&submit}">
+          <option value="" selected>Select Type</option>
+          <option *ngFor="let item of modtype" [ngValue]="item.type_id">{{item.type_name}}</option>
+        </select>
+        <small *ngIf="AddModelForm.hasError('required','model_type')&&submit" class="form-text error">Product Name is
+          required!</small>
+      </div>
+      <div class="col-sm-3">
+        <label>Model Name <span style="color:red;">*</span></label>
+        <input type="text" name="modelname" formControlName="modelname" placeholder="Model Name"
+          [ngClass]="{'form-control' : true,'form-control-danger':AddModelForm.controls.modelname.invalid&&submit}" />
+        <small *ngIf="AddModelForm.hasError('required','modelname')&&submit" class="form-text error">Model Name is
+          required!</small>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-6">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="status" formControlName="status" />
+          <label class="custom-control-label" for="status">Active</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-md btn-success">{{item ? 'Update': 'Add'}}</button>
+    <button type="button" class="btn btn-md btn-danger " (click)='closeModal()'>Back</button>
+  </div>
+</form>

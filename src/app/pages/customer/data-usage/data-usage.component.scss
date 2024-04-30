@@ -1,0 +1,39 @@
+.table {
+    margin-bottom: 0;
+}
+.table-bordered {
+  border: 1px solid #f2f2f2;
+}
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #212529;
+}
+.table-bordered th, .table-bordered td {
+  border: 1px solid #cac5c5;
+}
+.table td, .table th {
+  vertical-align: middle;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.bg-secondary th {
+  padding: 10px 12px;
+  // background-image: linear-gradient(to right, rgb(2, 13, 81), rgb(25, 176, 220));color:white;
+}
+
+#myTable td {
+  padding: 10px 12px;
+}
+th{
+    background:#01a7ee;
+    // background-image: linear-gradient(to right, rgb(2, 13, 81), rgb(25, 176, 220));color:white;
+
+}
+ 
+
+// .btn{
+//   background-image: linear-gradient(to right, rgb(2, 13, 81), rgb(25, 176, 220));color:white;
+//   border:none;
+// }

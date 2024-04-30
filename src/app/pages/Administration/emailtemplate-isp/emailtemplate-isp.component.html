@@ -1,0 +1,93 @@
+<!-- <h2>Simple usage</h2>
+
+<p><strong>Note:</strong> Open the console for additional logs.</p> -->
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>Email Templates</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]></toaster-container>
+      <form [formGroup]="AddEmailIspForm" class="form-horizontal">
+        <div class="form-group row">
+          <div class="col-sm-3">
+            <label>Mail Templates</label>
+            <select name="mailtemplate" formControlName="mailtemplate"
+              [ngClass]="{'form-control' : true,'form-control-danger':AddEmailIspForm.controls.mailtemplate.invalid&&submit}"
+              (change)="mailTemplates()">
+              <option value="" selected="">Select Mail Templates</option>
+              <option *ngFor="let item of emailtemp" [ngValue]="item.mailtid">{{item.mtemplates_name}}</option>
+            </select>
+            <small *ngIf="AddEmailIspForm.hasError('required','mailtemplate')&&submit" class="form-text error">Gender is
+              required! </small>
+          </div>
+          <div class="col-sm-3" *ngIf="AddEmailIspForm.value['mailtemplate'] != 0 ">
+            <label>ISP Name <span style="color:red;">*</span></label>
+            <select name="bus_id" formControlName="bus_id"
+              [ngClass]="{'form-control':true,'form-control-danger':AddEmailIspForm.controls.bus_id.invalid&&submit}">
+              <option value="" selected>Select ISP Name</option>
+              <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+            </select>
+            <small *ngIf="AddEmailIspForm.controls.bus_id.invalid&&submit" class="form-text error">Business name is
+              Required!</small>
+          </div>
+          <div class="col-sm-2" *ngIf="AddEmailIspForm.value['mailtemplate'] != 0 ">
+            <label>Template Id</label>
+            <input type="text" placeholder="Template Id" formControlName="template_id"
+              [ngClass]="{'form-control':true,'form-control-danger':AddEmailIspForm.controls.template_id.invalid&&submit}">
+            <small *ngIf="AddEmailIspForm.controls.template_id.invalid&&submit" class="form-text error">Template is
+              Required!</small>
+            <!-- <div class="alert alert-success">
+					  <div *ngIf="AddEmailIspForm.controls['template_id'].invalid && (AddEmailIspForm.controls['template_id'].dirty || AddEmailIspForm.controls['template_id'].touched)" class="alert">
+						<div *ngIf="AddEmailIspForm.controls['template_id'].errors.required">
+						Please enter Template Id
+					  </div>
+					</div>
+					</div> -->
+          </div>
+          <div class="col-sm-3" *ngIf="AddEmailIspForm.value['mailtemplate'] != 0 ">
+            <label>Mail Subject</label>
+            <textarea name="mailsubject" formControlName="mailsubject" placeholder="Subject"
+              [ngClass]="{'form-control' : true,'form-control-danger':AddEmailIspForm.controls.mailsubject.invalid&&submit}"></textarea>
+            <small *ngIf="AddEmailIspForm.hasError('required','mailsubject')&&submit" class="form-text error">Subject is
+              required! </small>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="AddEmailIspForm.value['mailtemplate'] != 0 ">
+          <div class="col-sm-8">
+            <label></label>
+            <div *ngFor="let editor of editors">
+              <!-- <h3>{{ editor }} Editor:</h3> -->
+              <ckeditor formControlName="editor" [(ngModel)]="editorMail" [config]="ckeConfig" (paste)="onPaste($event)"
+                (change)="onChange($event)" debounce="500">></ckeditor>
+            </div>
+          </div>
+        </div>
+        <!-- <p>Note: editors have it's data synchronized, so every change in one of editors propagates to another.</p>
+
+<h4>Component controls:</h4>
+
+<p>
+	<label><input type="checkbox" [(ngModel)]="isHidden">Hide editor with '[hidden]' directive.</label>
+</p>
+<p>
+	<label><input type="checkbox" [(ngModel)]="isRemoved">Remove editor from DOM with '*ngIf' directive.</label>
+</p>
+<p>
+	<label><input type="checkbox" [(ngModel)]="isReadOnly">Make editor read only.</label>
+</p> -->
+
+        <!-- <div class="col-sm-6">
+					<div class="editor-preview">
+						<h5>Rendered content</h5>
+						<div [(innerHtml)]="editorData" #preview></div>
+						<button type="submit" class="btn btn-md btn-success" (click)="afterSubmit()">SUBMIT</button>
+					</div>
+				</div> -->
+        <div class="modal-footer">
+          <button *ngIf="!role.getmenurole(45)" type="submit" class="btn btn-md btn-success" (click)="afterSubmit();">UPDATE</button>
+          <!-- <button type="reset" class="btn btn-md btn-success" >RESET</button> -->
+          <button *ngIf="!role.getmenurole(46)" class="btn btn-md btn-primary" (click)="resetfunc()">RESET</button>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

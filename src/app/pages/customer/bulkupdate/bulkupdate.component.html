@@ -1,0 +1,189 @@
+<div class="col-md-12">
+  <nb-card>
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+    </ngx-loading>
+    <nb-card-header>Bulk Update</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form [formGroup]="bulkUpdateForm" (ngSubmit)="bulkUpdate()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-8">
+              <nb-card>
+                <nb-card-header style="background-color :  #01a7ee" *ngIf="bulkUpdateForm.value['format'] == ''">Bulk
+                  Update</nb-card-header>
+                <nb-card-header style="background-color :  #01a7ee" *ngIf="bulkUpdateForm.value['format'] == 1  ">
+                  Subscriber Expiry</nb-card-header>
+                <nb-card-header style="background-color :  #01a7ee" *ngIf="bulkUpdateForm.value['format'] == 2 ">Bulk
+                  Service Update</nb-card-header>
+                <nb-card-header style="background-color :  #01a7ee" *ngIf="bulkUpdateForm.value['format'] == 3 ">Update
+                  Data Split</nb-card-header>
+                <nb-card-header style="background-color :  #01a7ee" *ngIf="bulkUpdateForm.value['format'] == 4 ">Bulk
+                  Reseller Replace</nb-card-header>
+                <nb-card-header style="background-color :  #01a7ee"
+                  *ngIf="bulkUpdateForm.value['format'] == 5 && role.getroleid() >= 555">
+                  Service Replace</nb-card-header>
+                <nb-card-header style="background-color :  #01a7ee" *ngIf="bulkUpdateForm.value['format'] == 6 ">
+                  Authentication Password Update</nb-card-header>
+                <nb-card-body>
+                  <div class="form-group row">
+                    <div class="col-sm-4" *ngIf="bulkUpdateForm.value['format'] == 1">
+                      <a href="/assets/public/BulkExpiry.xlsx" target="_blank" download><b style="color: blue;">Download
+                          Sample
+                          Here(24 HRS DATE FORMAT:dd-mm-yyyy hh:mm:ss)</b></a>
+                    </div>
+                    <div class="col-sm-4" *ngIf="bulkUpdateForm.value['format'] ==3">
+                      <a href="/assets/public/DataSplitSample.xlsx" target="_blank" download>
+                        <b style="color: blue;">Download
+                          Sample
+                          Here(DATE FORMAT:dd-mm-yyyy)</b></a>
+                    </div>
+                    <div class="col-sm-4" *ngIf="bulkUpdateForm.value['format'] ==4">
+                      <a href="/assets/public/ResellerReplaceSample.xlsx" target="_blank" download>
+                        <b style="color: blue;">Download Sample Here</b></a>
+                    </div>
+                    <div class="col-sm-4" *ngIf="bulkUpdateForm.value['format'] ==5">
+                      <a href="/assets/public/ServiceReplace.xlsx" target="_blank" download>
+                        <b style="color: blue;">Download Sample Here</b></a>
+                    </div>
+                    <div class="col-sm-4" *ngIf="bulkUpdateForm.value['format'] ==6">
+                      <a href="/assets/public/AuthPwdUpdate.xlsx" target="_blank" download>
+                        <b style="color: blue;word-wrap: break-word;display:inline-block  ">Download Sample Here
+                          Note:(Update Authentication Pawword Only For
+                          Regular Users)</b></a>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>Select Service<span style="color:red;">*</span></label>
+                      <select formControlName="format" class="form-control" (change)="clearSetValidation();">
+                        <option value="">Select Service</option>
+                        <option value="1" *ngIf="role.getroleid()>=775" selected>customer Expiry (EX :dd-mm-yyyy
+                          hh:mm:ss)</option>
+                        <option value="2" *ngIf="role.getroleid()>=555">Customer Service Mode</option>
+                        <option value="3" *ngIf="role.getroleid()>=775">Update Data Split</option>
+                        <option value="4" *ngIf="role.getroleid()>=775">Reseller Replace</option>
+                        <option value="5" *ngIf="role.getroleid()>=775">Service Replace</option>
+                        <option value="6" *ngIf="role.getroleid()>=775">Authentication Password Update</option>
+
+                      </select>
+                    </div>
+                    <div class="col-sm-6"
+                      *ngIf="role.getroleid()>777 && bulkUpdateForm.value['format'] != 1 && bulkUpdateForm.value['format'] !=6">
+                      <label>ISP Name <span style="color:red;">*</span></label>
+                      <select formControlName="bus_id"
+                        [ngClass]="{'form-control':true,'form-control-danger':bulkUpdateForm.controls.bus_id.invalid&&submit}"
+                        (change)="showProfile();bulkUpdateForm.controls['resel_type'].setValue('');bulkUpdateForm.controls['reseller'].setValue('');">
+                        <option value="" selected>Select Business Name</option>
+                        <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+                      </select>
+                      <small *ngIf="bulkUpdateForm.controls.bus_id.invalid&&submit" class="form-text error">Business
+                        name
+                        is Required!</small>
+                    </div>
+                  </div>
+                  <div class="form-group row"
+                    *ngIf="bulkUpdateForm.value['format'] != 1 && bulkUpdateForm.value['format'] != 4 && bulkUpdateForm.value['format'] !=6">
+                    <div class="col-sm-6">
+                      <label>Reseller Type</label>
+                      <auto-completen formControlName="resel_type" addclass="form-control"
+                        (changed)="resellername();bulkUpdateForm.controls['reseller'].setValue('');"
+                        optValues="menu_name" placeholder='Select Reseller Type' optId="role" [item]="profile">
+                      </auto-completen>
+                    </div>
+                    <div class="col-sm-6">
+                      <label>Reseller Name <span style="color:red;">*</span></label>
+                      <auto-completen
+                        [addclass]="{'form-control':true,'form-control-danger':bulkUpdateForm.controls.reseller.invalid&&submit}"
+                        addclass="form-control" optValues="company" formControlName="reseller"
+                        (keyUp)="resellername($event)" placeholder='Select Reseller' id="id" [item]="reseldata">
+                      </auto-completen>
+                      <small *ngIf="bulkUpdateForm.hasError('required','reseller')&&submit"
+                        class="form-text error">Reseller
+                        is required! </small>
+                    </div>
+                  </div>
+                  <div class="form-group row"
+                    *ngIf="bulkUpdateForm.value['format'] !=1 &&bulkUpdateForm.value['format'] !=4 && bulkUpdateForm.value['format'] !=6">
+
+                    <div class="col-sm-6" *ngIf="bulkUpdateForm.value['format'] == 2">
+                      <label>Service Mode<span style="color:red;">*</span></label>
+                      <select formControlName="srvmode"
+                        [ngClass]="{'form-control':true,'form-control-danger':bulkUpdateForm.controls.srvmode.invalid&&submit}">
+                        <option value="">Select Service Mode</option>
+                        <option value="1">Old</option>
+                        <option value="3">New</option>
+                      </select>
+                      <small *ngIf="bulkUpdateForm.controls.srvmode.invalid&&submit" class="form-text error">Service
+                        Mode is Required</small>
+                    </div>
+                    <br>
+
+
+                  </div>
+
+                  <!-- Replace Reseller Start-->
+                  <div class="form-group row" *ngIf="bulkUpdateForm.value['format'] == 4">
+                    <div class="col-sm-6">
+                      <label><b>From</b> Reseller Type</label>
+                      <auto-completen formControlName="fresel_type" addclass="form-control"
+                        (changed)="resellername('',1);bulkUpdateForm.controls['freseller'].setValue('');"
+                        optValues="menu_name" placeholder='Select Reseller Type' optId="role" [item]="profile">
+                      </auto-completen>
+                    </div>
+                    <div class="col-sm-6">
+                      <label><b>From</b> Reseller Name <span style="color:red;">*</span></label>
+                      <auto-completen
+                        [addclass]="{'form-control':true,'form-control-danger':bulkUpdateForm.controls.freseller.invalid&&submit}"
+                        addclass="form-control" optValues="company" formControlName="freseller"
+                        (keyUp)="resellername($event)" placeholder='Select Reseller' id="id" [item]="reseldata">
+                      </auto-completen>
+                      <small *ngIf="bulkUpdateForm.hasError('required','freseller')&&submit"
+                        class="form-text error">Reseller
+                        is required! </small>
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="bulkUpdateForm.value['format'] == 4">
+                    <div class="col-sm-6">
+                      <label><b>To</b> Reseller Type</label>
+                      <auto-completen formControlName="tresel_type" addclass="form-control"
+                        (changed)="resellername('',2);bulkUpdateForm.controls['treseller'].setValue('');"
+                        optValues="menu_name" placeholder='Select Reseller Type' optId="role" [item]="profile">
+                      </auto-completen>
+                    </div>
+                    <div class="col-sm-6">
+                      <label><b>To</b> Reseller Name <span style="color:red;">*</span></label>
+                      <auto-completen
+                        [addclass]="{'form-control':true,'form-control-danger':bulkUpdateForm.controls.treseller.invalid&&submit}"
+                        addclass="form-control" optValues="company" formControlName="treseller"
+                        (keyUp)="resellername($event)" placeholder='Select Reseller' id="id" [item]="reseldata">
+                      </auto-completen>
+                      <small *ngIf="bulkUpdateForm.hasError('required','treseller')&&submit"
+                        class="form-text error">Reseller
+                        is required! </small>
+                    </div>
+                  </div>
+                  <div class="form-group row"
+                    *ngIf="bulkUpdateForm.value['format'] != 2 && bulkUpdateForm.value['format']!=''">
+                    <div class="col-sm-6">
+                      <input #myFile type="file" (change)="changeListener($event.target.files[0])" class="form-control"
+                        accept=".xlsx" />
+                    </div>
+                  </div>
+
+
+
+                  <!-- </div> -->
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">Update </button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

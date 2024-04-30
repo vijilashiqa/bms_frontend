@@ -1,0 +1,121 @@
+<nb-card>
+  <nb-card-header> List Complaint <a type="button" [hidden]="role.getroleid()==111" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;"
+      (click)="search=!search;"><i class="fa fa-search" [hidden]="role.getroleid()==111" ></i></a>
+      <a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+        (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]="config"></toaster-container>
+    <button class="btn btn-sm btn-success" *ngIf="!role.getmenurole(902)" [routerLink]="['/pages/complaint/add-comp']">Add</button>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <select [(ngModel)]="bus_name" class="form-control" (change)="showProfileReseller();showResellerName();showUser()">
+            <option value="" selected>Select ISP Name</option>
+            <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+          </select>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid() > 444" >
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" addclass="form-control"
+              (changed)="showResellerName();showUser()" optValues="menu_name" placeholder='Select Reseller Type' optId="role" [item]="profile">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3"  *ngIf="role.getroleid() > 444" >
+          <label>ReselLer Name</label>
+          <auto-completen addclass="form-control" optValues="company" [(ngModel)]="res_name"
+             placeholder='Select Reseller' (changed)="showUser()" (keyUp)="showResellerName($event)" id="res_name" [item]="resell">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" [hidden]="!search">
+          <label>Subscriber Name</label>
+          <auto-completen [(ngModel)]="cust_name" (keyUp)="showUser($event)"  addclass="form-control" optValues="username"
+            placeholder='Select Subscriber Name' optId="uid" [item]="custname">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <label>
+      <h5>Total Count: {{tot}}</h5>
+    </label>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+    <table class="table table-hover table-striped">
+      <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+        <th *ngIf="!role.getmenurole(903) || !role.getmenurole(907)">Action</th>
+        <th *ngIf="role.getroleid()>777">Backend ID</th>
+        <th *ngIf="role.getroleid()>777">ISP Name</th>
+        <th *ngIf="role.getroleid()>=775">Reseller Name</th>
+        <th>Subscriber Name</th>
+        <th>Mobile</th>
+        <th>Address</th>
+        <th>Complaint Type</th>
+        <th>Subject</th>
+        <th>Notes</th>
+        <th>Employee</th>
+        <th>Priority</th>
+        <th>Status</th>
+      </tr>
+      <tr *ngFor="let item of pagedItems">
+        <td *ngIf="!role.getmenurole(903) || !role.getmenurole(907)" style=" padding: 1px;" class=" last" data-title="'Action'">
+          <div class="dropdown ghost-dropdown" ngbDropdown>
+            <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;" class="btn btn-primary btn-icon" type="button"
+              ngbDropdownToggle>Action&nbsp;
+            </button>
+            <ul style="width: 75px;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+              <li *ngIf="!role.getmenurole(907)" class="dropdown-item" title="View" (click)="history(item.comp_id)"><i style="font-size: 20px;"
+                  class="far fa-eye "></i>&nbsp;View</li>
+              <li *ngIf="!role.getmenurole(903)" class="dropdown-item" title="Edit">
+                <a  [routerLink]="['/pages/complaint/edit-comp']" [queryParams]="{id:item.comp_id}"
+                  style="color: black;"> <i style="font-size: 20px;color: black;" class="nb-edit"></i>Edit</a>&nbsp;
+              </li>
+            </ul>
+          </div>
+        </td>
+        <td *ngIf="role.getroleid()>777">{{item.comp_id}}</td>
+        <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+        <td *ngIf="role.getroleid()>=775">{{item.company}}</td>
+        <td>{{item.custname}}</td>
+        <td>{{item.mobile}}</td>
+        <td>{{item.address}}</td>
+        <td>{{item.comp_type}}</td>
+        <td>{{item.subject==null ? '--':item.subject}}</td>
+        <td>{{item.note==null ? '--':item.note}}</td>
+        <td>{{item.empname}}</td>
+        <td>{{item.priority==0 ? 'Immediate': item.priority==1 ? 'Medium':'Low'}}</td>
+        <td>{{item.status==1 ? 'Open':item.status==2 ? 'Open&Assigned':item.status==3 ? 'Assigned':
+          item.status==4 ? 'Resolved':item.status==5 ? 'Reassigned':'Closed'}}</td>
+      </tr>
+      <tr>
+        <td colspan="12" *ngIf="pagedItems==''">NO DATA FOUND</td>
+      </tr>
+    </table>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

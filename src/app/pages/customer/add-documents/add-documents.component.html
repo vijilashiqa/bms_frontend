@@ -1,0 +1,152 @@
+<ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+</ngx-loading>
+<div class="modal-header" style="width: 100%">
+   <span>{{ modalHeader }}</span>
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="AddDocForm" class="form-horizontal" (ngSubmit)="adddoc();">
+   <div class="modal-body">
+      <div class="form-group row" *ngIf="addrflag==2||idflag==2">
+         <div class="col-sm-4">
+            <div class="custom-control custom-checkbox">
+               <input type="checkbox" class="custom-control-input" id="same_proof" formControlName="same_proof" />
+               <label class="custom-control-label" for="same_proof">Address&ID Proofs Same</label>
+               <small  style="color: blueviolet;"><b>(Address & ID Proof must be same only when you select proof as Aadhaar and Voter ID)</b></small>
+
+            </div>
+         </div>
+      </div>
+      <div class="form-group row" *ngIf="addrflag==2">
+         <div class="col-sm-4">
+            <label><b>Address Proof</b> <span style="color:red;">*</span></label>
+            <select formControlName="addr_proof"
+               [ngClass]="{'form-control':true,'form-control-danger':AddDocForm.controls.addr_proof.invalid&&submit}">
+               <option value="" selected>Select Address Proof</option>
+               <option value="1">Aadhaar Card</option>
+               <option value="2" *ngIf="AddDocForm.value['same_proof'] == false">Ration Card</option>
+               <option value="3">Voter ID</option>
+               <option value="4" *ngIf="AddDocForm.value['same_proof'] == false">Passport</option>
+               <option value="5" *ngIf="AddDocForm.value['same_proof'] == false">Gas Bill </option>
+               <option value="6" *ngIf="AddDocForm.value['same_proof'] == false">EB Bill </option>
+               <option value="7" *ngIf="AddDocForm.value['same_proof'] == false">Water Bill </option>
+               <option value="8" *ngIf="AddDocForm.value['same_proof'] == false">Home Tax Bill </option>
+
+            </select>
+            <small  style="color: blueviolet;"><b>(Water Bill ,EB bill,Gas Bill & Home Tax shouldn't be older than 3 Months)</b></small>
+            <small *ngIf="AddDocForm.controls.addr_proof.invalid&&submit" class="form-text error">Address Proof is
+               Required!</small>
+         </div>
+      </div>
+      <div class="form-group row" *ngIf="addrflag==2">
+         <div class="col-sm-4">
+            <label><b>Upload Address Proof</b></label>
+            <input type="file" multiple formControlName="addr_up_proof" placeholder="Upload Proof"
+               [ngClass]="{'form-control':true,'form-control-danger':AddDocForm.controls.addr_up_proof.invalid&&submit}"
+               (change)="upload1($event);imageurl=[]" />
+            <small style="color: blueviolet;"><b>Upload Files Both Front&Back of the Proof</b></small>
+            <small *ngIf="AddDocForm.hasError('required','addr_up_proof')&&submit" class="form-text error">Address
+               Proof
+               should be uploaded!</small>
+         </div>
+      </div>
+      <div class="form-group row">
+         <div class="col-sm-4" *ngIf="imageurl!=''" [hidden]="AddDocForm.value['addr_up_proof']==''">
+            <label>Proof Preview</label><br>
+            <img *ngFor="let URL of imageurl" [src]="URL" style="width: 100%;height: 150px">
+         </div>
+      </div>
+      <div class="form-group row" *ngIf="idflag==2">
+         <div class="col-sm-4" [hidden]="AddDocForm.value['proofsame']">
+            <label>ID Proof Type <span style="color:red;">*</span></label>
+            <select [ngClass]="{'form-control' : true,'form-control-danger':AddDocForm.controls.Proof.invalid&&submit}"
+               formControlName="Proof">
+               <option value="" selected>Select Proof Type</option>
+               <option value="0">Aadhaar Card</option>
+               <option value="1">Voter ID</option>
+               <option *ngIf="AddDocForm.value['same_proof'] == false" value="2">Pan Card</option>
+               <option *ngIf="AddDocForm.value['same_proof'] == false" value="3">Driving License</option>
+            </select>
+             <small *ngIf="AddDocForm.controls.Proof.invalid&&submit" class="form-text error">Proof type is
+               required! </small>
+         </div>
+      </div>
+      <div class="form-group row" *ngIf="idflag==2">
+         <div class="col-sm-4">
+            <label>Upload Identity Proof</label>
+            <input type="file" multiple formControlName="upproof" placeholder="Upload Proof"
+               [ngClass]="{'form-control':true,'form-control-danger':AddDocForm.controls.upproof.invalid&&submit}"
+               (change)="upload($event);imageURL=[]" />
+               <small style="color: blueviolet;"><b>Upload Files Both Front&Back of the Proof</b></small>
+               <small *ngIf="AddDocForm.hasError('required','upproof')&&submit" class="form-text error">Proof
+               should be uploaded</small>
+         </div>
+      </div>
+      <div class="form-group row">
+         <div class="col-sm-4" *ngIf="imageURL!=''" [hidden]="AddDocForm.value['upproof']==''">
+            <label>Proof Preview</label><br>
+            <img *ngFor="let url of imageURL" [src]="url" style="width: 100%;height: 150px">
+         </div>
+      </div>
+     <!--  <div class="form-group row">
+         <div class="col-sm-4" *ngIf="cafflag==3">
+            <label>Upload CAF </label>
+            <input type="file" multiple formControlName="cafupproof" placeholder="CAF Proof"
+               (change)="upload2($event.target.files)"
+               [ngClass]="{'form-control':true,'form-control-danger':AddDocForm.controls.cafupproof.invalid&&submit}" />
+            <small *ngIf="AddDocForm.controls.cafupproof&&submit" class="form-text error">CAF
+               should be uploaded</small>
+         </div>
+      </div>
+      <div class="form-group row">
+         <div class="col-sm-4" *ngIf="imagecafurl">
+            <label>Proof Preview</label><br>
+            <img [src]="imagecafurl" style="width: 100%;height: 150px">
+         </div>
+      </div> -->
+      <div class="form-group row">
+         <div class="col-sm-4" *ngIf="cafflag==3">
+            <label>Upload CAF </label>
+            <input type="file" multiple formControlName="cafupproof" placeholder="CAF Proof"
+               (change)="upload2($event);imagecafurl=[];"
+               [ngClass]="{'form-control':true,'form-control-danger':AddDocForm.controls.cafupproof.invalid&&submit}" />
+            <small *ngIf="AddDocForm.controls.cafupproof&&submit" class="form-text error">CAF
+               should be uploaded</small>
+         </div>
+      </div>
+      <div class="form-group row">
+         <div class="col-sm-4" *ngIf="imagecafurl!=''" [hidden]="AddDocForm.value['cafupproof']==''">
+            <label>CAF Preview</label><br>
+            <img *ngFor="let url of imagecafurl" [src]="url" style="width: 100%;height: 150px">
+         </div>
+      </div>
+      <div class="form-group row" *ngIf="custpicflag==4">
+         <div class="col-sm-4">
+            <label>Upload Picture</label>
+            <input type="file" (change)="uploadpic($event.target.files)" formControlName="cust_pic" placeholder="Customer Picture"
+             [ngClass]="{'form-control':true,'form-control-danger':AddDocForm.controls.cust_pic.invalid&&submit}">
+            <small *ngIf="AddDocForm.controls.cust_pic.invalid&&submit" class="form-text error">Customer Picture is Required!</small>
+         </div>
+      </div>
+      <div class="form-group row">
+         <div class="col-sm-4" *ngIf="subpicurl">
+            <label>Picure Preview</label><br>
+            <img [src]="subpicurl" style="width: 100%;height: 150px;">
+         </div>
+      </div>
+      <div class="form-group row" *ngIf="idflag ==2 || this.AddDocForm.value['same_proof'] == true">
+            <div class="col-sm-4">
+               <label>Proof ID <span style="color:red;">*</span></label>
+               <input type="text" formControlName="ProofID" placeholder="ProofID "
+                  [ngClass]="{'form-control' : true,'form-control-danger':AddDocForm.controls.ProofID.invalid&&submit}" />
+               <small *ngIf="AddDocForm.controls.ProofID.invalid&&submit" class="form-text error">Proof
+                  is required! </small>
+            </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button type="submit" class="btn btn-md btn-success">Upload</button>
+   </div>
+</form>

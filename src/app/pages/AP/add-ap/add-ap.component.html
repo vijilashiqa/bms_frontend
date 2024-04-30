@@ -1,0 +1,145 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>{{id ? 'Edit':'Add'}} Access Point</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form [formGroup]="AddAPForm" class="form-horizontal" (ngSubmit)="addAP();">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <nb-card>
+                <nb-card-header style="background-color :  #01a7ee; height:40px!important">AP CREATION</nb-card-header>
+                <nb-card-body>
+                  <div class="form-group row">
+                    <div class="col-sm-6" *ngIf="role.getroleid()>777">
+                      <label>ISP Name <span style="color:red;">*</span></label>
+                      <select formControlName="bus_id"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddAPForm.controls.bus_id.invalid&&submit}"
+                        (change)="GroupName()">
+                        <option value="" selected>Select ISP</option>
+                        <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+                      </select>
+                      <small *ngIf="AddAPForm.controls.bus_id.invalid&&submit" class="form-text error">Business name is
+                        Required!</small>
+                    </div>
+                    <div class="col-sm-6" *ngIf="role.getroleid()>=775">
+                      <label>Circle<span style="color:red;">*</span></label>
+                      <select name="groupid" formControlName="groupid"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddAPForm.controls.groupid.invalid&&submit}"
+                        (change)="Reseller()">
+                        <option value="" selected>Select Circle</option>
+                        <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+                      </select>
+                      <small *ngIf="AddAPForm.hasError('required','groupid')&&submit" class="form-text error">Circle is
+                        required!
+                      </small>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>Reseller Name(Optional)</label>
+                      <auto-completen
+                        [addclass]="{'form-control':true,'form-control-danger':AddAPForm.controls.reseller.invalid&&submit}"
+                         optValues="company" formControlName="reseller" (keyUp)="Reseller($event)"
+                        placeholder='Select Reseller' id="id" [item]="resell">
+                     </auto-completen>
+                      <!-- <select formControlName="reseller"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddAPForm.controls.reseller.invalid&&submit}">
+                        <option value="" selected>Select Reseller Name </option>
+                        <option *ngFor="let item of resell" [ngValue]=item.id>{{item.managername}}</option>
+                      </select> -->
+                      <small *ngIf="AddAPForm.hasError('required','reseller')&&submit" class="form-text error">Reseller
+                        is required! </small>
+                    </div>
+                    <div class="col-sm-6">
+                      <label>Name <span style="color:red;">*</span></label>
+                      <input type="text" name="nam" formControlName="nam" placeholder="Name"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddAPForm.controls.nam.invalid&&submit}" />
+                      <small *ngIf="AddAPForm.hasError('required','nam')&&submit" class="form-text error">Name is
+                        required! </small>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>IP Address <span style="color:red;">*</span></label>
+                      <input type="text" name="ip_add" formControlName="ip_add" placeholder="IP Address"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddAPForm.controls.ip_add.invalid&&submit}" />
+                      <small *ngIf="AddAPForm.hasError('required','ip_add')&&submit" class="form-text error">IP Address
+                        is required </small>
+                    </div>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+            <div class="col-md-6">
+              <nb-card>
+                <nb-card-header style="background-color :  #01a7ee; height:40px!important">AP IDENTIFICATION
+                </nb-card-header>
+                <nb-card-body>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>API Username <span style="color:red;">*</span></label>
+                      <input type="text" name="api_nam" formControlName="api_nam" placeholder="UserName"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddAPForm.controls.api_nam.invalid&&submit}" />
+                      <small *ngIf="AddAPForm.hasError('required','api_nam')&&submit" class="form-text error">Username
+                        is required! </small>
+                    </div>
+                    <div class="col-sm-6">
+                      <label>Password<span style="color:red;">*</span></label>
+                      <input type="Password" name="api_pass" formControlName="api_pass" placeholder="Password"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddAPForm.controls.api_pass.invalid&&submit}" />
+                      <small *ngIf="AddAPForm.hasError('required','api_pass')&&submit" class="form-text error">Password
+                        is required! </small>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>Community</label>
+                      <input type="text" name="comm" formControlName="comm" placeholder="Community"
+                        [ngClass]="{'form-control' :true,'form-control-danger':AddAPForm.controls.comm.invalid&&submit}" />
+                      <small *ngIf="AddAPForm.hasError('required','comm')&&submit" class="form-text error">Community is
+                        required! </small>
+                    </div>
+                    <div class="col-sm-6">
+                      <label><b>Access Mode</b></label>
+                      <label class="custom-control custom-radio">
+                        <input formControlName="access_mode" type="radio" name="access_mode"
+                          class="custom-control-input" value="0">
+                        <span class="custom-control-indicator"></span>SNMP
+                      </label>
+                      <label class="custom-control custom-radio">
+                        <input formControlName="access_mode" type="radio" class="custom-control-input"
+                          name="access_mode" value="1">
+                        <span class="custom-control-indicator"></span>Mikrotik API
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <label>Description</label>
+                      <textarea name="Description" formControlName="Description" placeholder="Description"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddAPForm.controls.Description.invalid&&submit}"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <div class="custom-control custom-checkbox">
+                        <input formControlName="enable" name="enable" class="custom-control-input" type="checkbox"
+                          id="enable" />
+                        <label class="custom-control-label" for="enable">Enable</label>
+                      </div>
+                    </div>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">{{id ? 'Update': 'Create'}}</button>
+            <button class="btn btn-md btn-danger" [routerLink]="['/pages/AP/list-ap']">Back</button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+    <button class="close" aria-label="Close" (click)="closeModal()">
+  <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<table class="table table-hover table-striped">
+  <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+    <th>OTT Platform</th>
+  </tr>
+  <tr *ngFor="let item of item">
+    <td>{{item.ott_platform}}</td>
+  </tr>
+ </table>
+ <!-- <div class="columns" >
+   <ul *ngFor="let item of item">
+     <li><b>{{item.ott_platform}}</b></li>
+   </ul>
+ </div> -->
+<div class="modal-footer">
+  <button type="button" class="btn btn-md btn-success " style="margin:auto;" (click)="closeModal()">OK</button>
+</div>

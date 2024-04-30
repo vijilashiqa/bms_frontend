@@ -1,0 +1,193 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>{{id ? 'Edit': 'Add'}} Complaint</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form [formGroup]="AddComplaintForm" class="form-horizontal" (ngSubmit)="addNac();">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-3" *ngIf="role.getroleid()>777">
+              <label>ISP Name <span style="color:red;">*</span></label>
+              <select formControlName="bus_id"
+                [ngClass]="{'form-control':true,'form-control-danger':AddComplaintForm.controls.bus_id.invalid&&submit}"
+                (change)="profile();ctrl['Role'].setValue('');ctrl['reseller'].setValue('');ctrl['sflag'].setValue('');
+                ctrl['cust_id'].setValue('');ctrl['Assign'].setValue('');">
+                <option value="" selected>Select ISP</option>
+                <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+              </select>
+              <small *ngIf="AddComplaintForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name Is
+                Required!</small>
+            </div>
+            <div class="col-sm-3" *ngIf="role.getroleid()>=775" [hidden]="id">
+              <label>Reseller Filter </label>
+              <select formControlName="resel_flag" (change)="flagchange()"
+                [ngClass]="{'form-control':true,'form-control-danger':AddComplaintForm.controls.resel_flag.invalid&&submit}">
+                <option value="" select>Select Reseller filter</option>
+                <option value="1">Company Name</option>
+                <option value="2">Login ID</option>
+              </select>
+              <small *ngIf="AddComplaintForm.controls.resel_flag.invalid&&submit" class="form-text eror">Select Reseller
+                filter!</small>
+            </div>
+            <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+              <label>Reseller Type<span style="color:red;">*</span></label>
+              <select name="Role" formControlName="Role"
+                [ngClass]="{'form-control' : true,'form-control-danger':AddComplaintForm.controls.Role.invalid&&submit}"
+                (change)="showResellerName();ctrl['reseller'].setValue('');ctrl['sflag'].setValue('');
+                ctrl['cust_id'].setValue('');ctrl['Assign'].setValue('');">
+                <option value="" selected>Select Reseller Type</option>
+                <option *ngFor="let item of pro" [ngValue]="item.role">{{item.menu_name}}</option>
+              </select>
+              <small *ngIf="AddComplaintForm.controls.Role.invalid&&submit" class="form-text error">Profile Is
+                Required!</small>
+            </div>
+            <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+              <label>Reseller Name </label>
+              <auto-completen formControlName="reseller"
+                [addclass]="{'form-control':true,'form-control-danger':AddComplaintForm.controls.reseller.invalid&&submit}"
+                optValues="resellername" placeholder='Select Reseller' (changed)="ctrl['sflag'].setValue('');
+                ctrl['cust_id'].setValue('');ctrl['Assign'].setValue('');employe();comptype()"
+                (keyUp)="showResellerName($event)" id="id" [item]="resell">
+              </auto-completen>
+              <small *ngIf="AddComplaintForm.controls.reseller.invalid&&submit" class="form-text error">Reseller name is
+                required! </small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4" >
+              <label>Search Type</label>
+              <select formControlName="sflag" (change)="
+              ctrl['cust_id'].setValue('');ctrl['Assign'].setValue('');searchresult();sflagchange();"
+                [ngClass]="{'form-control':true,'form-control-danger':AddComplaintForm.controls.sflag.invalid&&submit}">
+                <option value="" selected>Select Search Type</option>
+                <option value="1" selected>Subscriber ID</option>
+                <option value="2">Subsciber Name</option>
+                <option value="3">Mobile Number</option>
+                <option value="4">Static IP</option>
+                <option value="5">MAC</option>
+                <option value="6">CAF Number</option>
+                <option value="7">Account No</option>
+              </select>
+            </div>
+            <div class="col-sm-4">
+              <label>Subscriber <span style="color:red;">*</span></label>
+              <auto-completen formControlName="cust_id"
+                [addclass]="{'form-control':true,'form-control-danger':AddComplaintForm.controls.cust_id.invalid&&submit}"
+                (keyUp)="searchresult($event)" optValues="uname" placeholder='Search Subsucriber' optId="uid"
+                [item]="datas">
+              </auto-completen>
+              <small *ngIf="AddComplaintForm.controls.cust_id.invalid&&submit" class="form-text error">Subscriber is Required!</small>
+            </div>
+            <div class="col-sm-4" [hidden]="id">
+              <label></label><br>
+              <button type="button" class="btn  btn-primary" (click)="subsdetails()">Check</button>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="subsdata">
+            <div class="col-sm-12">
+              <nb-card>
+                <nb-card-header  style="background-color :  #01a7ee">Subscriber Details</nb-card-header>
+                <nb-card-body>
+                  <table class="table table-striped" style="border: 1px solid black;">
+                    <tr>
+                      <th>SubsCriber Name</th>
+                      <td>{{subsdata.cust_name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Mobile </th>
+                      <td>{{subsdata.mobile}}</td>
+                    </tr>
+                    <tr>
+                      <th>State</th>
+                      <td>{{subsdata.state}}</td>
+                    </tr>
+                    <tr>
+                      <th>City</th>
+                      <td>{{subsdata.city}}</td>
+                    </tr>
+                    <tr>
+                      <th>Address</th>
+                      <td>{{subsdata.address}}</td>
+                    </tr>
+                    <tr>
+                      <th>CAF NO</th>
+                      <td>{{subsdata.caf_no}}</td>
+                    </tr>
+                    <tr>
+                      <th>Ip Mode</th>
+                      <td>{{subsdata.ipmodecpe==0 ? 'Nas Pool or DHCP':subsdata.ipmodecpe==1 ? 'IP Pool':'Static
+                        Pool'}}</td>
+                    </tr>
+                    <tr>
+                      <th>Connection Type</th>
+                      <td>{{subsdata.conntype==0?'Wired(RPY)':subsdata.conntype==1?'Wireless':'Fiber'}}</td>
+                    </tr>
+                  </table>
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label>Assign to Employee </label>
+              <auto-completen formControlName="Assign"
+                [addclass]="{'form-control':true,'form-control-danger':AddComplaintForm.controls.Assign.invalid&&submit}"
+                optValues="empname" placeholder='Select Employee' (keyUp)="employe($event)" id="id" [item]="employdata">
+              </auto-completen>
+              <!-- <small *ngIf="AddComplaintForm.controls.Assign.invalid&&submit" class="form-text error">Select Assigned
+                Employee!</small> -->
+            </div>
+            <div class="col-sm-4">
+              <label>Complaint Type <span style="color:red;">*</span></label>
+              <auto-completen formControlName="complaint"
+                [addclass]="{'form-control':true,'form-control-danger':AddComplaintForm.controls.complaint.invalid&&submit}"
+                optValues="comp_type" placeholder='Select Complaint' (keyUp)="comptype($event)" optId="comp_type_id"
+                [item]="comptypdata">
+              </auto-completen>
+            </div>
+            <div class="col-sm-4">
+              <label>Priority <span style="color:red;">*</span></label>
+              <select name="Priority" formControlName="Priority"
+                [ngClass]="{'form-control' : true,'form-control-danger':AddComplaintForm.controls.Priority.invalid&&submit}">
+                <option value="" selected> Select your priority</option>
+                <option value="0">Immediate</option>
+                <option value="1">Medium</option>
+                <option value="2">Low</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label>Subject</label>
+              <input type="text" name="sub_comp" formControlName="sub_comp" placeholder="Enter your Subject"
+                [ngClass]="{'form-control' : true,'form-control-danger':AddComplaintForm.controls.sub_comp.invalid&&submit}" />
+              <small *ngIf="AddComplaintForm.controls.sub_comp.invalid&&submit" class="form-text error"> Subject is
+                required! </small>
+            </div>
+            <div class="col-sm-4">
+              <label>Notes</label>
+              <textarea name="Notes" formControlName="Notes" class="form-control"></textarea>
+            </div>
+            <div class="col-sm-4">
+              <label>Status <span style="color:red;">*</span></label>
+              <select formControlName="status"
+                [ngClass]="{'form-control':true,'form-control-danger':AddComplaintForm.controls.status.invalid&&submit}">
+                <option value="" selected>Select Complaint Status</option>
+                <option value="1">Open</option>
+                <option value="2">Open & Assigned</option>
+                <option *ngIf="id" value="3">Assigned</option>
+                <option *ngIf="id" value="4">Resolved</option>
+                <option *ngIf="id" value="5">Reassigned</option>
+                <option *ngIf="id" value="6">Closed</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-md btn-success">{{id ? 'Update':'Submit'}}</button>
+          <button class="btn btn-md btn-danger " [routerLink]="['/pages/complaint/list-comp']">Back</button>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

@@ -1,0 +1,98 @@
+<nb-card>
+  <nb-card-header>List Adminuser <a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;"
+      (click)="search=!search;"><i class="fa fa-search"></i></a>
+      <a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+    (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]></toaster-container>
+    <button *ngIf="!role.getmenurole(82)" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/administration/add-adminuser']">Add</button>
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showuser();showloginid();changeclear(1);" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" addclass="form-control" (changed)="showuser();showloginid();circ_flag=true;changeclear(2)" optValues="groupname"
+            placeholder='Select Circle' optId="groupid" (keyUp)="showGroupName($event)" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Profile</label>
+          <auto-completen [(ngModel)]="user_name" (changed)="showloginid();changeclear(3)" addclass="form-control" optValues="menu_name"
+            placeholder='Select User' optId="role" (keyUp)="showuser($event)" [item]="user">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Login-ID</label>
+          <auto-completen [(ngModel)]="login_id" addclass="form-control" optValues="managername"
+            placeholder='Select Login-ID' id="login_id" (keyUp)="showloginid($event)" [item]="userlogid">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-12">
+         <label class="left">
+            <h5>Total Count : {{count}}</h5>
+         </label>
+          <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+       </div>
+   </div>
+    <hr style="border: 0px;">
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th *ngIf="((!role.getmenurole(84)) || (!role.getmenurole(83)))">Action</th>
+          <th *ngIf="role.getroleid()>777">ID</th>
+          <th>User Name</th>
+          <th>Profile</th>
+          <th>User Login Id</th>
+          <th *ngIf="role.getroleid()>777">Business Name</th>
+          <th *ngIf="role.getroleid()>=775">Group Name</th>
+          <th>Contact number</th>
+          <th>Email ID</th>
+          <th>Address</th>
+          <th>Status</th>
+        </tr>
+        <tr *ngFor="let item of datas">
+          <td *ngIf="((!role.getmenurole(84)) || (!role.getmenurole(83)))" style=" padding: 1px;" class=" last" data-title="'Action'">
+            <div class="dropdown ghost-dropdown" ngbDropdown>
+              <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;" class="btn btn-primary btn-icon" type="button"
+                ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75px;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                <li *ngIf="!role.getmenurole(84)" class="dropdown-item" title="View" (click)="change_passwrd(item.id)"><i style="font-size: 20px;"
+                    class="fa fa-key "></i>&nbsp;Password</li>
+                <li *ngIf="!role.getmenurole(83)" [routerLink]="['/pages/administration/edit-adminuser']" [queryParams]='{id: item.id}' [skipLocationChange]="true"
+                  class="dropdown-item" title="Edit" ><i style="font-size: 20px;" class="nb-edit"></i>&nbsp;Edit</li>
+              </ul>
+            </div>
+          </td>
+          <td *ngIf="role.getroleid()>777">{{item.id}}</td>
+          <td>{{item.username}}</td>
+          <td>{{item.menu_name}}</td>
+          <td style="text-transform: none !important;">{{item.managername}}</td>
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td *ngIf="role.getroleid()>=775">{{item.groupname}}</td>
+          <td>{{item.mobile}}</td>
+          <td>{{item.email}}</td>
+          <td>{{item.address}}</td>
+          <td>{{item.status ==1 ? 'Active':'Deactive'}}</td>
+        </tr>
+        <tr>
+          <td colspan="11" *ngIf="datas==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

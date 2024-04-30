@@ -1,0 +1,293 @@
+<div class="col-md-12">
+   <nb-card>
+      <nb-card-header>Renewal</nb-card-header>
+      <nb-card-body>
+         <toaster-container [toasterconfig]="config"></toaster-container>
+         <ngx-loading [show]="loading"
+            [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+         </ngx-loading>
+         <form [formGroup]="SubsRenewForm" (ngSubmit)="Renewsubs()">
+            <div class="form-group row">
+               <div class="col-sm-6">
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>Select Package <span style="color:red;">*</span></label>
+                        <auto-completen [disabled]="acc_type ==2? true: false"
+                           [addclass]="{'form-control' : true,'form-control-danger':SubsRenewForm.controls.srvid.invalid&&submit}"
+                           (keyUp)="Service($event)"
+                           (changed)="subplanshow();SubsRenewForm.controls['sub_plan_id'].setValue('');SubsRenewForm.controls['ottplanid'].setValue('');packc='';ottValidation();"
+                           formControlName="srvid" optValues="srvname" placeholder='Select Service' optId="srvid"
+                           [item]="pack">
+                        </auto-completen>
+                        <small *ngIf="SubsRenewForm.controls.srvid.invalid&&submit" class="form-text error">Package is
+                           Required!</small>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>Sub Plan <span style="color:red;">*</span></label>
+                        <auto-completen
+                           [addclass]="{'form-control' : true,'form-control-danger':SubsRenewForm.controls.sub_plan_id.invalid&&submit}"
+                           formControlName="sub_plan_id" (keyup)="subplanshow($event.target.value)"
+                           (changed)="packcal();schedulecal();SubsRenewForm.controls['ottplanid'].setValue('');"
+                           optValues="sub_plan" placeholder='Select Sub Plan' optId="id" [item]="subpack">
+                        </auto-completen>
+                        <small *ngIf="SubsRenewForm.controls.sub_plan_id.invalid&&submit" class="form-text error">Sub
+                           Plan Is
+                           Required!</small>
+                     </div>
+                  </div>
+                  <!-- <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>Payment status</label>
+                        <select formControlName="pay_status" (change)="SubsRenewForm.controls.pay_amt.setValue('')"
+                           [ngClass]="{'form-control':true,'form-control-danger':SubsRenewForm.controls.pay_status.invalid&&submit}">
+                           <option value="" selected>Select Payment Status</option>
+                           <option value="2">Paid</option>
+                           <option value="1">Unpaid</option>
+                        </select>
+                     </div>
+                  </div> -->
+                  <div class="form-group row"
+                     *ngIf="reselData? (reselData.service_type == 3 || reselData.service_type == 5 ||reselData.service_type == 7 ||reselData.service_type ==8):'' ">
+                     <div class="col-sm-12">
+                        <label>OTT PLAN</label>
+                        <auto-completen
+                           [addclass]="{'form-control' : true,'form-control-danger':SubsRenewForm.controls.ottplanid.invalid&&submit}"
+                           formControlName="ottplanid" (keyUp)="showottplan($event)"
+                           (changed)="getottDetails();ottScheduleCal();getOttPlatforms();" optValues="ottplan_name"
+                           placeholder='Select OTT Plan' optId="omid" [item]="ottplans">
+                        </auto-completen>
+                        <small *ngIf="SubsRenewForm.controls.ottplanid.invalid&&submit" class="form-text error">Ott
+                           Plan Is
+                           Required!</small>
+                     </div>
+                  </div>
+
+
+
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>Collection Amount</label>
+                        <input type="textarea" formControlName="amt"
+                           [ngClass]="{'form-control' : true,'form-control-danger':SubsRenewForm.controls.amt.invalid&&submit}" />
+                        <small *ngIf="SubsRenewForm.controls.amt.invalid&&submit" class="form-text error">Amount Is
+                           Required!</small>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>Paid Date </label>
+                        <input type="datetime-local" formControlName="pay_date" placeholder="Paid Date"
+                           [ngClass]="{'form-control' : true,'form-control-danger':SubsRenewForm.controls.pay_date.invalid&&submit}" />
+                        <small *ngIf="SubsRenewForm.controls.pay_date.invalid&&submit" class="form-text error"> Date is
+                           required! </small>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="col-sm-12" *ngIf="expirydate > curentdate">
+                        <label>Renewal Type <span style="color:red;">*</span></label>
+                        <select (change)="schedulecal();ottScheduleCal();"
+                           [ngClass]="{'form-control' : true,'form-control-danger':SubsRenewForm.controls.pay_type.invalid&&submit}"
+                           name="pay_type" formControlName="pay_type">
+                           <!-- <option value="" selected>Select Renewal type</option> -->
+                           <option value="2">Immediate</option>
+                           <option value="5">Schedule</option>
+                        </select>
+                     </div>
+                  </div>
+                  <!-- <div class="form-group row" *ngIf="SubsRenewForm.value['pay_type']=='2'">
+                  <div class="col-sm-12">
+                    <label>Expiry Date</label>
+                    <input type="text" formControlName="exp_date" readonly
+                    [ngClass]="{'form-control':true,'form-control-danger':SubsRenewForm.controls.exp_date.invalid&&submit}">
+                  </div>
+                </div> -->
+                  <div class="form-group row" *ngIf="SubsRenewForm.value['pay_type']=='5'">
+                     <div class="col-sm-12">
+                        <label>Schedule Date&Time <span style="color:red;">*</span></label>
+                        <input type="datetime-local" (change)="schedulecal();ottScheduleCal();"
+                           formControlName="schedule_date" placeholder="Schedule Date&Time"
+                           [ngClass]="{'form-control' : true,'form-control-danger':SubsRenewForm.controls.schedule_date.invalid&&submit}" />
+                        <small *ngIf="SubsRenewForm.controls.schedule_date.invalid&&submit" class="form-text error">
+                           Date is
+                           required! </small>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>Comments</label>
+                        <textarea formControlName="comment" placeholder="Comments"
+                           [ngClass]="{'form-control':true,'form-control-danger':SubsRenewForm.controls.invalid&&submit}"></textarea>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-6">
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <table class="table table-bordered table-striped">
+                           <tr>
+                              <th colspan="2">Renewal Summary</th>
+                           </tr>
+                           <tr>
+                              <td>Service Type</td>
+                              <th>{{packc? (packc[0].service_type==1 ?
+                                 'Internet':packc[0].service_type==2 ? 'Internet & Voice':packc[0].service_type==3 ?
+                                 'Internet & OTT'
+                                 :packc[0].service_type==4 ? 'Internet & AddOn':packc[0].service_type==5 ?
+                                 'Internet&Voice&OTT':packc[0].service_type==6 ? 'Internet&Voice&AddOn':
+                                 packc[0].service_type==7 ? 'Internet&OTT&AddOn':'All Services'):'N/A'}}</th>
+                           </tr>
+
+                           <tr *ngIf="packc ? packc[0].service_type != 1 :''">
+                              <td>Internet + Tax Amount</td>
+                              <th>{{(packc[0].base_amount - packc[0].vamt ) | currency: 'INR': 'symbol'}} +
+                                 {{(packc[0].tax_amount -packc[0].vtax_amt) | number: '.2-3' | currency: 'INR':
+                                 'symbol'}}
+                                 = {{(packc ?((packc[0].base_amount - packc[0].vamt )+ (packc[0].tax_amount
+                                 -packc[0].vtax_amt) |
+                                 currency: 'INR': 'symbol') : 0)}}
+                              </th>
+                           </tr>
+
+                           <tr *ngIf="packc ? [2,5,6,8].includes(packc[0].service_type):''">
+                              <td>Voice + Tax Amount</td>
+                              <th>{{(packc[0].vamt | number : '.2-3' | currency: 'INR': 'symbol')}} + {{
+                                 packc[0].vtax_amt | number :
+                                 '.2-3' | currency: 'INR': 'symbol'}}
+                                 = {{packc ? ((packc[0].vamt + packc[0].vtax_amt) | currency: 'INR': 'symbol' ): 0 }}
+                              </th>
+                           </tr>
+
+                           <tr *ngIf="SubsRenewForm.value['ottplanid']">
+                              <td>OTT + Tax Amount</td>
+                              <th>{{(ottPlanDetails.oamt | currency: 'INR': 'symbol')}} + {{ ottPlanDetails.otax |
+                                 number : '.2-3' | currency: 'INR': 'symbol'}}
+                                 = {{ottPlanDetails? ( ottPlanDetails.ottamt | currency: 'INR': 'symbol') : 0}}
+                              </th>
+                           </tr>
+
+                           <tr [hidden]="SubsRenewForm.value['ottplanid']">
+                              <td>Package Value</td>
+                              <th>{{packc? (packc[0].base_amount | currency: 'INR': 'symbol' ):0 }}</th>
+                           </tr>
+                           <tr *ngIf="SubsRenewForm.value['ottplanid']">
+                              <td>Package Value</td>
+                              <th>{{packc? (packc[0].base_amount+ottPlanDetails['ottamt'] | currency: 'INR': 'symbol'):0
+                                 }}</th>
+                           </tr>
+                           <tr *ngIf="SubsRenewForm.value['ottplanid']">
+                              <td>Tax</td>
+                              <th>{{packc? (packc[0].tax_amount+ottPlanDetails['otax'] | number:'1.0-2' | currency:
+                                 'INR': 'symbol'):0}}</th>
+                           </tr>
+                           <tr [hidden]="SubsRenewForm.value['ottplanid']">
+                              <td>Tax</td>
+                              <th>{{packc? (packc[0].tax_amount | number:'1.0-2' | currency: 'INR': 'symbol'):0}}</th>
+                           </tr>
+                           <tr [hidden]="SubsRenewForm.value['ottplanid']">
+                              <td>Total Amount</td>
+                              <th>{{packc? (packc[0].base_amount+packc[0].tax_amount | currency: 'INR': 'symbol'):0 }}
+                              </th>
+                           </tr>
+                           <tr *ngIf="SubsRenewForm.value['ottplanid']">
+                              <td>Total Amount</td>
+                              <th>{{packc? (packc[0].base_amount+packc[0].tax_amount+ottPlanDetails['ottamt']
+                                 | currency: 'INR': 'symbol'):0 }}
+                              </th>
+                           </tr>
+                           <tr [hidden]="SubsRenewForm.value['pay_type']==5">
+                              <td>Package Expiry </td>
+                              <th>{{packc ? (packc[0].days | date : 'd MMM y h:mm:ss a'):'N/A'}}</th>
+                           </tr>
+                           <tr *ngIf="SubsRenewForm.value['pay_type']==5">
+                              <td>Package Expiry </td>
+                              <th>{{sched_date | date: 'd MMM y h:mm:ss a'}}</th>
+                           </tr>
+                           <tr *ngIf="SubsRenewForm.value['ottplanid']!='' && SubsRenewForm.value['pay_type']==2">
+                              <td>OTT Package Expiry </td>
+                              <th>{{ottPlanDetails? (ottPlanDetails['ottexpdate'] | date: 'd MMM y h:mm:ss a') : 'N/A'}}
+                              </th>
+                           </tr>
+                           <tr *ngIf="SubsRenewForm.value['ottplanid']!='' && SubsRenewForm.value['pay_type']==5">
+                              <td>OTT Package Expiry </td>
+                              <th>{{ottsched_date | date: 'd MMM y h:mm:ss a'}}</th>
+                           </tr>
+
+                           <!-- <tr>
+                                  <td>LCO Close Balance </td>
+                                  <th>{{(package_price ? ((package_price.deposit_amt)-totalamt()):0)  | number:'1.0-2'}}</th>
+                              </tr> -->
+                        </table>
+                        <div class="col-md-12" *ngIf="SubsRenewForm.value['ottplanid']"
+                           style="font-weight:800;padding:12px;overflow-y:scroll;height:362px;">
+                           <div class="table-wrapper">
+                              <table class="table table-bordered table-striped">
+                                 <tbody>
+                                    <tr>
+                                       <th>OTT PLATFORMS</th>
+                                    </tr>
+                                    <tr *ngFor="let item of ottPlatforms">
+                                       <td>{{item}}</td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+
+
+
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="form-group row">
+               <div class="col-sm-6">
+               </div>
+               <div class="col-sm-6">
+                  <!-- <small (click)="condition=!condition">
+                     <span style="color: red;cursor: pointer;line-height: 25px;">Terms & Conditions Applied</span>
+                  </small> -->
+                  <button class="btn btn-outline" type="button" style="color: red;cursor: pointer;line-height: 25px;"
+                     (click)="onNavigate()">
+                     Terms & Conditions Applied
+                  </button>
+               </div>
+            </div>
+            <!-- <div class="form-group row">
+               <div class="col-sm-12" [hidden]="!condition">
+                  <p style="white-space: break-spaces;">
+                     <b>1.</b>BLSSPL (Blue Lotus Support Services Pvt Ltd.)
+                     shall perform its obligations and do inspection under
+                     this agreement including collection of subscription charges,
+                     deposits, rents, either through its employees or through its
+                     Franchise any other authorized representative.<br>
+                     <br>
+                     <b>Refund and Cancellation Policy</b><br>
+                     <br>
+                     For any change, addition, deletion, substitution,
+                     modification of the subscribed service,
+                     the subscriber shall submit the requisite for together with the applicable
+                     processing fee/charge least five days in advance to enable processing
+                     of the same and be bound by the additional terms as may be applicable.
+                     Any change or withdrawal from the subscriber service shall entitle
+                     the subscriber to any refunds or adjustments of the money already paid,
+                     billed or to be billed under the terms and conditions.<br>
+                     <br>
+                     <b>Privacy Policy</b><br>
+                     <br>
+                     <b>1.</b>The subscriber shall be provided a Account Number to enable the subscriber to use LEBSPL
+                     services ,subject to the compliance of the terms and conditions of this agreement .including any
+                     modification alterations, additions, substitution therein, from time to time. The Account number
+                     should not be shared to any other.
+                     <br><b>2.</b>We collect, use and are responsible for certain personal data about you.
+                  </p>
+               </div>
+            </div> -->
+            <div class="modal-footer">
+               <button type="submit" class="btn btn-sm btn-success">Renew</button>
+            </div>
+         </form>
+      </nb-card-body>
+   </nb-card>
+</div>

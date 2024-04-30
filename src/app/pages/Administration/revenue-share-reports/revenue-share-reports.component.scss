@@ -1,0 +1,28 @@
+// .table_wrapper th{
+//     background: #01a7eee5;
+// }
+
+.table-wrapper{
+    overflow-y: scroll;
+    height: 1050px;
+  }
+  
+  .table-wrapper th{
+      position: sticky;
+      top: -1px;
+  }
+  .table-wrapper{
+    background: white;
+  }
+  
+  table{
+    border-collapse: collapse;
+    width: 100%;
+  
+  }
+  
+  th {
+      background:#01a7ee;
+      text-align: center;
+  }
+  

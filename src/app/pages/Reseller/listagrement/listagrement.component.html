@@ -1,0 +1,103 @@
+<nb-card>
+  <nb-card-header> List Agreemnet Expiry
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showReseller();changeclear(1)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" (changed)="showReseller();changeclear(2)" addclass="form-control"
+            optValues="groupname" placeholder='Select Group' optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Reseller Name</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company" 
+          (changed)="showbranch();changeclear(3)"
+            placeholder='Select Reseller' (keyUp)="showReseller($event)" id="res_name" [item]="resell">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Start Date</label>
+          <input type="date" pattern="Start Date" (change)="end_date=''" [(ngModel)]="start_date" class="form-control">
+        </div>
+        <div class="col-sm-3">
+          <label>End Date</label>
+          <input type="date" placeholder="End Date" [(ngModel)]="end_date" class="form-control">
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <label>
+      <h5>Total Count: {{count}}</h5>
+    </label>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+    <hr style="border: 0px;">
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <!-- <th >Action</th> -->
+          <th *ngIf="role.getroleid()>777">ISP Name</th>
+          <th *ngIf="role.getroleid()>=775">Circle Name </th>
+          <th *ngIf="role.getroleid()>=775">Reseller Type</th>
+          <th *ngIf="role.getroleid()>=775">Reseller Name</th>
+          <th>Business Name</th>
+          <th>Address</th>
+          <th>Mobile</th>
+          <th>StartDate</th>
+          <th>EndDate</th>
+        </tr>
+        <tr *ngFor="let item of pagedItems">
+          <!-- <td > <a [routerLink]="['/pages/reseller/edit-branch']"
+              [queryParams]="{id:item.b_id}" style="cursor: pointer;color: black;"> <i class="nb-edit"></i> Edit</a>
+          </td> -->
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td *ngIf="role.getroleid()>=775">{{item.groupname}}</td>
+          <td *ngIf="role.getroleid()>=775">{{item.role==444 ? 'Bulk Reseller':item.role==333 ? 'Deposit
+            Reseller':item.role==666?'Sub
+            ISP Bulk'
+            :item.role==555 ? 'Sub ISP Deposit':item.role==551 ? 'Sub Distributor Deposit':item.role==661
+            ? 'Sub
+            Distributor Bulk':'Hotel'}}</td>
+          <td *ngIf="role.getroleid()>=775">{{item.reseller_name}}</td>
+          <td>{{item.company}}</td>
+          <td>{{item.address}}</td>
+          <td>{{item.mobile}}</td>
+          <td>{{item.start_date | date: 'd MMM y h:mm:ss a'}}</td>
+          <td>{{item.end_date | date: 'd MMM y h:mm:ss a'}}</td>
+        </tr>
+        <tr>
+          <td colspan="5" *ngIf="pagedItems==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

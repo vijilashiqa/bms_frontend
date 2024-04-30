@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+  </div>
+</div>
+
+<div class="table-wrapper">
+  <table class="table table-hover table-striped">
+    <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+      <!-- <th>Service Name</th> -->
+      <th>Reseller Name</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Login-ID</th>
+    </tr>
+    <tr *ngFor="let item of custcount">
+      <!-- <td>{{item.srvname}}</td> -->
+      <td>{{item.company}}</td>
+      <td>{{item.firstname}}</td>
+      <td>{{item.lastname}}</td>
+      <td>{{item.cust_profile_id}}</td>
+    </tr>
+  </table>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-md btn-success " style="margin:auto;" (click)="closeModal()">OK</button>
+</div>

@@ -1,0 +1,1476 @@
+<div class="col-md-12" style="padding: 0px;">
+   <nb-card>
+      <ngx-loading [show]="loading"
+         [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+      </ngx-loading>
+      <nb-card-header>View Subscriber
+         <a type="button" class="btn btn-primary btn-sm btn-floating "
+            style="float: right;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px;cursor: pointer; ;padding-right: 3px;color:white;" (click)="refresh()"><i
+               class="fas fa-sync"></i> Refresh</a>
+      </nb-card-header>
+      <nb-card-body>
+         <toaster-container [toasterconfig]></toaster-container>
+         <div class="row" style="padding-left: 10px;">
+            <div style="padding: 2px;">
+               <button *ngIf="(data.acc_type!=3 && (!role.getmenurole(705)))" class="btn btn-xs btn-outline-primary "
+                  (click)='renew_user(id,data.mrole,data.c_date,data.expiration,data.acc_type,data.expmode,data.exptime)'><b>Renewal</b></button>
+            </div>
+            <div style="padding: 2px;">
+               <button
+                  *ngIf="(data.acc_type!=3 && (!role.getmenurole(1065)) && data.srvdatatype ==2 
+              && ((data.limitdl == 1 && data.lcdllimit ==0) || (data.limitul == 1 && data.lcuplimit ==0) || (data.limitcomb ==1 && data.lclimitcomb == 0)) )"
+                  class="btn btn-xs btn-outline-primary " (click)='topup(id,data.reseller_id)'><b>Topup</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="(data.expiry_status==1 && role.getroleid()>=775)">
+               <button class="btn btn-xs btn-outline-primary " (click)="cancelinv(data.inv_id,1)"><b>Cancel
+                     Invoice</b></button>
+            </div>
+            <div style="padding: 2px;">
+               <button class="btn btn-xs btn-outline-primary" (click)="Add_mac();"><b>MAC MGMT</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="data.acctype==0">
+               <button class="btn btn-xs btn-outline-primary" (click)="mac_bind();"><b>MAC Binding</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="!role.getmenurole(1051)">
+               <button class="btn btn-xs btn-outline-primary" (click)="change_serv(id);"><b>Change Service</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="!role.getmenurole(1050)">
+               <button class="btn btn-xs btn-outline-primary" (click)="change_validity(id);"><b>Change
+                     Validity</b></button>
+            </div>
+            <div style="padding: 2px;">
+               <button class="btn btn-xs btn-outline-primary" (click)="Add_profile();"><b>Change Profile
+                     Pwd</b></button>
+            </div>
+            <div style="padding: 2px;">
+               <button class="btn btn-xs btn-outline-primary" (click)="show_propass();"><b>Show Profile Pwd</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="data.acctype==0">
+               <button class="btn btn-xs btn-outline-primary" (click)="Add_auth();"><b>Change Auth Pwd</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="data.acctype==0">
+               <button class="btn btn-xs btn-outline-primary" (click)="show_auth();"><b>Show Auth Pwd</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="role.getroleid()>=775">
+               <button class="btn btn-xs btn-outline-primary" (click)="Add_update();"><b>Change UserName</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="(!role.getmenurole(1052) && data.srvdatatype==2)">
+               <button class="btn btn-xs btn-outline-primary" (click)="updateLimit();"><b>Update Limit</b></button>
+            </div>
+
+            <div style="padding: 2px;" *ngIf="data.status==1">
+               <button class="btn btn-xs btn-outline-primary" (click)="subshold(id,1);"><b>HOLD</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="data.status==3">
+               <button style="padding: 5px;" class="btn btn-warning" (click)="subshold(id,2);">
+                  <b>Unhold</b>
+               </button>
+            </div>
+            <div style="padding: 2px;" *ngIf="data.status==1">
+               <button class="btn btn-xs btn-outline-primary" (click)="subshold(id,3);"><b>Suspend</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="data.status==2">
+               <button style="padding: 5px;" class="btn btn-danger" (click)="subshold(id,4);"><b>Un-Suspend</b></button>
+            </div>
+            <div style="padding: 2px;" *ngIf="data.online_status==1 && data.calledstationid=='PPP' ">
+               <button class="btn btn-xs btn-outline-primary" (click)="getlivegraph(data.cust_profile_id);"><b>Live
+                     Graph</b></button>
+            </div>
+            <div style="padding: 2px;">
+               <button class="btn btn-xs btn-outline-primary" (click)="Edit_subs(id);"><b>Edit</b></button>
+            </div>
+            <div style="padding: 2px;"
+               *ngIf="data.online_status==1 || (data.online_status==0 && data.expired_online ==1)">
+               <button class="btn btn-xs btn-outline-primary" (click)="logoff()"><b>Log Off</b></button>
+            </div>
+            <div style="padding: 2px;"
+               *ngIf="data.online_status==1 || (data.online_status==0 && data.expired_online ==1)">
+               <button class="btn btn-xs btn-outline-primary" (click)="close();"><b>Close Session</b></button>
+            </div>
+         </div>
+         <hr>
+         <ngb-tabset>
+            <ngb-tab title="Customer Info">
+               <ng-template ngbTabContent>
+                  <div class="row">
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Basic Info</nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>Customer Name</th>
+                                    <td>{{data.cust_name||''}}</td>
+                                 </tr>
+                                 <tr *ngIf="role.getroleid()>777">
+                                    <th>ISP Name</th>
+                                    <td>{{data.busname}}</td>
+                                 </tr>
+                                 <tr *ngIf="role.getroleid()>=775">
+                                    <th>Circle</th>
+                                    <td>{{data.groupname}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Reseller ProfileID</th>
+                                    <td style="text-transform: none !important;">{{data.managername||''}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Reseller BusinessName</th>
+                                    <td>{{data.company}}</td>
+                                 </tr>
+                                 <!-- <tr>
+                                    <th>Subscriber ID</th>
+                                    <td style="text-transform: none !important;font-size: medium">
+                                       <b>{{data.cust_profile_id}}</b>
+                                    </td>
+                                 </tr> -->
+                                 <tr>
+                                    <th>Branch Name</th>
+                                    <td>{{data.branch}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Connection Type</th>
+                                    <td>{{data.subs_type==0 ? 'SME':data.subs_type==1 ? 'Home User' : data.subs_type==2
+                                       ? 'Corporate':'Education or Institution'}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.schedule_status == 1">
+                                    <th>Schedule Date</th>
+                                    <td style="font-size:medium;color:blue"><b>{{data.schedule_date ?
+                                          (data.schedule_date| date : 'd MMM y h:mm:ss a'):'N/A' }}</b>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Account No</th>
+                                    <td style="font-size: medium;"><b>{{id}}</b></td>
+                                 </tr>
+                                 <tr>
+                                    <th>Created Date</th>
+                                    <td>{{data.createdon | date :'d MMM y '}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Registered Date</th>
+                                    <td>{{data.registered | date :'d MMM y '}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Created BY</th>
+                                    <td>{{data.user_creator}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>User CAF NO</th>
+                                    <td>{{data.caf_no ||''}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Account Type</th>
+                                    <td>{{data.acc_type==1?'Prepaid':data.acc_type==2 ? 'Postpaid':data.acc_type==3 ?
+                                       'Demo Account':'VPN Account'}}</td>
+                                 </tr>
+
+                                 <tr>
+                                    <th>Mobile Number</th>
+                                    <th><a [ngStyle]="{'color' : data.smsverifystatus==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round': data.smsverifystatus!=1 ? true:false,'ion-checkmark-round': data.smsverifystatus==1 ? true:false  }"></a>&nbsp;&nbsp;&nbsp;{{data
+                                       ? data.mobile: ''}}
+                                       &nbsp;&nbsp;&nbsp;
+                                    </th>
+                                    <th [hidden]="data.smsverifystatus==1">
+
+                                       <div class="dropdown ghost-dropdown" ngbDropdown>
+                                          <button
+                                             style="width:70px;height:27px;font-size: 10px;margin-left:-105px;background-color: #0380fc;color: white;font-weight: bold;"
+                                             class="btn btn-primary btn-icon" type="button"
+                                             ngbDropdownToggle>Action&nbsp;
+                                          </button>
+                                          <ul style="width: 75px; margin-left:-105px;z-index: 1; line-height: 30px; top: 43px;"
+                                             class="dropdown-menu" ngbDropdownMenu>
+                                             <li (click)="mobverify(1)" style="cursor: pointer;font-weight: 800;">
+                                                &nbsp;
+                                                <i class="fa fa-key" style="color: black;"></i>&nbsp;OTP
+                                             </li>
+                                             <li (click)="mobverify(3)" style="cursor: pointer;font-weight: 800;">&nbsp;
+                                                <i class="fa fa-check" style="color: #00ff81;"></i>&nbsp;Force
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </th>
+                                 </tr>
+                                 <tr>
+                                    <th>Email ID</th>
+                                    <th style="text-transform: none!important;"><a
+                                          [ngStyle]="{'color' : data.emailverifystatus==1  ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.emailverifystatus!=1 ? true:false,'ion-checkmark-round': data.emailverifystatus==1  ? true:false  }"></a>&nbsp;&nbsp;&nbsp;{{data
+                                       ? data.email:''}}
+                                       &nbsp;&nbsp;&nbsp;
+                                    </th>
+                                    <th [hidden]="data.emailverifystatus==1">
+                                       <div class="dropdown ghost-dropdown" ngbDropdown>
+                                          <button
+                                             style="width:70px;height:27px;font-size: 10px;margin-left:-105px;background-color: #0380fc;color: white; font-weight: bold;"
+                                             class="btn btn-primary btn-icon" type="button"
+                                             ngbDropdownToggle>Action&nbsp;
+                                          </button>
+
+                                          <ul style="width: 75px; margin-left:-105px;z-index: 1; line-height: 30px; top: 43px;"
+                                             class="dropdown-menu" ngbDropdownMenu>
+                                             <li (click)="mailverify(1)" style="cursor: pointer;font-weight: 800;">
+                                                &nbsp; <i class="fa fa-key" style="color: black;"></i>&nbsp;OTP </li>
+                                             <li (click)="mailverify(3)" style="cursor: pointer;font-weight: 800;">
+                                                &nbsp; <i class="fa fa-check" style="color: #00ff81;"></i>&nbsp;Force
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </th>
+                                 </tr>
+                                 <tr>
+                                    <th>Reseller Auto Renewal</th>
+                                    <td>
+                                       <a [ngStyle]="{'color' :data.auto_renewal_resel==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.auto_renewal_resel!=1? true:false,'ion-checkmark-round': data.auto_renewal_resel==1 ? true:false  }"></a>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>GST No</th>
+                                    <td>{{data.gst}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Description</th>
+                                    <td>{{data.descr || '--'}}</td>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Status Info
+                           </nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>Subscriber ID</th>
+                                    <td style="text-transform: none !important;font-size: medium">
+                                       <b>{{data.cust_profile_id}}</b>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Subscriber Type</th>
+                                    <td>{{data.acctype==0?'Regular':'MAC'}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.acctype==0">
+                                    <th>Allow MAC</th>
+                                    <td style="padding-left: 27px;"><a
+                                          [ngStyle]="{'color' :data.usemacauth==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.usemacauth!=1? true:false,'ion-checkmark-round': data.usemacauth==1 ? true:false  }"></a>
+                                    </td>
+                                 </tr>
+                                 <tr *ngIf="data.acctype==1">
+                                    <th>MAC ID</th>
+                                    <td>{{data.username}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Account Status</th>
+                                    <td><span *ngIf="((data.expiry_status==0) && (data.status!=2 && data.status!=3 ))"
+                                          style="background-color:#ff9900;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Expired</span>
+                                       <span *ngIf="((data.expiry_status==1) && (data.status!=3 && data.status!=2)) "
+                                          style="background-color:#0380fc;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Active</span>
+                                       <span *ngIf=" data.status==2 "
+                                          style="background-color:#df2727;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Suspend</span>
+                                       <span *ngIf=" data.status==3 "
+                                          style="background-color:#f700ffe1;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Hold</span>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Connection Status</th>
+                                    <td><span *ngIf=" data.online_status==1 && data.expired_online ==0 "
+                                          style="background-color:#1ac43c;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Online</span>
+                                       <span *ngIf="data.online_status==0 && data.expired_online == 0  "
+                                          style="background-color:#565656;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Offline</span>
+                                       <span *ngIf=" data.online_status==0 && data.expired_online ==1 "
+                                          style="background-color:#7b878d;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Offline</span>
+                                    </td>
+                                 </tr>
+                                 <tr *ngIf="data.status==3">
+                                    <th>Remaining Days</th>
+                                    <td>{{data.hold_in_second}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.online_status==1">
+                                    <th>Start Time</th>
+                                    <td>{{data.acctstarttime | date :'d MMM y h:mm:ss a'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Last Login Type</th>
+                                    <td>{{data.calledstationid}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Last Log-Off</th>
+                                    <td>{{data.lastlogoff | date: 'd MMM y h:mm:ss a'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Connection Type</th>
+                                    <td>{{data.conntype==0?'Wired(RPY)':data.conntype==1?'Wireless':'Fiber'}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.online_status==1">
+                                    <th>Current Running Service </th>
+                                    <td>{{data.online_status==1?data.rsrvname:'N/A'}}</td>
+                                 </tr>
+
+                                 <tr>
+                                    <th>Expiry Date</th>
+                                    <td style="font-size:medium;color:red;font-weight:600">{{data.expiration ?
+                                       (data.expiration| date : 'd MMM y h:mm:ss a'):'N/A' }}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>IP Mode</th>
+                                    <td>{{data.ipmodecpe==0 ? 'Nas Pool or DHCP':data.ipmodecpe==1 ? 'IP
+                                       Pool':'StaticPool'}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.ipmodecpe==2">
+                                    <th>Static IP</th>
+                                    <td>{{data.staticipcpe}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.ipmodecpe==1">
+                                    <th>IP Pool</th>
+                                    <td>{{data.poolname}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.online_status==1">
+                                    <th>Current MAC</th>
+                                    <td>{{data.callingstationid}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.online_status==1">
+                                    <th>Current Login IP</th>
+                                    <th>{{data.framedipaddress}}</th>
+                                 </tr>
+                                 <tr *ngIf="data.online_status==1">
+                                    <th>Login NAS IP</th>
+                                    <th>{{data.nasipaddress}}</th>
+                                 </tr>
+                                 <tr *ngIf="data.acctype==1">
+                                    <th>Mac Addess</th>
+                                    <td>{{data.mac_addr}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Last Renewal Date</th>
+                                    <td><b>{{(data.renewal_date | date: 'd MMM y h:mm:ss a') || '--'}}</b></td>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Address</nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>State</th>
+                                    <td>{{data.state}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>City</th>
+                                    <td>{{data.city}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Installation Address</th>
+                                    <td>{{data.address||''}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Billing Address</th>
+                                    <td>{{data.billing_addr||''}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Pincode</th>
+                                    <td><b>{{data.zip || '--'}}</b></td>
+                                 </tr>
+
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Service Info
+                           </nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-fca">
+                                 <tr>
+                                    <th>Service Name</th>
+                                    <td><b>{{data.srvname || '--'}}</b></td>
+                                 </tr>
+                                 <tr>
+                                    <th>SubPlan</th>
+                                    <td><b>{{data.sub_plan || '--'}}</b></td>
+                                 </tr>
+                                 <tr>
+                                    <th>m,;
+                                       Balance Download Limit
+                                    </th>
+                                    <td [ngStyle]="{ 'color' : data.lcdllimit==0 ? 'red' : 'black' }">
+                                          {{data.srvdatatype==2?data.limitdl==0 ?'--': data.lcdllimit==0?'data limit
+                                          over':data.lcdllimit:'--'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>
+                                       Balance Upload Limit
+                                    </th>
+                                    <td [ngStyle]="{ 'color' : data.lcuplimit==0 ? 'red' : 'black' }">
+                                       {{data.srvdatatype==2?data.limitul==0 ?'--': data.lcuplimit==0?'data limit
+                                       over':data.lcuplimit:'--'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>
+                                       Balance Total Limit
+                                    </th>
+                                    <td
+                                       [ngStyle]="{ 'color' : (data.srvdatatype==2 && data.lclimitcomb==0) ? 'red' : 'black' }">
+                                       {{data.srvdatatype==2?data.limitcomb==0 ?'--': data.lclimitcomb==0?'data limit
+                                       over':data.lclimitcomb:'Unlimited'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Service Data Type</th>
+                                    <td>{{data.srvdatatype == 1 ? 'Unlimited':'FUP'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>
+                                       Connection Protocol
+                                    </th>
+                                    <td>{{data.nasporttype}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>
+                                       Fallback Service
+                                    </th>
+                                    <td>{{data.fsrvname}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Last Log OFF </th>
+                                    <td>{{data.lastlogoff | date:'d MMM y h:mm:ss a'}}</td>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Last Payment Info
+                           </nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>Invoice No</th>
+                                    <th></th>
+                                 </tr>
+                                 <tr>
+                                    <th>Status</th>
+                                    <th></th>
+                                 </tr>
+                                 <tr>
+                                    <th>Renewed BY</th>
+                                    <th></th>
+                                 </tr>
+                                 <tr>
+                                    <th>Renewal Date </th>
+                                    <th></th>
+                                 </tr>
+                                 <tr>
+                                    <th>Invoice Amount </th>
+                                    <th></th>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                     <div class="col-lg-6" *ngIf="data.acc_type!=3">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Documents
+                              <!--                               
+                                 <i *ngIf="data.address_photo_status == 1 || data.address_photo_status == 2 || data.id_photo_status ==1 || data.id_photo_status == 2"
+                                  (click)="downloadFile(id,data.cust_profile_id)"class="right fas fa-download fa-2x" aria-hidden="true"></i> -->
+                              <button
+                                 *ngIf="data.address_photo_status == 1 || data.address_photo_status == 2 || data.id_photo_status ==1 || data.id_photo_status == 2"
+                                 type="button" (click)="downloadFile(id,data.cust_profile_id)"
+                                 class="btn btn-md btn-success "
+                                 style="float: right;cursor: pointer;background-color: royalblue;border-radius: unset;padding: 1px;margin:2px">
+                                 <i class="fas fa-download fa-2x"></i> </button>
+                           </nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th (click)='cafform(data.cust_profile_id)'>CAF Form</th>
+                                    <!-- <th>{{((data.address_photo_status==1 || data.id_photo_status==1) ||
+                                          (data.address_photo_status==2||data.id_photo_status==2)) ? 'CAF Generated':'Pending'}}
+                                       </th> -->
+                                    <th (click)="cafform()"
+                                       style="cursor:pointer;color: darkblue;text-decoration: underline;" *ngIf="(data.caf_photo_status == 0 || data.caf_photo_status ==3 ) && ((data.address_photo_status==1 || data.id_photo_status==1) ||
+                                       (data.address_photo_status==2||data.id_photo_status==2))">CAF Generated Click
+                                       here to view</th>
+                                    <th (click)="cafform()"
+                                       style="cursor:pointer;color: darkblue;text-decoration: underline;"
+                                       *ngIf="(data.caf_photo_status == 1 || data.caf_photo_status ==2 )"> Click
+                                       here to view Uploaded CAF</th>
+                                    <th
+                                       *ngIf="((data.address_photo_status==0 || data.id_photo_status==0) ||
+                                       (data.address_photo_status==3||data.id_photo_status==3) || (data.address_photo_status==null || data.id_photo_status==null))">
+                                       Pending</th>
+                                    <th *ngIf="data.caf_photo_status == 2">
+                                       <i style="color: #00ff81;" class="fa fa-check"></i>&nbsp;CAF Verified
+                                    </th>
+                                    <th style=" padding: 1px;" class=" last" data-title="'Action'"
+                                       *ngIf="data.address_photo_status==2 || data.id_photo_status==2">
+                                       <div class="dropdown ghost-dropdown" ngbDropdown>
+                                          <button
+                                             style="width:70px;height:27px;font-size: 10px;margin:3px;background-color: #0380fc;color: white; font-weight: bold;"
+                                             class="btn btn-primary btn-icon" type="button"
+                                             ngbDropdownToggle>Action&nbsp;
+                                          </button>
+                                          <ul style="width: 75px;margin:3px;z-index: 1;line-height: 30px;"
+                                             class="dropdown-menu" ngbDropdownMenu>
+                                             <li (click)='cafform()' style="cursor: pointer;">&nbsp;
+                                                <i style="color: black" class="fa fa-eye"></i>&nbsp;View
+                                             </li>
+                                             <li *ngIf="(data.caf_photo_status == 0 || data.caf_photo_status ==3 )"
+                                                (click)='cafuploadproof(data.uid,data.cust_profile_id,3)'
+                                                style="cursor: pointer;">&nbsp;
+                                                <i style="color: #00ff81;" class="fa fa-upload"></i>&nbsp;Upload
+                                             </li>
+                                             <!-- [hidden]="cafnotverify" -->
+                                             <li (click)="docverify(5)" *ngIf="data.caf_photo_status == 1"
+                                                style="cursor: pointer;">&nbsp;
+                                                <i style="color: #00ff81;" class="fa fa-check"></i>&nbsp;Verified
+                                             </li>
+                                             <!-- [hidden]="cafverify"  -->
+                                             <li (click)="docverify(10)" *ngIf="data.caf_photo_status == 1"
+                                                style="cursor: pointer;">
+                                                &nbsp;
+                                                <i style="color: red;" class="fas fa-sync"></i>&nbsp;Recollect
+                                             </li>
+
+                                          </ul>
+                                       </div>
+                                    </th>
+                                 </tr>
+                                 <tr>
+                                    <th>Address Proof</th>
+                                    <th>
+                                       {{data.address_photo_status==1?'Collected':data.address_photo_status==2?'Verified':data.address_photo_status==3?'Recollect':'NotUploaded'}}
+                                    </th>
+                                    <th *ngIf="data.address_photo_status==0 || data.address_photo_status==3 || data.address_photo_status ==null"
+                                       style=" padding: 1px;" class=" last" data-title="'Action'">
+                                       <div class="dropdown ghost-dropdown" ngbDropdown>
+                                          <button
+                                             style="width: 70px;font-size: 10px;margin:3px;height:27px;background-color: #0380fc;color: white; font-weight: bold;"
+                                             class="btn btn-primary btn-icon" type="button"
+                                             ngbDropdownToggle>Action&nbsp;
+                                          </button>
+                                          <ul style="width: 75px;margin:3px;z-index: 1;line-height: 30px;"
+                                             class="dropdown-menu" ngbDropdownMenu>
+                                             <li (click)='addrsproof(data.uid,data.cust_profile_id,2)'
+                                                style="cursor: pointer;">
+                                                &nbsp;
+                                                <i style="color: #00ff81;" class="fa fa-upload"></i>&nbsp;Upload
+                                             </li>
+                                             <li (click)='snapaddrproof(id,data.cust_profile_id,3)'
+                                                style="cursor: pointer;">&nbsp;
+                                                <i style="color:royalblue;" class="fa fa-camera"></i>&nbsp;Camera
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </th>
+                                    <th *ngIf="data.address_photo_status==1 || data.address_photo_status==2"></th>
+                                 <tr>
+                                    <th>Identity Proof</th>
+                                    <th>
+                                       {{data.id_photo_status==1?'Collected':data.id_photo_status==2?'Verified':data.id_photo_status==3?'Recollect':'Not
+                                       Uploaded'}}</th>
+                                    <th *ngIf="data.id_photo_status==0 || data.id_photo_status==3 || data.id_photo_status == null"
+                                       style=" padding: 1px;" class=" last" data-title="'Action'">
+                                       <div class="dropdown ghost-dropdown" ngbDropdown>
+                                          <button
+                                             style="width: 70px;font-size: 10px;margin:3px;height:27px;background-color: #0380fc;color: white; font-weight: bold;"
+                                             class="btn btn-primary btn-icon" type="button"
+                                             ngbDropdownToggle>Action&nbsp;
+                                          </button>
+                                          <ul style="width: 75px;margin:3px;z-index: 1;line-height: 30px;"
+                                             class="dropdown-menu" ngbDropdownMenu>
+                                             <li (click)='idproof(data.uid,data.cust_profile_id,2)'
+                                                style="cursor: pointer;">
+                                                &nbsp;
+                                                <i style="color: #00ff81;" class="fa fa-upload"></i>&nbsp;Upload
+                                             </li>
+                                             <li (click)='snapidproof(id,data.cust_profile_id,2)'
+                                                style="cursor: pointer;">
+                                                &nbsp;
+                                                <i style="color:royalblue;" class="fa fa-camera"></i>&nbsp;Camera
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </th>
+                                    <th *ngIf="data.id_photo_status==1 || data.id_photo_status==2"></th>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Pic</th>
+                                    <th>
+                                       {{data.user_photo_status==1?'Collected':data.user_photo_status==2?'Verified':data.user_photo_status==3?'Recollect':'Not
+                                       Uploaded'}}</th>
+                                    <th *ngIf="data.user_photo_status==0 || data.user_photo_status==3 || data.user_photo_status ==null"
+                                       style=" padding: 1px;" class=" last" data-title="'Action'">
+                                       <div class="dropdown ghost-dropdown" ngbDropdown>
+                                          <button
+                                             style="width: 70px;font-size: 10px;margin:3px;height:27px;background-color: #0380fc;color: white; font-weight: bold;"
+                                             class="btn btn-primary btn-icon" type="button"
+                                             ngbDropdownToggle>Action&nbsp;
+                                          </button>
+                                          <ul style="width: 75px;margin:3px;z-index: 1;line-height: 30px;"
+                                             class="dropdown-menu" ngbDropdownMenu>
+                                             <li (click)='custpicupload(data.uid,data.cust_profile_id,4)'
+                                                style="cursor: pointer;">
+                                                &nbsp;
+                                                <i style="color: #00ff81;" class="fa fa-upload"></i>&nbsp;Upload
+                                             </li>
+                                             <li (click)='addpic(id,data.cust_profile_id,1)' style="cursor: pointer;">
+                                                &nbsp;
+                                                <i style="color:royalblue;" class="fa fa-camera"></i>&nbsp;Camera
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </th>
+                                    <th *ngIf="data.id_photo_status==1 || data.id_photo_status==2"></th>
+                                 </tr>
+                                 <br>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                  </div>
+               </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Balance & Credit">
+               <ng-template ngbTabContent>
+               </ng-template>
+            </ngb-tab>
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="invoicelist()">Invoice</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <br>
+                  <i (click)="downloadInvoice()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+                  <div class="table-scroll">
+                     <table class="table table-hover table-striped">
+                        <tr style="background-color :  #01a7eee5;color:white;font-size: medium;">
+                           <th>Action</th>
+                           <th *ngIf="role.getroleid()>777">Invoice ID</th>
+                           <th>Service Type</th>
+                           <th>Service Name</th>
+                           <th>Sub Plan</th>
+                           <th>Pack Price</th>
+                           <th>Tax Amount </th>
+                           <th>Invoice NO</th>
+                           <th>GST Number</th>
+                           <th>IGST</th>
+                           <th>CGST</th>
+                           <th>SGST</th>
+                           <th>Invoice Type</th>
+                           <th>Invoice Status</th>
+                           <th>Renewal Date</th>
+                           <th>Expiry Date</th>
+                           <th>Pay Status</th>
+                           <th>Pay Date</th>
+                        </tr>
+                        <tr *ngFor="let item of invoicedata">
+                           <td style="width: 80px; height: 25px;  vertical-align: middle; margin: 5px  ; padding: 4px;"
+                              class=" last" data-title="'Action'">
+                              <div class="form-group row">
+                                 <div class="dropdown ghost-dropdown" ngbDropdown>
+                                    <button style="width: 70px;font-size: 10px" class="btn btn-primary btn-icon"
+                                       type="button" ngbDropdownToggle>Action
+                                    </button>
+                                    <ul style="width: 124px;" class="dropdown-menu" ngbDropdownMenu>
+                                       <li class="dropdown-item" title="View" (click)="view_invoice(item.invid,1)"><i
+                                             style="font-size: 20px;" class="far fa-eye "></i>&nbsp;View</li>
+                                       <li [hidden]="item.inv_status==3||item.pay_status==2" class="dropdown-item"
+                                          title="View" (click)="pay(item.invid,id,item.topay,item.inv_type)"><i
+                                             style="font-size: 20px;" class="fa fa-credit-card "></i>&nbsp;Pay</li>
+                                       <li *ngIf="item.pay_status==2 && item.inv_status == 1  && role.getroleid()>=775" class="dropdown-item"
+                                          title="View" (click)="changePayStatus(item.invid,id,item.inv_type)"><i
+                                             style="font-size: 20px;" class="fa fa-retweet "></i>&nbsp;Paid to Unpaid</li>
+
+                                       <li class="dropdown-item" title="View" (click)="view_invoice(item.invid,3)"><i
+                                             style="font-size: 20px;" class="fa fa-receipt "></i>&nbsp;Reference</li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </td>
+                           <td *ngIf="role.getroleid()>777">{{item.invid}}</td>
+                           <td>{{item.service_name}}</td>
+                           <td>{{item.srvname}}</td>
+                           <td>{{item.sub_plan}}</td>
+                           <td style="text-align: center;">{{item.invoice_amount}}</td>
+                           <td style="text-align: center;">{{item.tax_amount}}</td>
+                           <td style="text-align: center;">{{item.rollid}}</td>
+                           <td>{{item.supplier_gst_number}}</td>
+                           <td style="text-align: center;">{{item.igst+" "+'%'}}</td>
+                           <td style="text-align: center;">{{item.cgst+" "+'%'}}</td>
+                           <td style="text-align: center;">{{item.sgst+" "+'%'}}</td>
+                           <td>{{item.inv_type==1 ? 'Invoice':'GST Invoice'}}</td>
+                           <td>{{item.inv_status==1 ? 'Active':item.inv_status==2 ? 'Proforma Invoice': 'Cancelled'}}
+                           </td>
+                           <td>{{item.inv_date | date:'d MMM y'}}</td>
+                           <td>{{item.expiry_date | date:'d MMM y'}}</td>
+                           <td>{{item.pay_status==2 ? 'Paid': 'Unpaid'}}</td>
+                           <td style="text-align: center;">{{item.pay_status==2 ? (item.paydate | date:'d MMM y
+                              '):'--'}}
+                           </td>
+                        </tr>
+                     </table>
+                  </div>
+                  <div class="pagination">
+                     <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                       <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getInvoiceList();">First</a>
+                       <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getInvoiceList();">Previous</a>
+                       <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                         (click)="getInvoiceList(page)">{{page}}</a>
+                       <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getInvoiceList();">Next</a>
+                       <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                         (click)="page=pager.totalPages;getInvoiceList();">Last</a>
+                     </ul>
+                   </div>
+               </ng-template>
+            </ngb-tab>
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="receiptlist()">Receipt</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <table class="table table-hover table-striped">
+                     <tr style="background-color :  #01a7eee5;color:white;font-size: medium;">
+                        <th *ngIf="!role.getmenurole(1033) || !role.getmenurole(1038)">Action</th>
+                        <th>Service Name</th>
+                        <th>Sub Plan</th>
+                        <th>Collected By</th>
+                        <th>Receipt Number</th>
+                        <th>Receipt Date</th>
+                        <th>Amount</th>
+                        <th>Created By</th>
+                        <th>Receipt Status</th>
+                     </tr>
+                     <tr *ngFor="let item of receiptdata">
+                        <td *ngIf="!role.getmenurole(1033) || !role.getmenurole(1038)" style="padding: 1px;"
+                           class=" last" data-title="'Action'">
+                           <div class="dropdown ghost-dropdown" ngbDropdown>
+                              <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;"
+                                 class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+                              </button>
+                              <ul style="width: 75px;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                                 <li *ngIf="!role.getmenurole(1033)" class="dropdown-item"
+                                    (click)="view_receipt(item.invrecid)"><i style="font-size: 20px;"
+                                       class="far fa-eye "></i>&nbsp;View</li>
+                                 <li *ngIf="(!role.getmenurole(1038)&& item.rstatus!=2)" class="dropdown-item"
+                                    (click)="cancel_receipt(item.invrecid,2)">
+                                    <i style="font-size: 20px;color: red;" class="ion-close-round"></i>&nbsp;Cancel
+                                 </li>
+                              </ul>
+                           </div>
+                        </td>
+                        <td>{{item.srvname}}</td>
+                        <td>{{item.sub_plan}}</td>
+                        <td>{{item.collected || '--'}}</td>
+                        <td>{{item.receipt_num}}</td>
+                        <td>{{item.receipt_date | date : 'd MMM y h:mm:ss a'}}</td>
+                        <td>{{item.received_amt}}</td>
+                        <td>{{item.creator|| '--'}}</td>
+                        <td style="text-align: center;"><a [ngStyle]="{'color' :item.rstatus==1 ? 'green' : 'red' }"
+                              [ngClass]="{'ion-close-round':item.rstatus!=1? true:false,'ion-checkmark-round': item.rstatus==1 ? true:false  }"></a>
+                        </td>
+                     </tr>
+                  </table>
+                 
+               </ng-template>
+            </ngb-tab>
+            <!-- <ngb-tab title="Proforma Invoice">
+               <ng-template ngbTabContent></ng-template>
+            </ngb-tab> -->
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="gstInvoice()">GST Invoice</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <table class="table table-hover table-striped">
+                     <tr style="background-color :  #01a7eee5;color:white;font-size: medium;">
+                        <th>Action</th>
+                        <th *ngIf="role.getroleid()>777">Invoice ID</th>
+                        <th>Service Type</th>
+                        <th>Service Name</th>
+                        <th>Sub Plan</th>
+                        <th>Pack Price</th>
+                        <th>Tax Amount </th>
+                        <th>GST Number</th>
+                        <th>IGST</th>
+                        <th>CGST</th>
+                        <th>SGST</th>
+                        <th>Invoice Type</th>
+                        <th>Invoice Status</th>
+                        <th>Invoice Date</th>
+                        <th>Pay Status</th>
+                        <th>Pay Date</th>
+                     </tr>
+                     <tr *ngFor="let item of gstinvoice">
+                        <td style="width: 80px; height: 25px;  vertical-align: middle; margin: 5px  ; padding: 4px;"
+                           class=" last" data-title="'Action'">
+                           <div class="form-group row">
+                              <div class="dropdown ghost-dropdown" ngbDropdown>
+                                 <button style="width: 70px;font-size: 10px" class="btn btn-primary btn-icon"
+                                    type="button" ngbDropdownToggle>Action
+                                 </button>
+                                 <ul style="width: 124px;" class="dropdown-menu" ngbDropdownMenu>
+                                    <li class="dropdown-item" title="View" (click)="view_invoice(item.invid,2)"><i
+                                          style="font-size: 20px;" class="far fa-eye "></i>&nbsp;View</li>
+                                    <li [hidden]="item.inv_status==3||item.pay_status==2" class="dropdown-item"
+                                       title="View" (click)="pay(item.invid,id,item.topay)"><i style="font-size: 20px;"
+                                          class="fa fa-credit-card "></i>&nbsp;Pay</li>
+                                          <li *ngIf="item.pay_status==2 && item.inv_status == 1 && role.getroleid()>=775" class="dropdown-item"
+                                          title="View" (click)="changePayStatus(item.invid,id,item.inv_type)"><i
+                                             style="font-size: 20px;" class="fa fa-retweet "></i>&nbsp;Paid to Unpaid</li>
+                                    <li class="dropdown-item" title="View" (click)="view_invoice(item.invid,4)"><i
+                                          style="font-size: 20px;" class="fa fa-receipt "></i>&nbsp;Reference</li>
+                                 </ul>
+                              </div>
+                           </div>
+                        </td>
+                        <td *ngIf="role.getroleid()>777">{{item.invid}}</td>
+                        <td>{{item.service_name}}</td>
+                        <td>{{item.srvname}}</td>
+                        <td>{{item.sub_plan}}</td>
+                        <td style="text-align: center;">{{item.invoice_amount}}</td>
+                        <td style="text-align: center;">{{item.tax_amount}}</td>
+                        <td>{{item.supplier_gst_number}}</td>
+                        <td style="text-align: center;">{{item.igst+" "+'%'}}</td>
+                        <td style="text-align: center;">{{item.cgst+" "+'%'}}</td>
+                        <td style="text-align: center;">{{item.sgst+" "+'%'}}</td>
+                        <td>{{item.inv_type==1 ? 'Invoice':'GST Invoice'}}</td>
+                        <td>{{item.inv_status==1 ? 'Active':item.inv_status==2 ? 'Proforma Invoice': 'Cancelled'}}</td>
+                        <td>{{item.inv_date | date:'d MMM y'}}</td>
+                        <td>{{item.pay_status==2 ? 'Paid': 'Unpaid'}}</td>
+                        <td>{{item.pay_status==2 ? (item.paydate | date:'d MMM y '):'--'}}</td>
+                     </tr>
+                  </table>
+                  <div class="pagination">
+                     <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                       <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getGSTInvoiceList();">First</a>
+                       <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getGSTInvoiceList();">Previous</a>
+                       <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                         (click)="getGSTInvoiceList(page)">{{page}}</a>
+                       <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getGSTInvoiceList();">Next</a>
+                       <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                         (click)="page=pager.totalPages;getGSTInvoiceList();">Last</a>
+                     </ul>
+                   </div>
+               </ng-template>
+            </ngb-tab>
+
+
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="ottInvoice()">OTT Status</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <table class="table table-hover table-striped">
+                     <tr style="background-color :  #01a7eee5;color:white;font-size: medium;">
+                        <th *ngIf="role.getroleid()>=775">Invoice ID</th>
+                        <th *ngIf="role.getroleid()>=775">OTT ID</th>
+                        <th>Invoice No</th>
+                        <th>OTTPlan Name</th>
+                        <th>OTTPlanCode</th>
+                        <th>Time Unit</th>
+                        <th>Platform</th>
+                        <th>Status</th>
+                        <th>Invoice Date</th>
+                     </tr>
+                     <tr *ngFor="let item of ottInvoiceData">
+                        <td *ngIf="role.getroleid()>=775">{{item.invid}}</td>
+                        <td *ngIf="role.getroleid()>=775">{{item.iolid}}</td>
+                        <td>{{item.billno}}</td>
+                        <td>{{item.ottplan_name}}</td>
+                        <td>{{item.ottplancode}}</td>
+
+                        <td style="text-align: center;">{{item.dayormonth == 1? item.ottdays + "Days" : item.ottdays +
+                           "Months" }}
+                        </td>
+                        <td style="font-size:medium;font-weight:900;cursor:pointer" (click)="ottcount(item.ottplanid)">
+                           {{item.tot}}
+                        </td>
+                        <td>{{item.ottstatus == 1 ? 'Processing': item.ottstatus == 2 ? 'Activated': item.ottstatus == 3
+                           ? 'Cancelled'
+                           : 'Need to check' }}</td>
+                        <td>{{item.cdate | date: 'dd MMM yyyy'}}</td>
+
+                     </tr>
+                  </table>
+               </ng-template>
+            </ngb-tab>
+
+
+
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="renewal_history()">Renewal History</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <table class="table table-hover table-striped">
+                     <tr style="background-color :  #01a7eee5;color:white;font-size: medium;">
+                        <th *ngIf="role.getroleid()>=775">Renewal ID</th>
+                        <th>Invoice No</th>
+                        <th>Manager Name</th>
+                        <th>Renew Date</th>
+                        <th>Renewal Type</th>
+                        <th>Expire Date</th>
+                        <th>Package Name</th>
+                        <th>Service Type</th>
+                        <!-- <th>Invoice Comments</th> -->
+                        <th>User Status</th>
+                        <th>Upload Limit</th>
+                        <th>Download Limit</th>
+                        <th>Total Limit</th>
+                     </tr>
+                     <tr *ngFor="let item of renew_history">
+                        <td *ngIf="role.getroleid()>=775" style="text-align: center;">{{item.invid}}</td>
+                        <td>{{item.billno}}</td>
+                        <td>{{item.company}}</td>
+                        <td>{{item.c_date ? (item.c_date | date:'d MMM y h:mm:ss a'):'--'}}</td>
+                        <td>{{item.pay_through==1 ? 'Manual':item.pay_through == 2?'Schedule': item.pay_through ==3?
+                           'Gateway by Subscriber': 'Schedule by Subscriber'}}</td>
+                        <td>{{item.expiry_date ? item.expiry_date :'--'}}</td>
+                        <td>{{item.srvname}}</td>
+                        <td style="text-align: center;">{{item.srvdatatype==1 ? 'Unlimited':'FUP'}}</td>
+                        <td>
+                           <span *ngIf="item.status == 1"
+                              style="background-color:#0380fc; color: #fafffb;font-weight:bold;border-radius: 3px; padding: 4px;">
+                              Active </span>
+                           <span *ngIf="item.status == 0"
+                              style="background-color:#ff9900; color: #fafffb;font-weight:bold;border-radius: 3px; padding: 4px;">
+                              Active </span>
+                           <span *ngIf="item.status == 2"
+                              style="background-color:#df2727; color: #fafffb;font-weight:bold;border-radius: 3px; padding: 4px;">
+                              Active </span>
+                           <span *ngIf="item.status == 3"
+                              style="background-color:#f700ffe1; color: #fafffb;font-weight:bold;border-radius: 3px; padding: 4px;">
+                              Active </span>
+                        </td>
+                        <td style="text-align: center;">{{item.upload}}</td>
+                        <td style="text-align: center;">{{item.download}}</td>
+                        <td style="text-align: center;">{{item.total}}</td>
+                     </tr>
+                  </table>
+                  <div class="pagination">
+                     <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                       <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getRenewalList();">First</a>
+                       <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getRenewalList();">Previous</a>
+                       <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                         (click)="getRenewalList(page)">{{page}}</a>
+                       <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getRenewalList();">Next</a>
+                       <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                         (click)="page=pager.totalPages;getRenewalList();">Last</a>
+                     </ul>
+                   </div>
+               </ng-template>
+            </ngb-tab>
+
+
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="topupReport()">Topup History</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <table class="table table-hover table-striped">
+                     <tr style="background-color :  #01a7eee5;color:white;font-size: medium;">
+                        <th>ID</th>
+                        <th>Reseller</th>
+                        <th>Topup Name</th>
+                        <th>Limit</th>
+                        <th>Tax</th>
+                        <th>Price</th>
+                        <th>Paid Status</th>
+                        <th>Topup By</th>
+                        <th>Topup Status</th>
+
+                     </tr>
+                     <tr *ngFor="let item of topup_data">
+                        <td>{{item.id}}</td>
+                        <td>{{item.company}}</td>
+                        <td>{{item.top_name}}</td>
+                        <td>{{item.limit +" "+ (item.limit_size ==1 ? 'MB' : item.limit_size == 2 ? 'GB':
+                           item.limit_size == 3?'TB':
+                           'PB')}}</td>
+                        <td>{{item.tax_type == 0 ? 'Inclusive': 'Exclusive'}}</td>
+                        <td>{{item.top_amt | currency : 'INR':'symbol'}}</td>
+                        <td class="ion-icon"><a [ngStyle]="{'color': item.pay_status == 2 ? 'green': 'red'}"
+                              [ngClass]="{'ion-close-round': item.pay_status != 2 ? true : false,'ion-checkmark-round':item.pay_status ==2? true:false}"></a>
+                        </td>
+                        <td>{{item.managername}}</td>
+                        <td>{{item.cdate | date:'d MMM y h:mm:ss a'}}</td>
+                     </tr>
+                  </table>
+               </ng-template>
+            </ngb-tab>
+
+
+
+            <ngb-tab title="Package History">
+               <ng-template ngbTabContent>
+                  <table class="table">
+                     <tr>
+                        <th>User Name</th>
+                        <th>Service Name</th>
+                        <th>Requested By</th>
+                        <th>Package Changed On</th>
+                     </tr>
+                     <tr>
+                     </tr>
+                  </table>
+               </ng-template>
+            </ngb-tab>
+            <ngb-tab *ngIf="data.acc_type!=3">
+               <ng-template ngbTabTitle>
+                  <div (click)="getDocument();getprofilepic()"><i (click)="getDocument();getprofilepic()"
+                        class="fas fa-sync"></i>&nbsp;Documents</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <ngx-loading [show]="loading"
+                     [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+                  </ngx-loading>
+                  <div class="row" *ngIf="data.proof_same==0">
+                     <div class="col-md-6">
+                        <nb-card>
+                           <nb-card-header (click)="flip=!flip"
+                              style="background-color:#01a7ee;padding: 10px;text-align: center;">ADDRESS PROOF(FRONT &
+                              BACK)<i style="float: right;" class="fa fa-arrow-circle-left"></i>
+                           </nb-card-header>
+                           <ngx-flip [flip]="flip">
+                              <div front class="front">
+                                 <img style="width:100%;height: 100%;display: block;"
+                                    [src]='img_doc ? img_doc.address_proof_front:""' #addrProofImgFront />
+                                 <a class="next" (click)="rotate(addrProofImgFront)"> <i class="fas fa-sync"
+                                       style="font-size:15px;"></i></a>
+                              </div>
+                              <div back class="back">
+                                 <img #addrProofImgBack style="width:100%;height:100%;display: block;"
+                                    [src]='img_doc ? img_doc.address_proof_back:""' />
+                                 <a class="next" (click)="rotate(addrProofImgBack)"> <i class="fas fa-sync"
+                                       style="font-size:15px;"></i></a>
+                              </div>
+                           </ngx-flip>
+                           <br>
+                           <div class="form-group row">
+                              <div class="col-sm-6"
+                                 [hidden]="data.address_photo_status ==2 || data.address_photo_status == 0">
+                                 <button *ngIf="role.getroleid()>=775 || !role.getmenurole(1075)"
+                                    style="background-color: #3b484d; color: #ebeff2;  margin: auto; box-shadow: 3px 4px 9px 1px grey; display: block; "
+                                    (click)="docverify(11)" class="btn btn-depth btn-secondary middle"> <a
+                                       class="fas fa-check-circle">&nbsp;Verified</a></button>
+                              </div>
+                              <div class="col-sm-6" [hidden]="data.address_photo_status == 0">
+                                 <button *ngIf="role.getroleid()>=775 || !role.getmenurole(1075)"
+                                    style="background-color: #3b484d; color: #ebeff2;  margin: auto; box-shadow: 3px 4px 9px 1px grey; display: block; "
+                                    (click)="docverify(15)" class="btn btn-depth btn-secondary middle"><a
+                                       class="fas fa-ban">&nbsp;Recollect</a></button>
+                              </div>
+                           </div>
+                        </nb-card>
+                     </div>
+                     <div class="col-md-6" *ngIf="data.proof_same==0">
+                        <nb-card>
+                           <nb-card-header (click)="flip1=!flip1"
+                              style="background-color:#01a7ee;padding: 10px;text-align: center;">ID
+                              PROOF(FRONT & BACK)<i style="float: right;" class="fa fa-arrow-circle-left"></i>
+                           </nb-card-header>
+                           <ngx-flip [flip]="flip1">
+                              <div front class="front">
+
+                                 <img #ID_ProofImgFront style="width:100%;height:100%;"
+                                    [src]='img_doc ? img_doc.id_proof_front:""' />
+                                 <a class="next" (click)="rotate(ID_ProofImgFront)"> <i class="fas fa-sync"
+                                       style="font-size:15px;"></i></a>
+                              </div>
+                              <div back class="back">
+                                 <img #ID_ProofImgBack style="width:100%;height:100%;"
+                                    [src]='img_doc ? img_doc.id_proof_back:""' />
+                                 <a class="next" (click)="rotate(ID_ProofImgBack)"> <i class="fas fa-sync"
+                                       style="font-size:15px;"></i></a>
+                              </div>
+                           </ngx-flip>
+                           <div class="form-group row">
+                              <div class="col-sm-6" [hidden]="data.id_photo_status ==2 || data.id_photo_status == 0">
+                                 <button *ngIf="role.getroleid()>=775 || !role.getmenurole(1075)"
+                                    style="background-color: #3b484d; color: #ebeff2;  margin: auto; box-shadow: 3px 4px 9px 1px grey; display: block; "
+                                    (click)="docverify(21)" class="btn btn-depth btn-secondary middle"> <a
+                                       class="fas fa-check-circle">&nbsp;Verified</a></button>
+                              </div>
+                              <div class="col-sm-6" [hidden]="data.address_photo_status == 0">
+                                 <button *ngIf="role.getroleid()>=775 || !role.getmenurole(1075)"
+                                    style=" background-color: #3b484d; color: #ebeff2;  margin: auto; box-shadow: 3px 4px 9px 1px grey; display: block;"
+                                    (click)="docverify(25)" class="btn btn-depth btn-secondary middle"><a
+                                       class="fas fa-ban">&nbsp;Recollect</a></button>
+                              </div>
+                           </div>
+                        </nb-card>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6" *ngIf="data.proof_same==1">
+                        <nb-card>
+                           <nb-card-header (click)="flip2=!flip2"
+                              style="background-color:#01a7ee;padding: 10px;text-align: center;">ADDRESS&ID(FRONT &
+                              BACK)<i style="float: right;" class="fa fa-arrow-circle-left"></i>
+                              PROOF
+                           </nb-card-header>
+                           <ngx-flip [flip]="flip2">
+                              <div front class="front">
+                                 <img #addressImgFront style="width:100%;height:100%;"
+                                    [src]='img_doc ? img_doc.proof_front:""' />
+                                 <a class="next" (click)="rotate(addressImgFront)"> <i class="fas fa-sync"
+                                       style="font-size:15px;"></i></a>
+                              </div>
+                              <div back class="back">
+                                 <img #addressImgback style="width:100%;height:100%;"
+                                    [src]='img_doc ? img_doc.proof_back:""' />
+                                 <a class="next" (click)="rotate(addressImgback)"> <i class="fas fa-sync"
+                                       style="font-size:15px;"></i></a>
+                              </div>
+                           </ngx-flip>
+                           <div class="form-group row">
+                              <div class="col-sm-6"
+                                 [hidden]="(data.id_photo_status ==2 || data.id_photo_status == 0) && (data.address_photo_status ==2 || data.address_photo_status == 0)">
+                                 <button *ngIf="role.getroleid()>=775 || !role.getmenurole(1075)"
+                                    style="background-color: #3b484d; color: #ebeff2;  margin: auto; box-shadow: 3px 4px 9px 1px grey; display: block; "
+                                    (click)="docverify(31)" class="btn btn-depth btn-secondary middle"> <a
+                                       class="fas fa-check-circle">&nbsp;Verified</a></button>
+                              </div>
+                              <div class="col-sm-6"
+                                 [hidden]="data.address_photo_status == 0 && data.id_photo_status == 0">
+                                 <button *ngIf="role.getroleid()>=775 || !role.getmenurole(1075)"
+                                    style="  background-color: #3b484d; color: #ebeff2;  margin: auto; box-shadow: 3px 4px 9px 1px grey; display: block;"
+                                    (click)="docverify(35)" class="btn btn-depth btn-secondary middle"><a
+                                       class="fas fa-ban">&nbsp;Recollect</a></button>
+                              </div>
+                           </div>
+                        </nb-card>
+                     </div>
+                     <div class="col-md-6">
+                        <nb-card>
+                           <nb-card-header style="background-color:#01a7ee;padding: 10px;text-align: center;">Profile
+                              Pic
+                           </nb-card-header>
+                           <img [src]='pro_pic ? pro_pic.profile_photo:""' />
+                           <div class="form-group row">
+                              <div class="col-sm-6"
+                                 [hidden]="data.user_photo_status == 0 || data.user_photo_status == 2">
+                                 <button *ngIf="role.getroleid()>=775 || !role.getmenurole(1075)"
+                                    style="background-color: #3b484d; color: #ebeff2;  margin: auto; box-shadow: 3px 4px 9px 1px grey; display: block; "
+                                    (click)="docverify(51)" class="btn btn-depth btn-secondary middle"> <a
+                                       class="fas fa-check-circle">&nbsp;Verified</a></button>
+                              </div>
+                              <div class="col-sm-6" [hidden]="data.user_photo_status == 0">
+                                 <button *ngIf="role.getroleid()>=775 || !role.getmenurole(1075)"
+                                    style=" background-color: #3b484d; color: #ebeff2;  margin: auto; box-shadow: 3px 4px 9px 1px grey; display: block;"
+                                    (click)="docverify(55)" class="btn btn-depth btn-secondary middle"><a
+                                       class="fas fa-ban">&nbsp;Recollect</a></button>
+                              </div>
+                           </div>
+                        </nb-card>
+                     </div>
+                  </div>
+                  <br>
+               </ng-template>
+            </ngb-tab>
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="listcomplaint()">Complaints</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  &nbsp;
+                  <div>
+                     <button class="btn btn-sm btn-success"
+                        (click)="complaintadd(data.isp_id,data.reseller_id,id)">Add</button>
+                  </div>
+                  <table class="table table-hover table-striped">
+                     <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+                        <th>Action</th>
+                        <th>Complaint Type</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                     </tr>
+                     <tr *ngFor="let item of complist">
+                        <td><a (click)="history(item.comp_id);"><i class="nb-edit"></i>Edit</a></td>
+                        <td>{{item.comp_type}}</td>
+                        <td>{{item.priority==0 ? 'Immediate': item.priority==1 ? 'Medium':'Low'}}</td>
+                        <td>{{item.status==1 ? 'Open':item.status==2 ? 'Open&Assigned':item.status==3 ? 'Assigned':
+                           item.status==4 ? 'Resolved':item.status==5 ? 'Reassigned':'Closed'}}</td>
+                     </tr>
+                  </table>
+               </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Traffic Report">
+               <ng-template ngbTabContent>
+                  <div class="row">
+                     <div class="col-sm-2">
+                        <label>Select Data</label>
+                        <select class="form-control" [(ngModel)]="oldnew"
+                           (change)="showTableName();radact_tname='';from_date='';to_date='';">
+                           <option value="1" selected>New</option>
+                           <option value="2">Old</option>
+                        </select>
+                     </div>
+                     <div class="col-sm-2" *ngIf="oldnew ==2">
+                        <label>Select Data</label>
+                        <select class="form-control" [(ngModel)]="radact_tname">
+                           <option selected="" value="">Select Data</option>
+                           <option *ngFor="let item of table_data" [ngValue]=item.table_name>{{item.showname}}
+                           </option>
+                        </select>
+                     </div>
+                     <div class="col-sm-2">
+                        <label>From Date</label>
+                        <input type="text" [(ngModel)]="from_date" [owlDateTime]="from_date_layout"
+                           [owlDateTimeTrigger]="from_date_layout" name="from_date" placeholder="Select Date "
+                           class="form-control" for />
+                        <owl-date-time [pickerType]="'calendar'" #from_date_layout></owl-date-time>
+                     </div>
+                     <div class="col-sm-2">
+                        <label>To Date</label>
+                        <input type="text" [(ngModel)]="to_date" [owlDateTime]="to_date_layout"
+                           [owlDateTimeTrigger]="to_date_layout" name="to_date" placeholder="Select Date "
+                           class="form-control" />
+                        <owl-date-time [pickerType]="'calendar'" #to_date_layout></owl-date-time>
+                     </div>
+                     <div class="col-sm-2" style="padding-top: 28px;">
+                        <label></label>
+                        <button type="button" class="btn btn-md btn-success " (click)='trafficreport();'>Search</button>
+                     </div>
+                  </div>
+                  <hr style="border: 0px;">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="pagination">
+                           <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                              <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+                              <a [ngClass]="{disabled:pager.currentPage === 1}"
+                                 (click)="page=page-1;getlist();">Previous</a>
+                              <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                                 (click)="getlist(page)">{{page}}</a>
+                              <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                                 (click)="page=page+1;getlist();">Next</a>
+                              <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                                 (click)="page=pager.totalPages;getlist();">Last</a>
+                           </ul>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <i (click)="downloadtraffic()" style="margin-right:6px;"
+                           class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+                     </div>
+                  </div>
+                  <table class="table table-bordered table-striped">
+                     <thead class="success">
+                        <th style="text-align: left;" colspan="7" class="black-muted-bg"><b> Total Count :
+                           </b>{{trafcount}}</th>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td style="text-align: center;" class="changesize"><b> Toal Download <br><i
+                                    class="fa fa-inr"></i>
+                              </b>
+                           </td>
+                           <td style="text-align: center;" class="changesize"><b> Total Upload <br><i
+                                    class="fa fa-inr"></i>
+                              </b>
+                           </td>
+                           <td style="text-align: center;" class="changesize"><b> Overall Total <br><i
+                                    class="fa fa-inr"></i>
+                              </b>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td style="text-align: center;"> {{totdl || 0 }}</td>
+                           <td style="text-align: center;"> {{totul || 0 }}</td>
+                           <td style="text-align: center;"> {{overaltot || 0 }}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+                  <div class="table-wrapper">
+                     <table class="table table-hover table-striped">
+                        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+                           <th>Username</th>
+                           <th>Running Service</th>
+                           <th>Service Type</th>
+                           <th>Start Time</th>
+                           <th>End Time</th>
+                           <th>Online Time</th>
+                           <th>Protocol Type</th>
+                           <th>Fram IP</th>
+                           <th>Nas IP</th>
+                           <th>Download</th>
+                           <th>Upload</th>
+                           <th>Total</th>
+                           <th>Mac</th>
+                           <th>Terminate Cause</th>
+                        </tr>
+                        <tr *ngFor="let item of pagedItems">
+                           <td>{{item.username }}</td>
+                           <td>{{item.srvname || '--'}}</td>
+                           <td>{{item.srvmode ==0? 'Regular': item.srvmode ==1? 'Fallback': item.srvmode
+                              ==2?'Expired':item.srvmode==3?'Disabled':''}}</td>
+                           <td>{{item.acctstarttime | date:'d MMM y h:mm:ss a'}}</td>
+                           <td>{{item.acctstoptime | date:'d MMM y h:mm:ss a'}}</td>
+                           <td>{{item.time}}</td>
+                           <td style="text-align: center;">{{item.protocoltype}}</td>
+                           <td>{{item.framedipaddress}}</td>
+                           <td>{{item.nasipaddress}}</td>
+                           <td>{{item.download}}</td>
+                           <td>{{item.upload}}</td>
+                           <td>{{item.total}}</td>
+                           <td>{{item.callingstationid}}</td>
+                           <td>{{item.acctterminatecause==''?'--':item.acctterminatecause}}</td>
+                        </tr>
+                     </table>
+                  </div>
+                  <br>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="pagination">
+                           <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                              <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+                              <a [ngClass]="{disabled:pager.currentPage === 1}"
+                                 (click)="page=page-1;getlist();">Previous</a>
+                              <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                                 (click)="getlist(page)">{{page}}</a>
+                              <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                                 (click)="page=page+1;getlist();">Next</a>
+                              <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                                 (click)="page=pager.totalPages;getlist();">Last</a>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </ng-template>
+            </ngb-tab>
+             <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="getImage()"><i (click)="getImage()" class="fas fa-sync"></i>&nbsp;Graph</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <div class="row">
+                     <div class="col-sm-6">
+                        <nb-card>
+                           <nb-card-header style="background-color:#01a7ee;padding: 10px;">DAY</nb-card-header>
+                           <img (click)="graphpopup(data.username,data.cust_profile_id,1)"
+                              [src]='img_result ? img_result.day:""' />
+                        </nb-card>
+                     </div>
+                     <div class="col-sm-6">
+                        <nb-card>
+                           <nb-card-header style="background-color:#01a7ee;padding:10px;">WEEk</nb-card-header>
+                           <img (click)="graphpopup(data.username,data.cust_profile_id,2)"
+                              [src]='img_result ? img_result.week:""' />
+                        </nb-card>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-sm-6">
+                        <nb-card>
+                           <nb-card-header style="background-color:#01a7ee;padding: 10px;">MONTH</nb-card-header>
+                           <img (click)="graphpopup(data.username,data.cust_profile_id,3)"
+                              [src]='img_result ? img_result.month:""' />
+                        </nb-card>
+                     </div>
+                     <div class="col-sm-6">
+                        <nb-card>
+                           <nb-card-header style="background-color: #01a7ee;padding: 10px;">YEAR</nb-card-header>
+                           <img (click)="graphpopup(data.username,data.cust_profile_id,4)"
+                              [src]='img_result ? img_result.year:""' />
+                        </nb-card>
+                     </div>
+                  </div>
+               </ng-template>
+            </ngb-tab> 
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="splitdata()">Data Split</div>
+               </ng-template>
+               <ng-template ngbTabContent>
+                  <table class="table table-hover table-striped">
+                     <tr style="background-color :  #01a7eee5;color:white;font-size: medium;">
+                        <th>Action</th>
+                        <th>SubPlan Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Validity</th>
+                        <th>Additional Days</th>
+                        <th>Upload Limit</th>
+                        <th>Download Limit</th>
+                        <th>Total Limit</th>
+                        <th>Status</th>
+                     </tr>
+                     <tr *ngFor="let item of datasplitinfo">
+                        <td [hidden]="item.status==2" style="padding: 1px;" class=" last" data-title="'Action'">
+                           <div class="dropdown ghost-dropdown" ngbDropdown>
+                              <button style="width: 70px;font-size: 10px;margin: 3px;" class="btn btn-primary btn-icon"
+                                 type="button" ngbDropdownToggle>Action&nbsp;
+                              </button>
+                              <ul style="width: 75;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                                 <li class="dropdown-item" title="Edit" (click)="splitupdate(item.id)"><i
+                                       style="font-size: 20px;" class="fa fa-caret-square-right"></i>&nbsp;Update</li>
+                              </ul>
+                           </div>
+                        </td>
+                        <td *ngIf="item.status==2" style="text-align: center;"><a
+                              [ngStyle]="{'color' :item.status==2 ? 'green' : 'red' }"
+                              [ngClass]="{'ion-close-round':item.status!=2? true:false,'ion-checkmark-round': item.status==2 ? true:false  }"></a>
+                        </td>
+                        <td>{{item.sub_plan}}</td>
+                        <td>{{item.start_date | date : 'd MMM y h:mm:ss a'}}</td>
+                        <td>{{item.end_date | date : 'd MMM y h:mm:ss a'}}</td>
+                        <td>{{item.time_unit+" "+(item.type==0 ? 'Days':'Months')}}</td>
+                        <td style="text-align: center;">{{item.additional_days+" "+'Days'}}</td>
+                        <td style="text-align: center;">{{item.upload}}</td>
+                        <td style="text-align: center;">{{item.download}}</td>
+                        <td style="text-align: center;">{{item.total}}</td>
+                        <td>{{item.status==1 ?'Data Split Not done':item.status==2 ? 'Data Split Done':'Cancelled'}}
+                        </td>
+                     </tr>
+                  </table>
+               </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+               <ng-template ngbTabTitle>
+                  <div (click)="getPlanData()">Plan Mapping</div>
+                  <ng-template ngbTabContent>
+                     <nb-card>
+                        <nb-card-header style="background-color: #01a7ee;">Service Maping</nb-card-header>
+                        <nb-card-body>
+                           <div class="form-group row">
+                              <div class="col-sm-12" style="height: 500px;">
+                                 <tree-root #tree [options]="options" [nodes]="nodes"></tree-root>
+                              </div>
+                           </div>
+                        </nb-card-body>
+                     </nb-card>
+
+                     <div class="col text-center">
+                        <button type="button" (click)="planMapping();" class="btn btn-md btn-success">Update</button>
+                     </div>
+                  </ng-template>
+               </ng-template>
+            </ngb-tab>
+
+
+         </ngb-tabset>
+         <div class="modal-footer">
+            <button type="submit" class="btn btn-mid btn-danger" (click)="cancel()">Back</button>
+         </div>
+      </nb-card-body>
+   </nb-card>
+</div>

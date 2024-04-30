@@ -1,0 +1,23 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="AddOTTForm" (ngSubmit)="addOTT()">
+   <div class="modal-body">
+      <div class="form-group row">
+         <div class="col-sm-12">
+            <label>OTT Name <span style="color:red;">*</span></label>
+            <input type="text" formControlName="ott_name" placeholder="OTT Name"
+               [ngClass]="{'form-control':true,'form-control-danger':AddOTTForm.controls.ott_name.invalid&&submit}">
+            <small *ngIf="AddOTTForm.controls.ott_name.invalid&&submit" class="form-text error">OTT Name is
+               Required!</small>
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button type="submit" class="btn btn-md btn-primary">{{item ? 'Update': 'Add'}}</button>
+
+   </div>
+</form>

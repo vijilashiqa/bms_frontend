@@ -1,0 +1,79 @@
+<div class="col-md-12">
+   <nb-card>
+      <nb-card-header>Reseller Service Mapping</nb-card-header>
+      <nb-card-body>
+         <toaster-container [toasterconfig]="config"></toaster-container>
+         <form [formGroup]="ResPackmapForm" class="form-horizontal" (ngSubmit)="addNas();">
+            <div class="modal-body">
+               <div class="form-group row">
+                  <div class="col-sm-3" *ngIf="role.getroleid()>777">
+                     <label>ISP Name <span style="color:red;">*</span></label>
+                     <select formControlName="bus_id"
+                        [ngClass]="{'form-control':true,'form-control-danger':ResPackmapForm.controls.invalid&&submit}"
+                        (change)="GroupName();changevalid();ResPackmapForm.controls.groupid.setValue('')">
+                        <option value="" selected>Select ISP Name</option>
+                        <option *ngFor="let item of busname" [ngValue]=item.id>{{item.busname}}</option>
+                     </select>
+                     <small *ngIf="ResPackmapForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is
+                        Required!</small>
+                  </div>
+                  <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+                     <label>Circle <span style="color:red;">*</span></label>
+                     <select formControlName="groupid" (change)="resellername();changevalid()"
+                        [ngClass]="{'form-control':true,'form-control-danger':ResPackmapForm.controls.groupid.invalid&&submit}">
+                        <option value="" selected="">Select Circle</option>
+                        <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+                     </select>
+                     <small *ngIf="ResPackmapForm.controls.groupid.invalid&&submit" class="form-text error">Circle is
+                        Required!</small>
+                  </div>
+                  <div class="col-sm-3" *ngIf="role.getroleid()>=666">
+                     <label>From Reseller <span style="color:red;">*</span></label>
+                     <auto-completen
+                        [addclass]="{'form-control':true,'form-control-danger':ResPackmapForm.controls.reseller.invalid&&submit}"
+                        addclass="form-control" optValues="company" formControlName="reseller"
+                        (keyUp)="resellername($event)"
+                        (changed)="service();ResPackmapForm.controls.package.setValue('')" placeholder='Select Reseller'
+                        id="id" [item]="reseldata">   
+                     </auto-completen>
+                     <small *ngIf="ResPackmapForm.controls.reseller.invalid&&submit" class="form-text error">From
+                        Reseller is Required!</small>
+                  </div>
+                  <div class="col-sm-3">
+                     <label>Service Name <span style="color:red;">*</span></label>
+                     <auto-completen
+                        [addclass]="{'form-control' : true,'form-control-danger':ResPackmapForm.controls.package.invalid&&submit}"
+                        (keyUp)="service($event)" (changed)="subplanshow();mapreseller()" optValues="srvname"
+                        placeholder='Select Service Name' formControlName="package" optId="srvid" [item]="pack">
+                     </auto-completen>
+                     <small *ngIf="ResPackmapForm.controls.package.invalid&&submit" class="form-text error">Service Name
+                        is Required!</small>
+                  </div>
+                  <div class="col-sm-3">
+                     <label>To Reseller <span style="color:red;">*</span></label>
+                     <auto-completen
+                        [addclass]="{'form-control':true,'form-control-danger':ResPackmapForm.controls.to_reseller.invalid&&submit}"
+                        addclass="form-control" optValues="company" formControlName="to_reseller"
+                        (keyUp)="resellername($event)" (changed)="service()" placeholder='Select Reseller' id="id"
+                        [item]="resellist">
+                     </auto-completen>
+                     <small *ngIf="ResPackmapForm.controls.to_reseller.invalid&&submit" class="form-text error">To
+                        Reseller is Required!</small>
+                  </div>
+               </div>
+               <div class="form-group row"
+                  *ngIf="(ResPackmapForm.value['package']!='' && ResPackmapForm.value['package']!=null)">
+                  <div class="col-sm-12">
+                     <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)"
+                        (userRowSelect)="onUserRowSelect($event)" (editConfirm)="editConfirm($event)">
+                     </ng2-smart-table>
+                  </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="submit" class="btn btn-md btn-success">Update</button>
+            </div>
+         </form>
+      </nb-card-body>
+   </nb-card>
+</div>

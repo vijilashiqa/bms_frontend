@@ -1,0 +1,122 @@
+<div class="modal-header" style="background-color :  #01a7ee">
+   <span>{{ modalHeader }}</span>
+   <button class="close" aria-label="Close" (click)="activeModal.close()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<div class="modal-body" style="width: 100%;white-space: break-spaces;">
+   <div id="main_cont" style="background-color: #FFFFFF;">
+      <div id="Pdf" style="background-color: #FFFFFF;">
+         <div class="page" style="width:100%;height: 50%;white-space: break-spaces;">
+            <table style="border-bottom: 1px solid black;width:100%;">
+               <tbody>
+                  <div style="font-weight: 700;text-align: center;">RECEIPT</div>
+                  <p style="color: darkblue; margin-bottom: 2px;font-weight: 400;">
+                     <img style="width:180px" src="/assets/images/Bluelotus_logo_bold4.png">
+                     <img *ngIf="receiptdata ? receiptdata.rstatus==2:''"
+                        style="width:100px;float:right;transform: rotate(29deg);" src="/assets/images/c1.png"><br>
+                     <span
+                        style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{receiptdata?receiptdata.busname:'--'}}</span><br>
+                     <span
+                        style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{bus_address?bus_address:'--'}}<br>
+                     </span>
+                  </p>
+               </tbody>
+            </table>
+            <table style="border-bottom: 1px solid black; width:100%;">
+               <tbody>
+                  <tr>
+                     <td>Receipt No&nbsp;:&nbsp;{{receiptdata?receiptdata.receipt_num:''}}</td>
+                     <td style="text-align: right;">Receipt Date&nbsp;:&nbsp;{{receiptdata ? (receiptdata.receipt_date |
+                        date : 'd MMM y '):'N/A'}}</td>
+                  </tr>
+               </tbody>
+            </table>
+            <table style=" width:100%;border-bottom: 1px solid black;">
+               <tbody>
+                  <tr>
+                     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Received with thanks from Mr./Mrs<span
+                           style="border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.creator:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+                        Sum of Rupees<span
+                           style=" border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.total_amount:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>towards
+                        subscribtion / Renewal of LIMRAS ERONET BROADBAND for the Service<span
+                           style="border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.srvname:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>plan<span
+                           style=" border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.sub_plan:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>and subscribed by<span style=" border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.custname:''}}</span>
+                     </p>
+                     <p>Hereby, I confirm the Invoice amount received is<span
+                           style="border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.received_amt:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;and
+                        the balance is<span
+                           style="border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata
+                           ?
+                           receiptdata.inv_balance_amt:0 }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+                  </tr>
+               </tbody>
+            </table>
+            <p style="text-align: right">Authorized Signatory</p>
+            <br>
+            <p style="text-align: center;">***
+               This is a Computer Generated Receipt ***
+            </p>
+            <!-- <p style="text-align: center;">Thankyou for being Our Business Partner</p> -->
+
+
+            <!-- <div style="border: none; border-top:dotted;"></div>
+            <table style="border-bottom: 1px solid black;width:100%;">
+               <tbody>
+                  <p style="color: darkblue;margin-bottom: 2px;font-weight: 400;">
+                     <img style="width:180px" src="/assets/images/Bluelotus_logo_bold4.png.png">
+                     <img *ngIf="receiptdata ? receiptdata.rstatus==2:''"
+                        style="width:100px;float:right;transform: rotate(29deg);" src="/assets/images/c1.png"><br>
+                     <span
+                        style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{receiptdata?receiptdata.busname:'--'}}</span><br>
+                     <span
+                        style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{receiptdata?r:'--'}}<br>
+                     </span>
+                  </p>
+               </tbody>
+            </table>
+            <table style="border-bottom: 1px solid black; width:100%;">
+               <tbody>
+                  <tr>
+                     <td>Receipt No&nbsp;:&nbsp;{{receiptdata?receiptdata.receipt_num:''}}</td>
+                     <td style="text-align: right;">Receipt Date&nbsp;:&nbsp;{{receiptdata ? (receiptdata.receipt_date |
+                        date
+                        : 'd MMM y '):'N/A'}}</td>
+                  </tr>
+               </tbody>
+            </table>
+            <table style=" width:100%;border-bottom: 1px solid black;">
+               <tbody>
+                  <tr>
+                     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Received with thanks from Mr./Mrs<span
+                           style="border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.creator:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+                        Sum of Rupees<span
+                           style=" border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.total_amount:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>towards
+                        subscribtion / Renewal of LIMRAS ERONET BROADBAND for the Service<span
+                           style="border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.srvname:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>plan<span
+                           style=" border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.sub_plan:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>and subscribed by<span style=" border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.custname:''}}</span>
+                     </p>
+                     <p>Hereby, I confirm the Invoice amount received is<span
+                           style="border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata?receiptdata.received_amt:''}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;and
+                        the balance is<span
+                           style="border-bottom: 1px dotted;font-weight: bolder;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{receiptdata
+                           ?
+                           receiptdata.inv_balance_amt:0 }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+                  </tr>
+               </tbody>
+            </table>
+            <p style="text-align: right">Authorized Signatory</p>
+            <br>
+            <p style="text-align: center;">***
+               This is a Computer Generated Receipt ***
+            </p>
+            <p style="text-align: center;">Thankyou for being Our Business Partner</p> -->
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal-footer">
+   <button type="submit" class="btn btn-md btn-success" (click)="print();">Print</button>
+   <!--    <button type="submit" class="btn btn-md btn-info" (click)="captureScreen();">Download</button>
+      --> <button type="button" class="btn btn-md btn-danger" (click)="activeModal.close();">Cancel</button>
+</div>

@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="activeModal.close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="paymentForm" class="form-horizontal" (ngSubmit)="addNas();">
+  <div class="modal-body">
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <label>Reason* </label>
+        <select  name="reason" formControlName="reason"
+          [ngClass]="{'form-control' : true,'form-control-danger':paymentForm.controls.reason.invalid&&submit}">
+          <option value="11">Wrong Deposit</option>
+          <option value="12">Payment Not Received</option>
+          <option value="13">Other Reasons</option>
+        </select>
+        <small *ngIf="paymentForm.hasError('required','reason')&&submit" class="form-text error">Select Required
+          Reason!</small>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf='paymentForm.value["reason"]==13'>
+      <div class="col-sm-12">
+        <label>Other Reason* </label>
+        <input type="text" formControlName="other_reason"
+          [ngClass]="{'form-control' : true,'form-control-danger':paymentForm.controls.other_reason.invalid&&submit}">
+        <small *ngIf="paymentForm.hasError('required','other_reason')&&submit" class="form-text error"> Reason is
+          Required!</small>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-md btn-success">Submit</button>
+  </div>
+</form>

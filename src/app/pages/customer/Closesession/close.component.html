@@ -1,0 +1,19 @@
+<ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+  <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+     <p> Are you sure you want to Close Session</p>
+    </div>
+     <div class="modal-footer">
+  <button type="submit" class="btn btn-md btn-primary" (click)='closesession()' style="margin: auto; display: block;">OK</button>
+</div>
+
+
+

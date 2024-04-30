@@ -1,0 +1,34 @@
+table {
+    border: 1px solid black;
+}
+
+table td {
+    border: 1px solid rgb(61, 134, 168);
+    /* Style just to show the table cell boundaries */
+    font-family: sans-serif;
+    font-weight: 500;
+}
+
+
+table.no-spacing {
+    border-spacing: 0;
+    /* Removes the cell spacing via CSS */
+    border-collapse: collapse;
+    /* Optional - if you don't want to have double border where cells touch */
+}
+
+
+.table td {
+    white-space: break-spaces;
+}
+
+.container {
+    font-size: 16px;
+    line-height: 16px;
+    height: 32px;
+    overflow: hidden;
+}
+.show {
+    overflow: visible;
+    height: auto;
+}

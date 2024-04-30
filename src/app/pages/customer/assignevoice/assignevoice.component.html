@@ -1,0 +1,46 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <!-- <toaster-container [toasterconfig]="config"> </toaster-container> -->
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="AssigneVoiceForm" (ngSubmit)="assigneSubmit()">
+   <div class="modal-body">
+      <div class="form-group row">
+         <div class="col-sm-3">
+            <label>ISP Name <span style="color: red;">*</span></label>
+            <input type="text" readonly formControlName="bus_id" placeholder="ISP Name"
+               [ngClass]="{'form-control':true,'form-control-danger':AssigneVoiceForm.controls.bus_id.invalid&&submit}">
+         </div>
+         <div class="col-sm-3">
+            <label>Voice NO <span style="color: red;">*</span></label>
+            <input type="number" readonly formControlName="voice_num" placeholder="Voice Number"
+               [ngClass]="{'form-control':true,'form-control-danger':AssigneVoiceForm.controls.voice_num.invalid&&submit}">
+         </div>
+         <div class="col-sm-3">
+            <label>Reseller Name <span style="color: red;">*</span></label>
+            <auto-completen (changed)="showUser()"
+              [addclass]="{'form-control' : true,'form-control-danger':AssigneVoiceForm.controls.reseller.invalid&&submit}"
+              optValues="company" (keyUp)="showReseller($event)" formControlName="reseller" placeholder='Select Reseller' id="id"
+              [item]="resell">
+            </auto-completen>
+            <small *ngIf="AssigneVoiceForm.controls.reseller.invalid&&submit" class="form-text error">Subscriber ID is
+              Required!</small>
+         </div>
+         <div class="col-sm-3">
+            <label>Subscriber-ID <span style="color: red;">*</span></label>
+            <auto-completen 
+              [addclass]="{'form-control' : true,'form-control-danger':AssigneVoiceForm.controls.sub_id.invalid&&submit}"
+              optValues="username" (keyUp)="showUser($event)" formControlName="sub_id" placeholder='Select SubscriberID' optId="uid"
+              [item]="custlogid">
+            </auto-completen>
+            <small *ngIf="AssigneVoiceForm.controls.sub_id.invalid&&submit" class="form-text error">Subscriber ID is
+              Required!</small>
+          </div>
+      </div>
+   </div>
+   <div class="modal-footer" >
+      <button type="submit"  class="btn btn-md btn-primary">Update</button>
+   </div>
+</form>

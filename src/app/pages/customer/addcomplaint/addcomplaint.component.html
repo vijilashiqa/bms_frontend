@@ -1,0 +1,65 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <!-- <toaster-container [toasterconfig]="config"> </toaster-container> -->
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="CustCompForm" (ngSubmit)="custcompsubmit()">
+   <div class="modal-body">
+      <div class="form-group row">
+         <div class="col-sm-4">
+           <label>Assign to Employee </label>
+           <auto-completen formControlName="Assign"
+             [addclass]="{'form-control':true,'form-control-danger':CustCompForm.controls.Assign.invalid&&submit}"
+             optValues="empname" placeholder='Select Employee' (keyUp)="employe($event)" id="id" [item]="employdata">
+           </auto-completen>
+           <!-- <small *ngIf="CustCompForm.controls.Assign.invalid&&submit" class="form-text error">Select Assigned
+             Employee!</small> -->
+         </div>
+         <div class="col-sm-4">
+           <label>Complaint Type <span style="color:red;">*</span></label>
+           <auto-completen formControlName="complaint"
+             [addclass]="{'form-control':true,'form-control-danger':CustCompForm.controls.complaint.invalid&&submit}"
+             optValues="comp_type" placeholder='Select Complaint' (keyUp)="comptype($event)" optId="comp_type_id"
+             [item]="comptypdata">
+           </auto-completen>
+         </div>
+         <div class="col-sm-4">
+           <label>Priority <span style="color:red;">*</span></label>
+           <select name="Priority" formControlName="Priority"
+             [ngClass]="{'form-control' : true,'form-control-danger':CustCompForm.controls.Priority.invalid&&submit}">
+             <option value="" selected> Select your priority</option>
+             <option value="0">Immediate</option>
+             <option value="1">Medium</option>
+             <option value="2">Low</option>
+           </select>
+         </div>
+       </div>
+       <div class="form-group row">
+         <div class="col-sm-4">
+           <label>Subject</label>
+           <input type="text" name="sub_comp" formControlName="sub_comp" placeholder="Enter your Subject"
+             [ngClass]="{'form-control' : true,'form-control-danger':CustCompForm.controls.sub_comp.invalid&&submit}" />
+           <small *ngIf="CustCompForm.controls.sub_comp.invalid&&submit" class="form-text error"> Subject is
+             required! </small>
+         </div>
+         <div class="col-sm-4">
+           <label>Notes</label>
+           <textarea name="Notes" formControlName="Notes" class="form-control"></textarea>
+         </div>
+         <div class="col-sm-4">
+           <label>Status <span style="color:red;">*</span></label>
+           <select formControlName="status"
+             [ngClass]="{'form-control':true,'form-control-danger':CustCompForm.controls.status.invalid&&submit}">
+             <option value="" selected>Select Complaint Status</option>
+             <option value="1">Open</option>
+             <option value="2">Open & Assigned</option>
+           </select>
+         </div>
+       </div>
+   </div>
+   <div class="modal-footer" >
+      <button type="submit"  class="btn btn-md btn-primary">Add</button>
+   </div>
+</form>

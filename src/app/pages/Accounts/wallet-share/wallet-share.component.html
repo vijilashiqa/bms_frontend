@@ -1,0 +1,147 @@
+<div class="col-md-12">
+   <nb-card>
+      <ngx-loading [show]="loading"
+         [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+      </ngx-loading>
+      <toaster-container></toaster-container>
+      <nb-card-header><b>Wallet Sharing</b></nb-card-header>
+      <nb-card-body>
+         <form [formGroup]="AddDepositForm" (ngSubmit)="addDeposit()" class="form-horizontal">
+            <div class="modal-body">
+               <div class="form-group row">
+                  <div class="col-sm-3" *ngIf="role.getroleid()>777">
+                     <label>ISP Name <span style="color:red;">*</span> </label>
+                     <auto-completen
+                        [addclass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.bus_id.invalid&&submit}"
+                        (changed)="groupname();profile();" formControlName="bus_id" optValues="busname"
+                        placeholder='Select Business' optId="id" [item]="busdata">
+                     </auto-completen>
+                     <small *ngIf="AddDepositForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is
+                        Required</small>
+                  </div>
+                  <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+                     <label>Circle</label>
+                     <auto-completen
+                        [addclass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.groupid.invalid&&submit}"
+                        (changed)="getf('frole').setValue('');getf('fresel_id').setValue('');getf('trole').setValue('');getf('tresel_id').setValue('');getf('res_balance').setValue('');
+                        getf('to_res_balance').setValue('')" optValues="groupname" formControlName="groupid"
+                        (changed)="resellername()" placeholder='Select Circle' optId="groupid" [item]="groupdata">
+                     </auto-completen>
+                  </div>
+                  <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+                     <label><b>From Reseller Type</b><span style="color:red;">*</span></label>
+                     <select name="frole" formControlName="frole"
+                        (change)="resellername();toprofile();
+                    getf('fresel_id').setValue('');getf('trole').setValue('');getf('tresel_id').setValue('');getf('res_balance').setValue('');getf('to_res_balance').setValue('')"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.frole.invalid&&submit}">
+                        <option value="" selected>Select Reseller Type</option>
+                        <option *ngFor="let item of pro" [ngValue]="item.role">{{item.menu_name}}</option>
+                     </select>
+                     <small *ngIf="AddDepositForm.controls.frole.invalid&&submit" class="form-text error">Profile Is
+                        Required!</small>
+                  </div>
+                  <div class="col-sm-3"  *ngIf="role.getroleid()>=775">
+                     <label> <b>From Reseller Name </b><span style="color:red;">*</span></label>
+                     <auto-completen
+                        (changed)="resbalance();toprofile();getf('trole').setValue('');getf('tresel_id').setValue('');getf('to_res_balance').setValue('')"
+                        (keyUp)="resellername($event)"
+                        [addclass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.fresel_id.invalid&&submit}"
+                        optValues="company" formControlName="fresel_id" placeholder='Select Reseller' id="fresel_id"
+                        [item]="reseldata">
+                     </auto-completen>
+                     <small *ngIf="AddDepositForm.controls.fresel_id.invalid&&submit" class="form-text error">Reseller
+                        Name is Required!</small>
+                  </div>
+               </div>
+               <div class="form-group row">
+                  <div class="col-sm-3">
+                     <label><b>To Reseller Type</b><span style="color:red;">*</span></label>
+                     <select name="trole" formControlName="trole"
+                        (change)="toreseller();getf('tresel_id').setValue('');getf('to_res_balance').setValue('')"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.trole.invalid&&submit}">
+                        <option value="" selected>Select Reseller Type</option>
+                        <option *ngFor="let item of to_pro" [ngValue]="item.role">{{item.menu_name}}</option>
+                     </select>
+                     <small *ngIf="AddDepositForm.controls.trole.invalid&&submit" class="form-text error">Profile Is
+                        Required!</small>
+                  </div>
+                  <div class="col-sm-3">
+                     <label> <b>To Reseller Name </b><span style="color:red;">*</span></label>
+                     <auto-completen (keyUp)="toreseller($event)" (changed)="toresbalance();"
+                        [addclass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.tresel_id.invalid&&submit}"
+                        optValues="company" formControlName="tresel_id" placeholder='Select Reseller' id="tresel_id"
+                        [item]="to_reseldata">
+                     </auto-completen>
+                     <small *ngIf="AddDepositForm.controls.tresel_id.invalid&&submit" class="form-text error">Reseller
+                        Name is Required!</small>
+                  </div>
+               </div>
+               <nb-card>
+                  <nb-card-header style="background-color :  #01a7ee">Deposit Creation</nb-card-header>
+                  <nb-card-body>
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label  *ngIf="role.getroleid()>=775"><b>From Reseller Balance</b></label>
+                           <label  *ngIf="role.getroleid()==555"><b> {{role.getFname()}} Balance</b></label>
+                           <input style=" font-family: 'Font Awesome 5 Free';font-weight: 900;" type="text"
+                              formControlName="res_balance" readonly placeholder="Reseller Balance"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.invalid&&submit}">
+                        </div>
+                        <div class="col-sm-4">
+                           <label><b>To Reseller Balance</b></label>
+                           <input style=" font-family: 'Font Awesome 5 Free';font-weight: 900;" type="text"
+                              formControlName="to_res_balance" readonly placeholder="Reseller Balance"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.invalid&&submit}">
+                        </div>
+
+
+                     </div>
+
+                     <div class="form-group row">
+
+
+                        <div class="col-sm-4">
+                           <label>Paid Amount <span style="color:red;">*</span></label>
+                           <input formControlName="paid_amnt" placeholder="Paid Amount"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.paid_amnt.invalid&&submit}">
+                           <small *ngIf="AddDepositForm.controls.paid_amnt.invalid&&submit" class="form-text error">Paid
+                              Amount is Required</small>
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label>Reason <span style="color:red;">*</span></label>
+                           <select formControlName="reason"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.reason.invalid&&submit}">
+                              <option value="" selected>Select Deposit reason</option>
+                              <option *ngFor="let item of reasondata" [ngValue]="item.id">{{item.reason}}</option>
+                           </select>
+                           <small *ngIf="AddDepositForm.controls.reason.invalid&&submit" class="form-text eror">Reason
+                              is Required</small>
+                        </div>
+                        <div class="col-sm-4" *ngIf="AddDepositForm.value['reason']=='13'">
+                           <label>Other Reason <span style="color:red;">*</span></label>
+                           <input type="text" formControlName="ot_reason" placeholder="Other Reason"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.ot_reason.invalid&&submit}">
+                           <small *ngIf="AddDepositForm.controls.ot_reason.invalid&&submit" class="form-text eror">Other
+                              Reason is Required!</small>
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Notes</label>
+                           <textarea formControlName="note" placeholder="Notes"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.note.invalid&&submit}">
+                          </textarea>
+                        </div>
+                     </div>
+                  </nb-card-body>
+               </nb-card>
+               <div class="modal-footer">
+                  <button type="submit" class="btn btn-sm btn-success">Add</button>
+                  <button type="button" class="btn btn-sm btn-danger"
+                     [routerLink]="['/pages/Accounts/depositlist']">Back</button>
+               </div>
+            </div>
+         </form>
+      </nb-card-body>
+   </nb-card>
+</div>

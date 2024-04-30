@@ -1,0 +1,68 @@
+<div class="col-md-12">
+    <nb-card>
+      <nb-card-header>Reseller Payment Report</nb-card-header>
+      <nb-card-body>
+<nb-card>
+     <nb-card-header>Search</nb-card-header>
+     <nb-card-body>
+      
+         <form [formGroup]="ReportsForm" class="form-horizontal" (ngSubmit)="addNas();">
+                <div class="modal-body">
+                <div class="form-group row">
+                <div class="col-sm-6">
+                   <label>Select Reseller</label>
+                   <input list="selectreseller" placeholder="choose your Reseller" name="selectreseller" formControlName="selectreseller" class="form-control"/>
+                   <datalist id= "selectreseller">
+                   <option value="aaa"></option>
+                   <option value="bbb"></option>
+                   </datalist>
+                </div>
+                <div class="col-sm-6">
+                   <label>Payment Added By</label>
+                   <input list="Payment" placeholder="choose your Payment" name="Payment" formControlName="Payment" class="form-control" />
+                   <datalist id= "Payment">
+                   <option value="xxx"></option>
+                   <option value="yyy"></option>
+                   </datalist>
+                </div>
+               
+                </div>
+               
+                <div class="form-group row">
+                <div class="col-sm-6">
+                        <label>Payment From</label>
+                        <input type="Date" name="payment_from" formControlName="payment_from" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.payment_from.invalid&&submit}"/>
+                </div>
+                  
+                  
+                 <div class="col-sm-6">
+                        <label>Payment To</label>
+                        <input type="Date" name="payment_to" formControlName="payment_to" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.payment_to.invalid&&submit}"/>
+                </div>
+                </div>
+                    
+         
+                 </div>
+                         <button type="submit" class="btn btn-md btn-success" style="margin: auto; display: block;">Search</button>
+         </form>
+      
+      </nb-card-body> 
+      </nb-card>
+                        <table class="table">
+                       
+                        <tr>
+                        <th>Reseller Name</th>
+                        <th>User Name</th>
+                        <th>Paid Amount</th>
+                        <th>Paid Date</th>
+                        <th>Notes</th>
+                        <th>Payment Added By</th>
+                        </tr>
+                                             </table>
+     </nb-card-body>
+    </nb-card>
+
+     </div>
+
+
+

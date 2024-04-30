@@ -1,0 +1,52 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>
+    OTT Plan Mapping
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]></toaster-container>
+    <form [formGroup]="AddOttMapForm" (ngSubmit)="addottmap()">
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-sm-4" *ngIf="role.getroleid()>777">
+            <label>ISP Name <span style="color:red;">*</span> </label>
+            <auto-completen
+              [addclass]="{'form-control' : true,'form-control-danger':AddOttMapForm.controls.isp_id.invalid&&submit}"
+              (keyUp)="showBusiness($event)" (changed)="showReseller();showOttPlan();AddOttMapForm.controls.manid.setValue('');" formControlName="isp_id"
+              optValues="busname" placeholder='Select Business' id="id" [item]="busdata">
+            </auto-completen>
+            <small *ngIf="AddOttMapForm.controls.isp_id.invalid&&submit" class="form-text error">ISP Name is
+              Required</small>
+          </div>
+          <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+            <label>Reseller Name <span style="color:red;">*</span></label>
+            <auto-completen
+              [addclass]="{'form-control':true,'form-control-danger':AddOttMapForm.controls.manid.invalid&&submit}"
+              addclass="form-control" optValues="company" formControlName="manid" (keyUp)="showReseller($event)"
+              placeholder='Select Reseller' id="id" [item]="resell">
+            </auto-completen>
+            <small *ngIf="AddOttMapForm.hasError('required','manid')&&submit" class="form-text error">Reseller
+              is required! </small>
+          </div>
+        </div>
+
+        <div class="form-group row" *ngIf="!(!AddOttMapForm.value['isp_id'])">
+          <div class="col-sm-12">
+            <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)"
+              (userRowSelect)="onUserRowSelect($event)" (editConfirm)="editConfirm($event)">
+            </ng2-smart-table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-md btn-success">MapOtt</button>
+      </div>
+    </form>
+
+
+    <br><br><br><br><br><br><br><br><br><br><br>
+  </nb-card-body>
+</nb-card>

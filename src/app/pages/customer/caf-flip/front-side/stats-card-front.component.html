@@ -1,0 +1,233 @@
+<nb-card style="width: 100%">
+   <nb-card-header style="background-color: #ba7fec;">
+      <span class="title">View CAF Form</span>
+   </nb-card-header>
+   <div class="modal-body" style="overflow-x: scroll;width: 100%">
+      <div id="main_cont" style="background-color: #FFFFFF;">
+         <div id="Pdf" style="background-color: #FFFFFF;">
+            <div class="page" style="width:98%;height: 50%">
+               <table style="width:100%;">
+                  <tbody>
+                     <p style="color: darkblue;margin-bottom: 2px;font-weight: 400;">
+                        <img style="width:180px" src="/assets/images/eronet_logo.png">
+                        <img style="width:100px;float:right;" [src]='pro_pic ? pro_pic.profile_photo:" "'>
+
+                        <b><br>No.156,Doshi Towers,1st Floor,Poonamalle High Road,
+                           <br>Kilpauk, Chennai-600 010
+                        </b>
+                     </p>
+                  </tbody>
+               </table>
+               <div style="text-align: center;font-size: larger;">
+                  <b>CUSTOMER APPLICATION FORM</b><br>
+               </div>
+               <table style=" width:100%;">
+                  <tbody>
+                     <tr>
+                        <td>CAF No&nbsp;&nbsp;:2241</td>
+                        <td style="text-align: center;"><b>Internet Access</b>
+                        <td style="text-align: right;">Date&nbsp;&nbsp;<b>{{data ? (data.c_date | date:'d MMM y'):''
+                              }}</b>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <div> Subcriber Type&nbsp;&nbsp;
+                  <span style="border:1px solid black;line-height: 2;">&nbsp;&nbsp;<b>
+                        {{data?(data.subs_type==0 ? 'SME':data.subs_type==1 ? 'Home User':data.subs_type==2 ?
+                        'Corporate':'Education or Institution'):''}}&nbsp;&nbsp;</b>
+                  </span>
+               </div>
+               <div style="border:1px solid black;width: 100%;padding: 1px;">
+                  <div style="border-bottom: 1px solid black;"> Name of Customer
+                     <span style="border-left: 1px solid black;">&nbsp;<b>{{data?data.cust_name:''}}</b>
+                        &nbsp;&nbsp;</span>
+                  </div>
+                  <div style="border-bottom: 1px solid black">
+                     <span>{{data?(data.address_flag==0 ? 'Billing Address':'Billing & Installation
+                        Address'):''}}</span>
+                     <span style="border-left: 1px solid black;">&nbsp;{{data?data.billing_addr:''}}&nbsp;</span>
+                  </div>
+                  <table style="border-bottom: 1px solid black; width:100%;">
+                     <thead>
+                        <tr>
+                           <th style="  text-align:left; font-weight: normal;">City
+                              &nbsp;:{{data?data.city:''}}&nbsp;&nbsp; </th>
+                           <th
+                              style=" text-align:left;  border-left: 1px solid black;height: 16px; font-weight: normal;">
+                              State&nbsp;:{{data?data.state:''}} TN&nbsp;&nbsp; </th>
+                           <!-- <th style="text-align:left;   border-left: 1px solid black;height: 16px; font-weight: normal;">PIN&nbsp;:624005
+                           &nbsp;&nbsp; 
+                        </th> -->
+                           <th style=" text-align:left; border-left: 1px solid black; font-weight: normal;">Mobile
+                              &nbsp;:{{data?data.mobile:''}}&nbsp; </th>
+                        </tr>
+                     </thead>
+                  </table>
+                  <table>
+                     <thead>
+                        <tr>
+                           <th style=" text-align:left;  height: 16px; font-weight: normal;">Telephone
+                              &nbsp;:{{data?data.phone:''}}&nbsp;&nbsp; </th>
+                           <th
+                              style="  text-align:left; border-left: 1px solid black;height: 16px; font-weight: normal;">
+                              EMAIL&nbsp;:{{data?data.email:''}}
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+               <br>
+               <table style="border: 1px solid black;border-collapse: collapse; width:100%;">
+                  <thead style=" border: 1px solid black;">
+                     <tr>
+                        <th style="text-align: center;border: 1px solid black;">Id Proof</th>
+                        <th style="text-align: center;border: 1px solid black;">ID no</th>
+                     </tr>
+                  </thead>
+                  <tbody style="border: 1px solid black;border-collapse: collapse;">
+                     <tr>
+                        <td style="text-align: center;border: 1px solid black;">
+                           {{data?(data.proof_type==0 ? 'Aadhaar':data.proof_type==1 ? 'Ration Card':'Pan Card'):''}}
+                        </td>
+                        <td style="text-align: center;border: 1px solid black;">
+                           {{data?data.ProofID:''}}
+                        </td>
+                     </tr>
+
+                  </tbody>
+               </table>
+               <br>
+               <div class="hide" [hidden]="data?data.address_flag=='1':''">
+                  <div style="text-align: center;"><u>
+                        Service Installation Address</u>
+                  </div>
+                  <div style="border:1px solid black;width: 100%;padding: 1px;">
+                     <div style="border-bottom: 1px solid black">Address
+                        <span style="border-left: 1px solid black;">&nbsp;{{data?data.address:''}}&nbsp;</span>
+                     </div>
+                     <table style="border-bottom: 1px solid black; width:100%;">
+                        <thead>
+                           <tr>
+                              <th style="  text-align:left; font-weight: normal;">City
+                                 &nbsp;:{{data?data.city:''}}&nbsp;&nbsp; </th>
+                              <th
+                                 style=" text-align:left;  border-left: 1px solid black;height: 16px; font-weight: normal;">
+                                 State&nbsp;:{{data?data.state:''}}&nbsp;&nbsp; </th>
+                              <!-- <th style="text-align:left;   border-left: 1px solid black;height: 16px; font-weight: normal;">PIN&nbsp;:624005
+                           &nbsp;&nbsp; 
+                        </th> -->
+                              <th style=" text-align:left; border-left: 1px solid black; font-weight: normal;">Mobile
+                                 &nbsp;:{{data?data.mobile:''}}&nbsp; </th>
+                           </tr>
+                        </thead>
+                     </table>
+                     <table>
+                        <thead>
+                           <tr>
+                              <th style=" text-align:left;  height: 16px; font-weight: normal;">Telephone
+                                 &nbsp;:{{data?data.phone:''}}&nbsp;&nbsp; </th>
+                              <th
+                                 style="  text-align:left; border-left: 1px solid black;height: 16px; font-weight: normal;">
+                                 EMAIL&nbsp;:{{data?data.email:''}}
+                           </tr>
+                        </thead>
+                     </table>
+                  </div>
+               </div>
+               <br>
+               <div style="text-align: center;"><u>
+                     Service Requirements</u>
+               </div>
+               <div style="border:1px solid black;width: 100%;padding: 1px;">
+                  <div style="border-bottom: 1px solid black;"> Plan Name
+                     <span style="border-left: 1px solid black;">&nbsp;{{data?data.srvname:''}}&nbsp;&nbsp;</span>
+                  </div>
+                  <div style="border-bottom: 1px solid black">Band Width
+                     <span style="border-left: 1px solid black;">&nbsp;nil&nbsp;</span>
+                  </div>
+                  <div style="border-bottom: 1px solid black">Additional KBPS Rate
+                     <span style="border-left: 1px solid black;">&nbsp;nil&nbsp;</span>
+                  </div>
+                  <table style="border-bottom: 1px solid black; width:100%;">
+                     <thead>
+                        <tr>
+                           <th style="font-weight: normal;">IP's Required &nbsp;:&nbsp;&nbsp; </th>
+                           <th style="border-left: 1px solid black;height: 16px; font-weight: normal;">Static IP No
+                              &nbsp;:{{data?(data.ipmodecpe==2?data.staticipcpe:''):''}}&nbsp;&nbsp;
+                        </tr>
+                     </thead>
+                  </table>
+                  <table style="border-bottom: 1px solid black; width:100%;">
+                     <thead>
+                        <tr>
+                           <th style="font-weight: normal;">OLT Brand</th>
+                           <th style="border-left: 1px solid black;height: 16px; font-weight: normal;">SI.No </th>
+                        </tr>
+                     </thead>
+                  </table>
+                  <table style="border-bottom: 1px solid black; width:100%;">
+                     <thead>
+                        <tr>
+                           <th style="font-weight: normal;">ONU Brand</th>
+                           <th style="border-left: 1px solid black;height: 16px; font-weight: normal;">ONU MAC ID </th>
+                        </tr>
+                     </thead>
+                  </table>
+                  <div style="text-align: center;border-bottom: 1px solid black;"> <b>Terminating Network Equipment</b>
+                  </div>
+                  <table style="border-bottom: 1px solid black; width:100%;">
+                     <thead>
+                        <tr>
+                           <th style="font-weight: normal;">Router No</th>
+                           <th style="font-weight: normal;">Switch </th>
+                           <th style="font-weight: normal;">Standalone PC</th>
+                           <th style="font-weight: normal;">ONU</th>
+                        </tr>
+                     </thead>
+                  </table>
+                  <div style="text-align: center;border-bottom: 1px solid black;"> <b>Customer Mile Details</b></div>
+                  <table style="border-bottom: 1px solid black; width:100%;">
+                     <thead>
+                        <tr>
+                           <th style="  font-weight: normal;">Coper</th>
+                           <th style=" border-left: 1px solid black;height: 16px;  font-weight: normal;">Fiber </th>
+                           <th style=" border-left: 1px solid black; height: 16px; font-weight: normal;">RF Tower</th>
+                        </tr>
+                     </thead>
+                  </table>
+                  <table style=" width:100%;height: 16px">
+                     <thead>
+                        <tr>
+                           <th style="  font-weight: normal;">Date&nbsp;:{{ data?(data.c_date | date:'d MMM y'):''
+                              }}&nbsp;&nbsp; </th>
+                           <th style=" border-left: 1px solid black;   font-weight: normal;">Place </th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+               <br><br>
+               <table style="border-bottom: 1px solid black; width:100%;">
+                  <tbody>
+                     <tr>
+                        <td>Name Authorized Signatory</td>
+                        <td style="text-align: right;">Signature of Customer
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <br>
+               <div style="width:258px;height:70px;border:1px solid #000;font-style: italic;">Service Franchise</div>
+               <p style="text-align: center;">***
+                  This is a Computer Generated CAF ***
+               </p>
+               <p style="text-align: center;">Thankyou for being Our Business Partner</p>
+            </div>
+         </div>
+      </div>
+      <div class="modal-footer">
+         <button type="submit" class="btn btn-md btn-success" (click)="printfront();">Print</button>
+         <!--    <button type="submit" class="btn btn-md btn-info" (click)="captureScreen();">Download</button>
+         --> <button type="button" class="btn btn-md btn-danger" (click)="activeModal.close();">Cancel</button>
+      </div>
+   </div>
+</nb-card>

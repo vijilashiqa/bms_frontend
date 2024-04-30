@@ -1,0 +1,149 @@
+<div class="col-md-12">
+    <nb-card>
+      <nb-card-header>Connection Data Report</nb-card-header>
+      <nb-card-body>
+
+    <nb-tabset>
+          <nb-tab tabTitle="Info">
+   <nb-card>
+     
+      <nb-card-body>
+         <nb-card>
+      <nb-card-header>Search</nb-card-header>
+      <nb-card-body>
+         <form [formGroup]="ReportsForm" class="form-horizontal" (ngSubmit)="addNas();">
+         <div class="modal-body">
+            <div class="form-group row">
+               <div class="col-sm-6">
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>User Name</label>
+                        <input type="text" name="UserName" formControlName="UserName" placeholder="User Name" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.UserName.invalid&&submit}"/>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="col-sm-8">
+                        <label>Source IP</label>
+                        <input type="text" name="Source" formControlName="Source" placeholder="Source IP" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.Source.invalid&&submit}"/>
+                     </div>
+                     <div class="col-sm-4">
+                        <label>Port</label>
+                        <input type="text" name="Port" formControlName="Port" placeholder="Port" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.Port.invalid&&submit}"/>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="col-sm-8">
+                        <label>Destination IP</label>
+                        <input type="text" name="Destination" formControlName="Destination" placeholder="Destination IP" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.Destination.invalid&&submit}"/>
+                     </div>
+                     <div class="col-sm-4">
+                        <label>Port</label>
+                        <input type="text" name="Port1" formControlName="Port1" placeholder="Port" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.Port1.invalid&&submit}"/>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-6">
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>Protocol</label>
+                        <select [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.Protocol.invalid&&submit}" name="Protocol" formControlName="Protocol">
+                           <option value="" selected>Select Protocol</option>
+                           <option value="1" >Any</option>
+                           <option value="2" >TCP</option>
+                           <option value="3" >UDP</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>From Date&Time</label>
+                        <table  style="width:100%">
+                           <tr>
+                              <td width="40%">
+                                 <input type="text" name="FromDate" formControlName="FromDate" placeholder="From Date" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.FromDate.invalid&&submit}"/>
+                              </td>
+                              <td width="30%">
+                                 <select name="FromTime" formControlName="FromTime" [ngClass]="{'form-control' : true, 'input-small': true,'form-control-danger':ReportsForm.controls.FromTime.invalid&&submit}">
+                                 <option *ngFor= "let item of hr" [ngValue]="item.value" >{{item.value}}</option>
+                                 </select>
+                              </td>
+                              <td width="30%">
+                                 <select name="second" formControlName="second" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.second.invalid&&submit}">
+                                 <option *ngFor= "let item of minsec" [ngValue]="item.value" >{{item.value}}</option>
+                                 </select>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>To Date&Time</label>
+                        <table style="width:100%">
+                           <tr>
+                              <td width="40%">
+                                 <input type="text" name="ToDate" formControlName="ToDate" placeholder="TO Date" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.ToDate.invalid&&submit}"/>
+                              </td>
+                              <td miwidth="30%">
+                                 <select name="ToTime" formControlName="ToTime" [ngClass]="{'form-control' : true, 'input-small': true,'form-control-danger':ReportsForm.controls.ToTime.invalid&&submit}">
+                                 <option *ngFor= "let item of hr" [ngValue]="item.value" >{{item.value}}</option>
+                                 </select>
+                              </td>
+                              <td width="30%">
+                                 <select name="second1" formControlName="second1" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.second1.invalid&&submit}">
+                                 <option *ngFor= "let item of minsec" [ngValue]="item.value" >{{item.value}}</option>
+                                 </select>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+          <button type="submit" class="btn btn-md btn-success" style="margin: auto; display: block;">Search</button>
+         </form>
+         
+</nb-card-body>
+   </nb-card>
+          <table class="table">
+                        <tr>
+                               <th> User Name </th>
+                               <th> Source IP </th>
+                               <th> Source Port</th>
+                               <th> Destination IP </th>
+                               <th> Destination Port</th>
+                               <th> Date&Time </th>
+                             </tr>
+                       
+                        
+                           
+                      </table>
+                   </nb-card-body>
+                </nb-card>
+
+          
+      
+</nb-tab>
+
+          <nb-tab tabTitle="qwerty Info">
+             <form [formGroup]="ReportsForm" class="form-horizontal" (ngSubmit)="addNas();">
+         <div class="modal-body">
+            <div class="form-group row">
+               <div class="col-sm-6">
+                  <div class="form-group row">
+                     <div class="col-sm-12">
+                        <label>User ID</label>
+                        <input type="text" name="ID" formControlName="ID" placeholder="User ID" [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.ID.invalid&&submit}"/>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </form>
+            </nb-tab>
+</nb-tabset>
+</nb-card-body>
+</nb-card>
+
+</div>

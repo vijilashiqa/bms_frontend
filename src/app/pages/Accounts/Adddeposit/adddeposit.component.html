@@ -1,0 +1,167 @@
+<div class="col-md-12">
+   <nb-card>
+      <toaster-container></toaster-container>
+      <nb-card-header>{{id ? 'Verfication':'Add Deposit'}}</nb-card-header>
+      <nb-card-body>
+         <form [formGroup]="AddDepositForm" (ngSubmit)="addDeposit()"  class="form-horizontal">
+            <div class="modal-body">
+               <div class="form-group row">
+                  <div class="col-sm-3" *ngIf="role.getroleid()>777">
+                     <label>ISP Name <span style="color:red;">*</span> </label>
+                     <auto-completen
+                        [addclass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.bus_id.invalid&&submit}"
+                        (changed)="groupname();profile();" formControlName="bus_id" optValues="busname" placeholder='Select Business' optId="id" [item]="busdata">
+                     </auto-completen>
+                     <small *ngIf="AddDepositForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is Required</small>
+                  </div>
+                  <div class="col-sm-3" *ngIf="role.getroleid()>775">
+                     <label>Circle</label>
+                     <auto-completen
+                     [addclass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.groupid.invalid&&submit}"
+                     optValues="groupname" formControlName="groupid" (changed)="resellername()" placeholder='Select Circle' optId="groupid" [item]="groupdata">
+                     </auto-completen>
+                  </div>
+                  <div class="col-sm-3">
+                     <label>Reseller Type <span style="color:red;">*</span></label>
+                     <select name="Role" formControlName="Role" (change)="resellername()"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.Role.invalid&&submit}">
+                        <option value="" selected>Select Reseller Type</option>
+                        <option *ngFor="let item of pro" [ngValue]="item.role">{{item.menu_name}}</option>
+                     </select>
+                     <small *ngIf="AddDepositForm.controls.Role.invalid&&submit" class="form-text error">Profile Is
+                        Required!</small>
+                  </div>
+                  <div class="col-sm-3">
+                     <label>Reseller Name <span style="color:red;">*</span></label>
+                     <auto-completen (changed)="resbalance()" (keyUp)="resellername($event)"
+                        [addclass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.res_name.invalid&&submit}"
+                         optValues="company"formControlName="res_name" placeholder='Select Reseller' id="res_name" [item]="reseldata">
+                     </auto-completen>
+                     <small *ngIf="AddDepositForm.controls.res_name.invalid&&submit" class="form-text error">Reseller Name is Required!</small>
+                  </div>
+               </div>
+               <nb-card>
+                  <nb-card-header style="background-color :  #01a7ee">Deposit Creation</nb-card-header>
+                  <nb-card-body>
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label>Reseller Balance</label>
+                           <input type="text" formControlName="res_balance" readonly placeholder="Reseller Balance"
+                           [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.invalid&&submit}">
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Deposit Mode <span style="color:red;">*</span></label>
+                           <select formControlName="dep_mode" (change)="AddDepositForm.controls.dep_type.setValue('');depmodevalid()"
+                            [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.dep_mode.invalid&&submit}">
+                              <option value="" selected>Select Deposit Mode</option>
+                              <option value="1">Deposit</option>
+                              <option value="2">Recieved</option>
+                              <option value="3">Deposit Against Payment</option>
+                              <option value="4">Commission</option>
+                              <option value="5">Debit</option>
+                              <option value="6">Credit</option>
+                           </select>
+                        </div>
+                        <div class="col-sm-4" *ngIf="AddDepositForm.value['dep_mode']!='1' && AddDepositForm.value['dep_mode']!='6' && AddDepositForm.value['dep_mode']!=''&& AddDepositForm.value['dep_mode']!='5'">
+                           <label> Deposit Type <span style="color:red;">*</span></label>
+                           <select name="dep_type" formControlName="dep_type" (change)="depvalid()"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.dep_type.invalid&&submit}">
+                              <option value="" selected>Select Pay Type</option>
+                              <option value="1">Cash</option>
+                              <option value="2">Bank Deposit</option>
+                              <option value="3">Net Banking</option>
+                              <option value="4">UPI Payment</option>
+                              <option value="5">Dashboard</option>
+                           </select>
+                           <small *ngIf="AddDepositForm.hasError('required','dep_type')&&submit"
+                              class="form-text error">Select
+                              required Pay Type! </small>
+                        </div>
+                        <div class="col-sm-4" *ngIf="AddDepositForm.value['dep_mode']=='6'">
+                           <label>Credit Date </label>
+                           <input type="text" [nbDatepicker]="credit_date" formControlName="credit_date" placeholder="Credit Date"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.credit_date.invalid&&submit}" />
+                           <nb-datepicker #credit_date></nb-datepicker>
+                           <!-- <small *ngIf="AddDepositForm.controls.credit_date.invalid&&submit" class="form-text error">Credit Date is Required!</small> -->
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <div class="col-sm-4" *ngIf="AddDepositForm.value['dep_type']=='3'||AddDepositForm.value['dep_type']=='4'">
+                           <label>UTR <span style="color:red;">*</span></label>
+                           <input type="text" formControlName="utr_no" placeholder="UTR Number" 
+                           [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.utr_no.invalid&&submit}">
+                           <small *ngIf="AddDepositForm.controls.utr_no.invalid&&submit" class="form-text error">UTR Number is Required!</small>
+                        </div>
+                        <div class="col-sm-4" *ngIf="AddDepositForm.value['dep_type']!='1'&&AddDepositForm.value['dep_type']!=''">
+                           <label>Upload Paid Proof <span *ngIf="AddDepositForm.value['dep_type']==2" style="color:red;">*</span></label>
+                           <input type="file" formControlName="paid_proof" placeholder="Upload Proof"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.paid_proof.invalid&&submit}"
+                              (change)="upload($event.target.files)" />
+                           <small *ngIf="AddDepositForm.hasError('required','paid_proof')&&submit"
+                              class="form-text error">Address Proof
+                              should be uploaded!</small>
+                        </div>
+                        <div class="col-sm-4" *ngIf="imageURL">
+                           <label>Proof Preview</label>
+                           <img [src]="imageURL" style="width: 100%;height: 150px">
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <div class="col-sm-4" [hidden]="AddDepositForm.value['dep_mode']=='2'">
+                           <label *ngIf="AddDepositForm.value['dep_mode']=='3'||AddDepositForm.value['dep_mode']=='2'||AddDepositForm.value['dep_mode']=='1'||AddDepositForm.value['dep_mode']==''">Deposit Amount <span style="color:red;">*</span></label>
+                           <label *ngIf="AddDepositForm.value['dep_mode']=='4'">Commission Amount <span style="color:red;">*</span></label>
+                           <label *ngIf="AddDepositForm.value['dep_mode']=='5'">Debit Amount <span style="color:red;">*</span></label> 
+                           <label *ngIf="AddDepositForm.value['dep_mode']=='6'">Credit Amount <span style="color:red;">*</span></label> 
+                           <input type="text" name="dep_amount" formControlName="dep_amount" placeholder="INR"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddDepositForm.controls.dep_amount.invalid&&submit}" />
+                           <small *ngIf="AddDepositForm.hasError('required','dep_amount')&&submit"
+                              class="form-text error">Select required Deposit Amount! </small>
+                           <small *ngIf="AddDepositForm.hasError('pattern','dep_amount')&&submit"
+                              class="form-text error">Enter The Valid Amount! </small>
+                        </div>
+                        <div class="col-sm-4" *ngIf="AddDepositForm.value['dep_mode']=='4'">
+                           <label>TDS% <span style="color:red;">*</span></label>
+                           <input type="number" formControlName="ctc" placeholder="TDS %" [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.ctc.invalid&&submit}">
+                           <small *ngIf="AddDepositForm.controls.ctc.invalid&&submit" class="form-text error">TDS% is Required!</small>
+                        </div>
+                        <div class="col-sm-4" *ngIf="AddDepositForm.value['dep_mode']=='3'||AddDepositForm.value['dep_mode']=='2'">
+                           <label>Paid Amount <span style="color:red;">*</span></label>
+                           <input formControlName="paid_amnt" placeholder="Paid Amount" 
+                           [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.paid_amnt.invalid&&submit}">
+                           <small *ngIf="AddDepositForm.controls.paid_amnt.invalid&&submit" class="form-text error">Paid Amount is Required</small>
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label>Reason <span style="color:red;">*</span></label>
+                           <select formControlName="reason" [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.reason.invalid&&submit}">
+                              <option value=""selected>Select Deposit reason</option>
+                              <option *ngFor="let item of reasondata" [ngValue]="item.id">{{item.reason}}</option>
+                           </select>
+                           <small *ngIf="AddDepositForm.controls.reason.invalid&&submit" class="form-text eror">Reason is Required</small>
+                        </div>
+                        <div class="col-sm-4" *ngIf="AddDepositForm.value['reason']=='13'">
+                           <label>Other Reason <span style="color:red;">*</span></label>
+                           <input type="text" formControlName="ot_reason" placeholder="Other Reason"
+                            [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.ot_reason.invalid&&submit}">
+                           <small *ngIf="AddDepositForm.controls.ot_reason.invalid&&submit" class="form-text eror">Other Reason is Required!</small>
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Notes</label>
+                           <textarea formControlName="note" placeholder="Notes" [ngClass]="{'form-control':true,'form-control-danger':AddDepositForm.controls.note.invalid&&submit}">
+
+                           </textarea>
+                        </div>
+                     </div>
+                  </nb-card-body>
+               </nb-card>
+               <div class="modal-footer">
+                  <button type="submit" class="btn btn-sm btn-success">Add</button>
+                  <button type="button" class="btn btn-sm btn-danger"
+                     [routerLink]="['/pages/Accounts/depositlist']">Back</button>
+               </div>
+            </div>
+         </form>
+      </nb-card-body>
+   </nb-card>
+</div>

@@ -1,0 +1,81 @@
+/*.dropdown-content a:first-child {
+	border-top-right-radius: 5px; 
+	border-top-left-radius: 5px; 
+}
+*/
+.dropdown-content a:last-child {
+	border-bottom: 0px;
+}
+
+.dropdown-content a:hover{
+	background-color: #20a8d875;
+	color: #fff;
+}
+
+.dropdown-content a {
+	padding: 5px; // 10px to 3px to reduce sizes
+	display: block;
+	text-align: left;
+	border-bottom-width: 0px;
+	color: #000;
+}
+
+.dropdown-content{
+	border:1px solid #8ad4ee;
+	border-radius: 5px;
+	position: absolute;
+	background-color: #fff;
+	overflow-y: scroll;
+	max-height: 400px;
+	width: auto;
+	min-width: 250px;
+	z-index: 9999;
+    top: 4.8em;
+ 	// white-space: break-spaces;
+	// word-break: break-all;
+
+
+	
+
+}
+
+// Multi Select
+.sticky{
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+}
+// ::-webkit-scrollbar { 
+//     display: none; 
+// }
+
+
+// ::-webkit-scrollbar {
+//     width: 50px;
+//     height: 50px;
+//     background:-webkit-linear-gradient(0, blue 50%, white 100%);
+
+// // }
+// ::-webkit-scrollbar {
+//     height: 12px;
+//     width: 12px;
+//     background: #000;
+// }
+
+// ::-webkit-scrollbar-thumb {
+//     background: #393812;
+//     -webkit-border-radius: 1ex;
+//     -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+// }
+
+// ::-webkit-scrollbar-corner {
+//     background: #000;
+// }
+
+
+
+// .nb-theme-corporate .modal-body ::-webkit-scrollbar-thumb {
+//     background: #ff386a;
+//     cursor: pointer;
+//     border-radius: 102.5px;
+// }

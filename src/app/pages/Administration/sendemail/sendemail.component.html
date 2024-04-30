@@ -1,0 +1,170 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>
+    Send Mail
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+
+    <!-- <hr style="border: 2px;"> -->
+    <div style="border:0.2em solid #dadada" class="modal-body">
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showProfileReseller();showUser();showResellerBranch();showState();changeclear(1);"
+            (keyUp)="showBusName($event)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" (changed)="showUser();showResellerBranch();changeclear(2);"
+            (keyUp)="showGroupName($event)" addclass="form-control" optValues="groupname" placeholder='Select Circle'
+            optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="(role.getroleid()>=775)||(role.getroleid()==666 || role.getroleid()==555)">
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" addclass="form-control"
+            (changed)="showResellerName();showUser();changeclear(3);" (keyUp)="showProfileReseller($event)"
+            optValues="menu_name" placeholder='Select Reseller Type' optId="role" [item]="profile">
+          </auto-completen>
+          <small style="color: blueviolet;">Select Profile</small>
+        </div>
+        <div class="col-sm-3" *ngIf="(role.getroleid()>=775)||(role.getroleid()==666 || role.getroleid()==555)">
+          <label>Reseller Name</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company"
+            (keyUp)="showResellerName($event)" (changed)="showUser();showResellerBranch();changeclear(4)"
+            placeholder='Select Reseller' id="id" [item]="res1">
+          </auto-completen>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label>Profile ID</label>
+          <auto-completen [(ngModel)]="cust_name" (keyUp)="showUser($event)" (change)="changeclear(5)"
+            addclass="form-control" optValues="profileid" placeholder='Select Subs AccountID' optId="uid"
+            [item]="custname">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Active Status</label>
+          <select [(ngModel)]="act_status" class="form-control">
+            <option value="" selected>Select Connection status</option>
+            <option value="1">Active</option>
+            <option value="2">Expired</option>
+            <option value="3">Suspended</option>
+            <option value="4">Hold</option>
+          </select>
+        </div>
+        <div class="col-sm-3">
+          <label>Branch Name</label>
+          <auto-completen [(ngModel)]="s_branch" addclass="form-control" optValues="branch" placeholder='Select Branch'
+            optId="b_id" [item]="sbranch">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>State</label>
+          <auto-completen [(ngModel)]="state_id" addclass="form-control" optValues="name" placeholder='Select State'
+            id="id" [item]="state">
+          </auto-completen>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          <label>Expiry Start Date</label>
+          <input type="text" [nbDatepicker]="expst_date" [(ngModel)]="start_exp" class="form-control"
+            placeholder="Start Date" />
+          <nb-datepicker #expst_date></nb-datepicker>
+        </div>
+        <div class="col-sm-3">
+          <label>Expiry End Date</label>
+          <input type="text" [nbDatepicker]="expend_date" [(ngModel)]="end_exp" class="form-control"
+            placeholder="End Date" />
+          <nb-datepicker #expend_date></nb-datepicker>
+        </div>
+
+      </div>
+      <br>
+      <button type="button" class="btn btn-md btn-success middle" style="margin: auto; display: block;"
+        (click)="userDetails();">Search</button>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-12">
+        <label class="left">
+          <h5>Total Customers {{count || 0}} </h5>
+        </label>
+        <label class="right">
+          <h5>Yoy have Selected {{cust_count || 0}} Customer(s)</h5>
+        </label>
+      </div>
+    </div>
+
+    <div id="table-wrapper">
+      <div id="table-scroll">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th><input style="zoom:1.5" type="checkbox" [checked]="isAllCheckBoxChecked()"
+              (change)="checkAllCheckBox($event)"></th>
+          <th>AccNo</th>
+          <th>Reseller Name</th>
+          <th>UserName</th>
+          <th>Email</th>
+          <th>Expiry Date</th>
+
+        </tr>
+        <tr *ngFor="let item of data;let i of index;">
+          <td *ngIf="item.emailverifystatus == 1"><input type="checkbox" value="{{item.id}}" (change)="checkBoxChecked();"  [(ngModel)]="item.checked">
+          </td>
+          <td *ngIf="item.emailverifystatus != 1"> </td>
+          <td>{{item.uid}}</td>
+          <td>{{item.company}}</td>
+          <td style="text-transform: none !important;text-align: left;">
+            <a><i class="fas fa-user">
+              </i>&nbsp;{{item.cust_profile_id}}</a>
+          </td>
+          <td style="text-transform: none!important;"><a
+              [ngStyle]="{'color' : item.emailverifystatus==1  ? 'green' : 'red' }"
+              [ngClass]="{'ion-close-round':item.emailverifystatus!=1 ? true:false,'ion-checkmark-round': item.emailverifystatus==1  ? true:false  }"></a>&nbsp;&nbsp;&nbsp;{{item
+            ? item.email:''}}
+          </td>
+          <td>{{item.expiration | date:'d MMM y hh:mm:ss a'}}</td>
+        </tr>
+        <tr>
+          <td colspan="6" *ngIf="!data">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+    </div>
+
+    <div class="col-sm-3">
+      <label>Mail Subject</label>
+      <textarea class="form-control" name="mailsubject" [(ngModel)]="subject" placeholder="Subject"></textarea>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-8">
+        <label></label>
+        <!-- <div *ngFor="let editor of editors"> -->
+          <!-- <h3>{{ editor }} Editor:</h3> -->
+          <ckeditor [(ngModel)]="msg" [config]="ckeConfig" (paste)="onPaste($event)"
+            (change)="onChange($event)" debounce="500">></ckeditor>
+        <!-- </div> -->
+      </div>
+    </div>
+
+
+
+
+
+
+  </nb-card-body>
+  <nb-card-footer>
+    <button class="btn btn-md btn-success middle" style="margin: auto; display: block;" (click)="sendEmail();" type="submit">Send Mail</button>
+  </nb-card-footer>
+</nb-card>

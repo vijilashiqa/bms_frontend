@@ -1,0 +1,108 @@
+<nb-card>
+  <nb-card-header>List SMS Gateway <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]></toaster-container>
+    <button *ngIf="!role.getmenurole(22)" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/administration/add-smsgateway']">Add</button>
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>Business Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showResellerName();smsgateway();changeclear(1)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" >
+          <label>GatewayType</label>
+          <select [(ngModel)]="gateway_type" class="form-control" (change)="smsgateway();changeclear(2)">
+            <option value="" selected>Select Gateway Type</option>
+            <option value="1">ISP</option>
+            <option value="2">Sub ISP Bulk</option>
+            <option value="3">Sub ISP deposit</option>
+            <option value="4">Sub Distributor Bulk</option>
+            <option value="5">Sub Distributor Deposit</option>
+            <option value="6">Bulk Reseller</option>
+            <option value="7">Deposit Reseller</option>
+          </select>
+        </div>
+        <div class="col-sm-3" *ngIf="(role.getroleid()>=775 && (gateway_type!= '1'))">
+          <label>Reseller Name</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company"
+            placeholder='Select Reseller' (changed)="smsgateway();login_id=''" (keyUp)="showResellerName($event);login_id=''" id="res_name" [item]="res1">
+          </auto-completen>
+        </div>
+
+        <div class="col-sm-3">
+          <label>Gateway Login ID</label>
+          <auto-completen [(ngModel)]="login_id" addclass="form-control" optValues="loginid"
+            placeholder='Select LoginID' optId="smsgwid" (keyUp)="smsgateway($event)" [item]="gateway">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-12">
+        <label class="left">
+          <h5>Total Count : {{count}}</h5>
+        </label>
+        <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+      </div>
+    </div>
+    <hr style="border: 0px;">
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th *ngIf="!role.getmenurole(23)">Action</th>
+          <th>Business Name</th>
+          <th>Website</th>
+          <th>Gateway Type</th>
+          <th>Reseller Name</th>
+          <th>Reseller Business Name</th>
+          <!-- <th>Role</th> -->
+          <th>Login Id</th>
+          <th>Sender Id</th>
+          <th>Gateway Name</th>
+          <th>Gateway Provider</th>
+        </tr>
+        <tr *ngFor="let item of datas">
+          <td *ngIf="!role.getmenurole(23)" style=" padding: 1px;" class=" last" data-title="'Action'">
+            <div class="dropdown ghost-dropdown" ngbDropdown>
+              <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;" class="btn btn-primary btn-icon" type="button"
+                ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75px;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                <li *ngIf="!role.getmenurole(23)" [routerLink]="['/pages/administration/edit-smsgateway']" [queryParams]='{id: item.smsgwid}' class="dropdown-item" title="Edit" ><i
+                    style="font-size: 20px;" class="nb-edit"></i>&nbsp;Edit</li>
+              </ul>
+            </div>
+          </td>
+          <td>{{item.busname}}</td>
+          <td>{{item.website}}</td>
+          <td>{{item.gateway_type == 1 ?'ISP': item.gateway_type == 2 ?'SUBISPBUlk' : item.gateway_type ==3?'SUB
+            ISPDEPOSIT' : item.gateway_type == 4? 'SUBDISTRIBUTOR BULK': item.gateway_type == 5?'SUBDISTRIBUTOR DEPOSIT'
+            :item.gateway_type == 6 ? 'BULK RESELLER' :'DEPOSIT RESELLER'}}</td>
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td>{{item.reseller_name}}</td>
+          <td>{{item.company}}</td>
+          <!-- <td>{{item.menu_name}}</td> -->
+          <td>{{item.loginid}}</td>
+          <td>{{item.sender_id}}</td>
+          <td>{{item.gwname}}</td>
+          <td>{{item.gwby}}</td>
+        </tr>
+        <tr>
+          <td colspan="11" *ngIf="datas==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

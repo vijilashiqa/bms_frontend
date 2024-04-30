@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+    <button class="close" aria-label="Close" (click)="closeModal()">
+  <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+  </div>
+</div>
+<div class="table-wrapper">
+  <table class="table table-hover table-striped">
+    <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+      <!-- <th>Service Name</th> -->
+      <th>Reseller Type</th>
+      <th>Reseller Name</th>
+      <th>Sharing Type</th>
+    </tr>
+    <tr *ngFor="let item of rescount">
+      <!-- <td>{{item.srvname}}</td> -->
+      <td>{{item.role==333 ? 'Deposit': item.role==444 ? 'Bulk': item.role==555 ?  'Sub ISP Deposit'
+        :item.role==551 ? 'Sub Dist Deposit' : item.role==666 ? 'Sub ISP Bulk': 'Sub Dist Bulk'}}</td>
+      <td>{{item.company}}</td>
+      <td>{{item.sharing_type==1 ? 'Common Sharing':'Packagewise Sharing'}}</td>
+    </tr>
+   </table>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-md btn-success " style="margin:auto;" (click)="closeModal()">OK</button>
+</div>

@@ -1,0 +1,47 @@
+<div class="modal-header" style="background-color :  #01a7ee;">
+   <label>SEARCH </label>
+   <!-- <toaster-container [toasterconfig]="config"> </toaster-container> -->
+   <button class="close" aria-label="Close" (click)="activeModal.close();">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+
+<div class="modal-body">
+   <div class="form-group row">
+      <div class="col-sm-12">
+         <label>Search Type</label>
+         <select name="sflag" [(ngModel)]="sflag" (change)="searchresult()" class="form-control">
+            <option value="1" selected>Subscriber ID</option>
+            <option value="2">Subsciber Name</option>
+            <option value="3">Mobile Number</option>
+            <option value="4">Static IP</option>
+            <option value="5">MAC</option>
+            <option value="6">CAF Number</option>
+            <option value="7">Account No</option>
+            <option value="8">Email ID</option>
+         </select>
+      </div>
+   </div>
+   <div class="form-group row">
+      <div class="col-sm-12">
+         <label>SEARCH</label>
+         <auto-completen [(ngModel)]="search"  autofocus="true" (keyUp)="searchresult($event)" (changed)="searchclick()" addclass="form-control" optValues="uname" placeholder='Search here...'
+            optId="uid" [item]="datas" >
+         </auto-completen>
+      </div>
+   </div>
+   <!-- <div class="form-group row">
+      <div class="col-sm-6">
+        <label>Start Date</label>
+        <input type="text" [owlDateTime]="stdate" [owlDateTimeTrigger]="stdate" 
+        placeholder="Start Date " [ngClass]='form-control'  />
+        <owl-date-time [pickerType]="'calendar'" #stdate></owl-date-time>
+      </div>
+      <div class="col-sm-6">
+        <label>End Date</label>
+        <input type="text" [owlDateTime]="endate" [owlDateTimeTrigger]="endate" 
+        placeholder="End Date " [ngClass]='form-control'  />
+        <owl-date-time [pickerType]="'calendar'" #endate></owl-date-time>
+      </div>
+    </div> -->
+</div>

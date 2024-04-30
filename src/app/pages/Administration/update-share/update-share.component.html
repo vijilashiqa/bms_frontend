@@ -1,0 +1,143 @@
+<html>
+<div class="col-md-12">
+  <nb-card>
+    <toaster-container></toaster-container>
+    <nb-card-header>Update Reseller Share</nb-card-header>
+    <nb-card-body>
+      <ngx-loading [show]="loading"
+        [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+      </ngx-loading>
+      <form [formGroup]="shareForm" class="form-horizontal" (ngSubmit)="updateShare()">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-3" *ngIf="role.getroleid()>777">
+              <label>ISP Name <span style="color:red;">*</span> </label>
+              <auto-completen
+                [addclass]="{'form-control' : true,'form-control-danger':shareForm.controls.bus_id.invalid&&submit}"
+                (changed)="groupname();shareForm.controls['groupid'].setValue('');" formControlName="bus_id"
+                optValues="busname" placeholder='Select Business' optId="id" [item]="busdata">
+              </auto-completen>
+              <small *ngIf="shareForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is
+                Required</small>
+            </div>
+            <div class="col-sm-3" *ngIf="role.getroleid()>775">
+              <label>Circle</label>
+              <auto-completen
+                [addclass]="{'form-control' : true,'form-control-danger':shareForm.controls.groupid.invalid&&submit}"
+                optValues="groupname" formControlName="groupid" (changed)="resellername();" placeholder='Select Circle'
+                optId="groupid" [item]="groupdata">
+              </auto-completen>
+            </div>
+
+            <div class="col-sm-3">
+              <label>Reseller Name <span style="color:red;">*</span></label>
+              <auto-completen (changed)="resData();" (keyUp)="resellername($event)"
+                [addclass]="{'form-control' : true,'form-control-danger':shareForm.controls.res_name.invalid&&submit}"
+                optValues="company" formControlName="res_name" placeholder='Select Reseller' id="res_name"
+                [item]="reseldata">
+              </auto-completen>
+              <small *ngIf="shareForm.controls.res_name.invalid&&submit" class="form-text error">Reseller Name is
+                Required!</small>
+            </div>
+          </div>
+          <nb-card>
+            <nb-card-header style="background-color :  #01a7ee">Update Share</nb-card-header>
+            <nb-card-body>
+              <div class="form-group row">
+                <div class="col-sm-3">
+                  <label>Sharing Type<span style="color:red;">*</span></label>
+                  <select formControlName="share_type" (change)="clearFile();"
+                    [ngClass]="{'form-control':true,'form-control-danger':shareForm.controls.share_type.invalid&&submit}">
+                    <option value="" selected>Select Sharing Type</option>
+                    <option value="1">Common Sharing</option>
+                    <option value="2">Package wise Sharing</option>
+                  </select>
+                  <small *ngIf="shareForm.controls.share_type.invalid&&submit" class="form-text error">Sharing Type is
+                    Required!</small>
+                </div>
+                <div class="col-sm-3">
+                  <label>Reseller Under<span style="color:red;">*</span></label>
+                  <select formControlName="resel_under" (change)="sharevalidation();"
+                    [ngClass]="{'form-control':true,'form-control-danger':shareForm.controls.resel_under.invalid&&submit}">
+                    <option value="" selected>Select Reseller Under</option>
+                    <option value="0">None</option>
+                    <option value="1">SubIsp bulk</option>
+                    <option value="2">SubIsp Deposit</option>
+                    <option value="3">SubDist Bulk</option>
+                    <option value="4">SubDist Deposit</option>
+                  </select>
+                  <small *ngIf="shareForm.controls.resel_under.invalid&&submit" class="form-text error">Sharing Type is
+                    Required!</small>
+                </div>
+                <div class="col-sm-3">
+                  <label style="white-space: nowrap;">ISP Share <span style="color:red;">*</span></label>
+                  <input type="number" formControlName="isp_share" placeholder="ISP Share"
+                    [ngClass]="{'form-control':true,'form-control-danger':shareForm.controls.isp_share.invalid&&submit}">
+                  <small *ngIf="shareForm.controls.isp_share.invalid&&submit" class="form-text error">ISP
+                    Share is
+                    Required!</small>
+                </div>
+                <div class="col-sm-3" *ngIf="val['resel_under']!=0">
+                  <label style="white-space: nowrap;">Sub ISP Share <span style="color:red;">*</span></label>
+                  <input type="number" formControlName="sisp_share" placeholder="SUBISP Share"
+                    [ngClass]="{'form-control':true,'form-control-danger':shareForm.controls.sisp_share.invalid&&submit}">
+                  <small *ngIf="shareForm.controls.sisp_share.invalid&&submit" class="form-text error">SUBISP
+                    Share is
+                    Required!</small>
+                </div>
+
+
+              </div>
+
+              <div class="form-group row">
+                <div class="col-sm-3" *ngIf="(val['resel_under']==3 || val['resel_under']==4)">
+                  <label style="white-space: nowrap;">Sub DIST Share <span style="color:red;">*</span></label>
+                  <input type="number" formControlName="sdisp_share" placeholder="SUBDIST Share"
+                    [ngClass]="{'form-control':true,'form-control-danger':shareForm.controls.sdisp_share.invalid&&submit}">
+                  <small *ngIf="shareForm.controls.sdisp_share.invalid&&submit" class="form-text error">SUBDIST
+                    Share is
+                    Required!</small>
+                </div>
+                <div class="col-sm-3">
+                  <label style="white-space: nowrap;">Reseller Share <span style="color:red;">*</span></label>
+                  <input type="number" formControlName="resel_share" placeholder="Reseller Share"
+                    [ngClass]="{'form-control':true,'form-control-danger':shareForm.controls.resel_share.invalid&&submit}">
+                  <small *ngIf="shareForm.controls.resel_share.invalid&&submit" class="form-text error">Reseller
+                    Share is
+                    Required!</small>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="val['share_type']==2">
+                <div class="col-sm-3">
+                  <label>Share Mode<span style="color:red;">*</span></label>
+                  <select formControlName="share_mode"
+                    [ngClass]="{'form-control':true,'form-control-danger':shareForm.controls.share_mode.invalid&&submit}">
+                    <option value="" selected>Select Reseller Under</option>
+                    <option value="0">All Plan</option>
+                    <option  *ngIf="rdata['sharing_type']==2" value="1">Selected Plan</option>
+
+                  </select>
+                  <small *ngIf="shareForm.controls.share_mode.invalid&&submit" class="form-text error">Sharing Mode is
+                    Required!</small>
+                </div>
+                <div class="col-sm-3" *ngIf="rdata['sharing_type']==2 && this.val['share_mode']==1">
+                  <label><b style="color:darkblue">Upload Subplan share Details </b></label>
+                  <input #myFile type="file" (change)="changeListener($event.target.files[0])" class="form-control"
+                    accept=".xlsx" />
+                </div>
+              </div>
+
+
+
+            </nb-card-body>
+          </nb-card>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">Update</button>
+            <button type="button" class="btn btn-sm btn-danger"
+              [routerLink]="['/pages/service/list-price']">Back</button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

@@ -1,0 +1,77 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <button class="close" aria-label="Close" (click)="activeModal.close()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="paymentForm" class="form-horizontal" (ngSubmit)="addNas();">
+   <div class="modal-body">
+      <div class="form-group row">
+         <div class="col-sm-12">
+            <label> Deposit Type</label>
+            <select name="pay_type" formControlName="pay_type"
+               [ngClass]="{'form-control' : true,'form-control-danger':paymentForm.controls.pay_type.invalid&&submit}">
+               <option value="" selected>Select Pay Type</option>
+               <option value="2">Net Banking</option>
+               <option value="3">Bank Deposit</option>
+            </select>
+            <small *ngIf="paymentForm.hasError('required','pay_type')&&submit" class="form-text error">Select required
+               Pay Type! </small>
+         </div>
+      </div>
+      <div class="form-group row" *ngIf="paymentForm.value['pay_type']">
+         <div class="col-sm-12">
+            <label>Deposit Reason</label>
+            <textarea name="reason"
+               [ngClass]="{'form-control' : true,'form-control-danger':paymentForm.controls.reason.invalid&&submit}"
+               formControlName="reason"></textarea>
+         </div>
+      </div>
+      <div class="form-group row" [hidden]="paymentForm.value['pay_type']!=2">
+         <div class="col-sm-12">
+            <label>UTR</label>
+            <input type="text" name="utr"
+               [ngClass]="{'form-control' : true,'form-control-danger':paymentForm.controls.utr.invalid&&submit}"
+               formControlName="utr">
+            <small *ngIf="paymentForm.hasError('required','utr')&&submit" class="form-text error">UTR required! </small>
+         </div>
+      </div>
+      <div class="form-group row" [hidden]="paymentForm.value['pay_type']!=3">
+         <div class="col-sm-12">
+            <label>Upload Challan</label>
+            <input type="file" name="upload" 
+               [ngClass]="{'form-control' : true,'form-control-danger':paymentForm.controls.upload.invalid&&submit}"
+               formControlName="upload">
+            <small *ngIf="paymentForm.hasError('required','upload')&&submit" class="form-text error">Pls Select Img!
+            </small>
+         </div> 
+        
+      </div>
+      <div class="form-group row">
+         <div class="col-sm-12">
+            <label>Deposited Amount * </label>
+            <input type="text" name="deposited_amt" formControlName="deposited_amt" class="form-control" />
+         </div>
+      </div>
+      <div class="form-group row">
+         <div class="col-sm-12">
+            <label>Received Amount * </label>
+            <input type="text" name="previous_received" formControlName="previous_received" class="form-control" />
+         </div>
+      </div>
+      <div class="form-group row">
+         <div class="col-sm-12">
+            <label>Paying Amount * </label>
+            <input type="text" name="received_amt" formControlName="received_amt" placeholder="INR"
+               [ngClass]="{'form-control' : true,'form-control-danger':paymentForm.controls.received_amt.invalid&&submit}" />
+            <small *ngIf="paymentForm.hasError('required','received_amt')&&submit" class="form-text error">Received
+               Amount is required!</small>
+            <small *ngIf="paymentForm.hasError('pattern','received_amt')&&submit" class="form-text error">Received
+               Amount is Invalid!</small>
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button type="submit" class="btn btn-md btn-success">Submit</button>
+   </div>
+</form>

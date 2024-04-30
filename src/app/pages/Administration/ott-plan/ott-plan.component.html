@@ -1,0 +1,152 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header style="background-color : #01a7ee;color:white;font-size: medium;">{{id ? 'Edit':'Add'}} OTT Plan
+    </nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]></toaster-container>
+      <form [formGroup]="OTTPlanForm" class="form-horizontal" (ngSubmit)="addottplan();">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-4" *ngIf="role.getroleid()>777">
+              <label>ISP Name <span style="color:red;">*</span></label>
+              <select formControlName="bus_id"
+                [ngClass]="{'form-control':true,'form-control-danger':OTTPlanForm.controls.bus_id.invalid&&submit}">
+                <option value="" selected>Select ISP Name</option>
+                <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+              </select>
+              <small *ngIf="OTTPlanForm.controls.bus_id.invalid&&submit" class="form-text error">Business name is
+                Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775" [hidden]='id'>
+              <label>Create Type <span style="color:red;">*</span></label>
+              <select formControlName="create_type"
+                [ngClass]="{'form-control':true,'form-control-danger':OTTPlanForm.controls.create_type.invalid&&submit}"
+                (change)="infovalid()">
+                <option value="" selected>Select Create Type</option>
+                <option value="0">Individual Creation</option>
+                <option value="1">Bulk Creation</option>
+              </select>
+              <small *ngIf="OTTPlanForm.controls.create_type.invalid&&submit" class="form-text error">ISP Create Type is
+                Required!</small>
+            </div>
+            <div class="col-sm-4">
+              <label>Select Vendor <span style="color:red;">*</span></label>
+              <select formControlName="ott_vendor"
+                [ngClass]="{'form-control':true,'form-control-danger':OTTPlanForm.controls.ott_vendor.invalid&&submit}"
+                (change)="infovalid()">
+                <option value="" selected>Select Create Type</option>
+                <option value="1">M2MIT</option>
+                <option value="2">PLAYBOX</option>
+              </select>
+              <small *ngIf="OTTPlanForm.controls.ott_vendor.invalid&&submit" class="form-text error">OTT Vendor
+                Required!</small>
+            </div>
+           
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label>OTT Plan Name <span style="color:red;">*</span> </label>
+              <input type="text" name="ott_name" formControlName="ott_name" placeholder="OTT Plan Name"
+                [ngClass]="{'form-control' : true,'form-control-danger':OTTPlanForm.controls.ott_name.invalid&&submit}" />
+              <small *ngIf="OTTPlanForm.controls.ott_name.invalid&&submit" class="form-text error">OTT Plan Name
+                is
+                required! </small>
+            </div>
+            <div class="col-sm-4">
+              <label>OTT Plan Code <span style="color:red;">*</span></label>
+              <input type="text" name="plancode" formControlName="plancode" placeholder="plan code"
+                [ngClass]="{'form-control' : true,'form-control-danger':OTTPlanForm.controls.plancode.invalid&&submit}" />
+              <small *ngIf="OTTPlanForm.controls.plancode.invalid&&submit" class="form-text error">plan code is
+                required! </small>
+            </div>
+            <div class="col-sm-4">
+              <label>GLTV Plan Code <span style="color:red;">*</span></label>
+              <input type="text" name="plancode" formControlName="gltvcode" placeholder="plan code"
+                [ngClass]="{'form-control' : true,'form-control-danger':OTTPlanForm.controls.gltvcode.invalid&&submit}" />
+              <small *ngIf="OTTPlanForm.controls.gltvcode.invalid&&submit" class="form-text error">plan code is
+                required! </small>
+            </div>
+            <!-- <div class="col-sm-4">
+              <label>OTT Platform</label>
+              <select formControlName="ott_plt"
+                [ngClass]="{'form-control':true,'form-control-danger':OTTPlanForm.controls.ott_plt.invalid&&submit}">
+                <option value="" selected>Select OTT Platform</option>
+                <option *ngFor="let item of ottdata" [ngValue]="item.ott_id">{{item.ott_platform}}</option>
+              </select>
+              <small *ngIf="OTTPlanForm.controls.ott_plt.invalid&&submit" class="form-text error">OTT Plan Name
+                is required! </small>
+            </div> -->
+ 
+               
+             
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label>OTT Platform</label>
+              <auto-completen [MultiSelect]=true style="white-space: break-spaces;word-break: break-all;" 
+                [addclass]="{'form-control' : true,'form-control-danger':OTTPlanForm.controls.ott_plt.invalid&&submit}"
+                optValues="ott_platform" placeholder="Select Platform" formControlName="ott_plt"
+                optId="ott_id"[item]="ottdata">
+              </auto-completen>
+            </div>
+            <div class="col-sm-4">
+              <label>Time Unit</label>
+              <select formControlName="timeunit"
+                [ngClass]="{'form-control':true,'form-control-danger':OTTPlanForm.controls.timeunit.invalid&&submit}">
+                <option value="" selected>Select Time Unit</option>
+                <option value="1">Day</option>
+                <option value="2">Month</option>
+              </select>
+            </div>
+            <div class="col-sm-4" *ngIf="OTTPlanForm.value['timeunit']==1">
+              <label>Day <span style="color:red;">*</span></label>
+              <input type="text" name="day" formControlName="unit_type" placeholder="Enter the Day"
+                [ngClass]="{'form-control' : true,'form-control-danger':OTTPlanForm.controls.unit_type.invalid&&submit}" />
+              <small *ngIf="OTTPlanForm.controls.unit_type.invalid&&submit" class="form-text error">Day is
+                required! </small>
+            </div>
+            <div class="col-sm-4" *ngIf="OTTPlanForm.value['timeunit']==2">
+              <label>Month <span style="color:red;">*</span></label>
+              <input type="text" name="Month" formControlName="unit_type" placeholder="Enter the Month"
+                [ngClass]="{'form-control' : true,'form-control-danger':OTTPlanForm.controls.unit_type.invalid&&submit}" />
+              <small *ngIf="OTTPlanForm.controls.unit_type.invalid&&submit" class="form-text error">month is
+                required! </small>
+            </div>
+           
+         
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label>Tax type</label>
+              <select formControlName="taxtyp"
+                [ngClass]="{'form-control':true,'form-control-danger':OTTPlanForm.controls.taxtyp.invalid&&submit}">
+                <option value="" selected>Select Tax Type</option>
+                <option value="0">Inclusive</option>
+                <option value="1">Exclusive</option>
+              </select>
+            </div>
+            <div class="col-sm-4">
+              <label>Amount <span style="color:red;">*</span></label>
+              <input type="text" name="Amount" formControlName="amt" placeholder="Enter the Amount"
+                [ngClass]="{'form-control' : true,'form-control-danger':OTTPlanForm.controls.amt.invalid&&submit}" />
+              <small *ngIf="OTTPlanForm.controls.amt.invalid&&submit" class="form-text error">Amount is
+                required! </small>
+            </div>
+
+            <div class="col-sm-4">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="plan" formControlName="status" />
+                <label class="custom-control-label" for="plan">Status</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-md btn-success">{{id ? 'Update': 'Create'}}</button>
+          <button class="btn btn-md btn-danger" [routerLink]="['/pages/administration/list-ottplan']">Back</button>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

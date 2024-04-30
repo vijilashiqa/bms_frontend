@@ -1,0 +1,109 @@
+<div class="col-md-12">
+   <nb-card>
+      <nb-card-header>Collection Report</nb-card-header>
+      <nb-card-body>
+         <nb-card>
+            <nb-card-header>Search</nb-card-header>
+            <nb-card-body>
+
+               <form [formGroup]="ReportsForm" class="form-horizontal" (ngSubmit)="addNas();">
+                  <div class="modal-body">
+
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label>Reseller</label>
+                           <input list="dep_reseller" placeholder="choose your Reseller" name="dep_reseller"
+                              formControlName="dep_reseller" class="form-control" />
+                           <datalist id="dep_reseller">
+                              <option value="aaa"></option>
+                              <option value="bbb"></option>
+                           </datalist>
+                        </div>
+                        <div class="col-sm-4">
+                           <label>User Name</label>
+                           <input list=">User_Name" placeholder="User Name" name="User_Name" formControlName="User_Name"
+                              class="form-control" />
+                           <datalist id="User_Name">
+                              <option value="xxx"></option>
+                              <option value="yyy"></option>
+                           </datalist>
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Payment Status</label>
+                           <input list="pay_status" placeholder="select" name="pay_status" formControlName="pay_status"
+                              class="form-control" />
+                           <datalist id="pay_status">
+                              <option value="Success"></option>
+                              <option value="Unsuccess"></option>
+                           </datalist>
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label>Gateway Name</label>
+                           <input list="gateway_name" name="gateway_name" formControlName="gateway_name" placeholder=""
+                              [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.gateway_name.invalid&&submit}" />
+                           <datalist id="gateway_name">
+                              <option value="aa"></option>
+                              <option value="bb"></option>
+                           </datalist>
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Transaction Start Date</label>
+                           <input type="Date" name="start_date" formControlName="start_date" placeholder=""
+                              [ngClass]="{'form-control' :  true,'form-control-danger':ReportsForm.controls.start_date.invalid&&submit}" />
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Transaction End Date</label>
+                           <input type="Date" name="end_date" formControlName="end_date" placeholder=""
+                              [ngClass]="{'form-control' :  true,'form-control-danger':ReportsForm.controls.end_date.invalid&&submit}" />
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label>Submission Start Date</label>
+                           <input type="Date" name="substart_date" formControlName="substart_date" placeholder=""
+                              [ngClass]="{'form-control' :  true,'form-control-danger':ReportsForm.controls.substart_date.invalid&&submit}" />
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Submission End Date</label>
+                           <input type="Date" name="subend_date" formControlName="subend_date" placeholder=""
+                              [ngClass]="{'form-control' :  true,'form-control-danger':ReportsForm.controls.subend_date.invalid&&submit}" />
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Transaction ID</label>
+                           <input type="text" name="transc_id" formControlName="transc_id"
+                              [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.transc_id.invalid&&submit}" />
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label>Payment ID</label>
+                           <input type="text" name="pay_id" formControlName="pay_id"
+                              [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.pay_id.invalid&&submit}" />
+                        </div>
+                     </div>
+                  </div>
+                  <button type="submit" class="btn btn-md btn-success"
+                     style="margin: auto; display: block;">Search</button>
+               </form>
+            </nb-card-body>
+         </nb-card>
+         <!-- <table class="table">
+                        <tr>
+                        <th>Manager</th>
+                        <th>User Name</th>
+                        <th>Billing Executive<th>
+                        <th>Collected From</th>
+                        <th>Collected To</th>
+                        <th>IP Address</th>
+                        <th>Invoice No</th>
+                        <th>Invoice Status</th>
+                        <th>Invoice Type</th>
+                        <th>Payment Type</th>
+                        </tr>
+                        </table> -->
+      </nb-card-body>
+   </nb-card>
+</div>

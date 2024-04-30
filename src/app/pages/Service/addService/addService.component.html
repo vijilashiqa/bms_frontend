@@ -1,0 +1,480 @@
+<div class="col-md-12">
+  <nb-card class="inline-form-card">
+    <nb-card-header>Add Service</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form [formGroup]="ServiceForm" (ngSubmit)="addService();">
+          <nb-tabset>
+            <nb-tab tabTitle="Basic Parameters">
+              <hr>
+                <div class="input-group">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="planname">Plan name *</label>
+                      <input formControlName="planname" name="planname" type="text" [ngClass]="{'form-control' : true,'form-control-danger':ServiceForm.hasError('required','planname')&&submit}" id="planname">
+                      <small *ngIf="ServiceForm.hasError('required','planname')&&submit" class="form-text error"> Plan Name is required! </small>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="descr">Description</label>
+                      <input formControlName="descr" name="descr" type="text" class="form-control" id="descr">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="enableservice" name="enableservice" class="custom-control-input" type="checkbox" id="enableservice" value="1" >
+                      <label class="custom-control-label" for="enableservice">Enable</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="availucp" name="availucp" class="custom-control-input" type="checkbox" id="availucp" value="1" >
+                      <label class="custom-control-label" for="availucp">Available in UCP</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="limitdl" name="limitdl" class="custom-control-input" type="checkbox" id="limitdl" value="1" >
+                      <label class="custom-control-label" for="limitdl">Limit download</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="limitul" name="limitul" class="custom-control-input" type="checkbox" id="limitul" value="1" >
+                      <label class="custom-control-label" for="limitul">Limit upload</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="limitcomb" name="limitcomb" class="custom-control-input" type="checkbox" id="limitcomb" value="1">
+                      <label class="custom-control-label" for="limitcomb">Limit total traffic</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="limitexp" name="limitexp" class="custom-control-input" type="checkbox" id="limitexp" value="1" >
+                      <label class="custom-control-label" for="limitexp">Limit expiration</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="limituptime" name="limituptime" class="custom-control-input" type="checkbox" id="limituptime" value="1" >
+                      <label class="custom-control-label" for="limituptime">Limit online time</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    Plan type
+                    <hr>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="srvtype" type="radio" name="srvtype" class="custom-control-input" value="0">
+                      <span class="custom-control-indicator"></span>Prepaid regular
+                    </label>
+                    
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="downrate">Data rate DL</label>
+                      <input formControlName="downrate" name="downrate" type="text" class="form-control" id="downrate" value="0" maxlength="11" size="11">
+                      <font color="#666666"><em>(0 - no limit)</em></font>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="uprate">Data rate UL</label>
+                      <input formControlName="uprate" name="uprate" type="text" class="form-control" id="uprate" value="0" maxlength="11" size="11">
+                      <font color="#666666"><em>(0 - no limit)</em></font>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="policymapdl">Cisco policy map (DL):</label>
+                      <input formControlName="policymapdl" name="policymapdl" type="text" class="form-control" id="policymapdl"> 
+                      <em><font color="#666666">(Cisco only)</font></em>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="policymapul">Cisco policy map (UL)</label>
+                          <input formControlName="policymapul" name="policymapul" type="text" class="form-control" id="policymapul"> 
+                          <em><font color="#666666">(Cisco only)</font></em>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="dlquota">Download quota per day</label>
+                          <input formControlName="dlquota" name="dlquota" type="text" class="form-control" id="dlquota" value="0" maxlength="25" size="20">
+                          MB <em><font color="#666666">(0 - no download quota)</font></em>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="ulquota">Upload quota per day</label>
+                          <input formControlName="ulquota" name="ulquota" type="text" class="form-control" id="ulquota" value="0" maxlength="25" size="20">
+                          MB<em><font color="#666666"> (0 - no upload quota)</font></em>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="combquota">Total quota per day</label>
+                          <input formControlName="combquota" name="combquota" type="text" class="form-control" id="combquota" value="0" maxlength="25" size="20">
+                          MB <em><font color="#666666">(0 - no total quota)</font></em>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                        <label for="timequota">Time quota per day</label>
+                      <input formControlName="timequota" name="timequota" type="text" [ngClass]="{'form-control' : true,'form-control-danger':ServiceForm.hasError('pattern','timequota')&&submit}" class="form-control" id="timequota" value="00:00:00" maxlength="25" size="20">
+                      (HH:MM:SS) <em><font color="#666666">(00:00:00 - no time quota)</font></em>
+                      <small *ngIf="ServiceForm.hasError('pattern','timequota')&&submit" class="form-text error"> HH:MM:SS is pattern! </small>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="enableburst" name="enableburst" class="custom-control-input" type="checkbox" id="enableburst" value="1">
+                      <label class="custom-control-label" for="enableburst">Enable burst mode</label>
+                    </div>
+                    <div *ngIf="ServiceForm.value['enableburst']" class="form-group">
+                      <label for="dlburstlimit">Burst limit DL</label>
+                      <input formControlName="dlburstlimit" name="dlburstlimit" type="text" class="form-control" id="dlburstlimit" value="0" maxlength="11" size="11">
+                      kbps
+                    </div>
+                  </div>
+                  <div *ngIf="ServiceForm.value['enableburst']" class="col-sm-6">
+                    <div class="form-group">
+                      <label for="ulburstlimit">Burst limit UL</label>
+                      <input formControlName="ulburstlimit" name="ulburstlimit" type="text" class="form-control" id="ulburstlimit" value="0" maxlength="11" size="11">
+                      kbps
+                    </div>
+                  </div>
+                  <div *ngIf="ServiceForm.value['enableburst']" class="col-sm-6">
+                    <div class="form-group">
+                      <label for="dlburstthreshold">Burst threshold DL</label>
+                      <input formControlName="dlburstthreshold" name="dlburstthreshold" type="text" class="form-control" id="dlburstthreshold" value="0" maxlength="11" size="11">
+                      kbps
+                    </div>
+                  </div>
+                  <div *ngIf="ServiceForm.value['enableburst']" class="col-sm-6">
+                    <div class="form-group">
+                      <label for="ulburstthreshold">Burst threshold UL</label>
+                      <input formControlName="ulburstthreshold" name="ulburstthreshold" type="text" class="form-control" id="ulburstthreshold" value="0" maxlength="11" size="11">
+                      kbps
+                        </div>
+                      </div>
+                      <div *ngIf="ServiceForm.value['enableburst']" class="col-sm-6">
+                        <div class="form-group">
+                          <label for="dlbursttime">Burst time DL</label>
+                          <input formControlName="dlbursttime" name="dlbursttime" type="text" class="form-control" id="dlbursttime" value="0" maxlength="11" size="11">
+                          seconds
+                        </div>
+                      </div>
+                      <div *ngIf="ServiceForm.value['enableburst']" class="col-sm-6">
+                        <div class="form-group">
+                          <label for="ulbursttime">Burst time UL</label>
+                          <input formControlName="ulbursttime" name="ulbursttime" type="text" class="form-control" id="ulbursttime" value="0" maxlength="11" size="11">
+                          seconds
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="priority">Priority</label>
+                          <input formControlName="priority" name="priority" type="text" class="form-control" id="priority" value="8" maxlength="11" size="11"> 
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="poolname">IP pool name</label>
+                          <input formControlName="poolname" name="poolname" type="text" class="form-control" id="profname"> 
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="disnextsrvid">Next disabled service:</label>
+                        <select formControlName="disnextsrvid" name="disnextsrvid" class="form-control" id="disnextsrvid">
+                          <option value=-1>None</option>
+                          <option *ngFor="let item of showser" [ngValue]=item.srvid>{{item.srvname}}</option>
+                        </select>
+                      </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="nextsrvid">Next expired service</label>
+                        <select formControlName="nextsrvid" name="nextsrvid" class="form-control" id="nextsrvid">
+                          <option value=-1>None</option>
+                          <option *ngFor="let item of showser" [ngValue]=item.srvid>{{item.srvname}}</option>
+                        </select>
+                      </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="dailynextsrvid">Next daily service</label>
+                        <select formControlName="dailynextsrvid" name="dailynextsrvid" class="form-control" id="dailynextsrvid">
+                          <option value=-1>None</option>
+                          <option *ngFor="let item of showser" [ngValue]=item.srvid>{{item.srvname}}</option>
+                        </select>
+                      </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="ignstatip" name="ignstatip" type="checkbox" class="custom-control-input" id="ignstatip" value="1" >
+                      <label class="custom-control-label" for="ignstatip">Ignore static IP</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="custattr">Custom RADIUS attributes</label>
+                      <textarea name="custattr" class="form-control" id="custattr"></textarea>
+                    </div>
+                  </div>
+                </div>
+            </nb-tab>
+            <nb-tab tabTitle="Allow Nas & Location">
+              <hr>
+              <div class="col-sm-12">
+                <div class="input-group">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="allowednases">Allowed NAS</label>
+                      <select size="15" formControlName="allowednases" name="allowednases" id="allowednases" multiple [ngClass]="{'form-control' : true,'form-control-danger':ServiceForm.hasError('required','allowednases')&&submit}">
+                        <option *ngFor="let item of shownas" [ngValue]=item.id>{{item.shortname}}</option>
+                      </select>
+                      <small *ngIf="ServiceForm.hasError('required','allowednases')&&submit" class="form-text error"> Select Any One Nas! </small>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="allowedmanagers">Available for Location</label>
+                      <select size="15" formControlName="allowedmanagers" name="allowedmanagers" id="allowedmanagers" multiple [ngClass]="{'form-control' : true,'form-control-danger':ServiceForm.hasError('required','allowedmanagers')&&submit}">
+                        <option *ngFor="let item of showloc" [ngValue]=item.managername>{{item.managername}}</option>
+                      </select>
+                      <small *ngIf="ServiceForm.hasError('required','allowedmanagers')&&submit" class="form-text error"> Select Any One Location! </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nb-tab>
+            <nb-tab tabTitle="Price definition">
+              <hr>
+              <div class="col-sm-12">
+                <div class="input-group">
+                  <div class="col-sm-6">
+                    Postpaid price calculation:
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="pricecalcdownload" name="pricecalcdownload" type="checkbox" class="custom-control-input" id="pricecalcdownload" value="1" >
+                      <label class="custom-control-label" for="pricecalcdownload">Download traffic</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="pricecalcupload" name="pricecalcupload" type="checkbox" class="custom-control-input" id="pricecalcupload" value="1" >
+                      <label class="custom-control-label" for="pricecalcupload">Upload traffic</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="pricecalcuptime" name="pricecalcuptime" type="checkbox" class="custom-control-input" id="pricecalcuptime" value="1" >
+                      <label class="custom-control-label" for="pricecalcuptime">Online time</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="monthly" name="monthly" type="checkbox" class="custom-control-input" id="monthly" value="1" >
+                      <label class="custom-control-label" for="monthly">Monthly account</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="renew" name="renew" type="checkbox" class="custom-control-input" id="renew" value="1" >
+                      <label class="custom-control-label" for="renew">Automatic renewal</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="carryover" name="carryover" type="checkbox" class="custom-control-input" id="carryover" value="1" >
+                      <label class="custom-control-label" for="carryover">Carry over remaining MBs</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="resetctrdate" name="resetctrdate" type="checkbox" class="custom-control-input" id="resetctrdate" value="1"  >
+                      <label class="custom-control-label" for="resetctrdate">Reset counters if date is expired</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="resetctrneg" name="resetctrneg" type="checkbox" class="custom-control-input" id="resetctrneg" value="1" >
+                      <label class="custom-control-label" for="resetctrneg">Reset counters if traffic is negative</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="enaddcredits" name="enaddcredits" type="checkbox" class="custom-control-input" id="enaddcredits" value="1" >
+                      <label class="custom-control-label" for="enaddcredits">Enable additional credits</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-6"> 
+                    <div class="form-group">
+                      <label for="unitprice">Net unit price</label>
+                      <input formControlName="unitprice" name="unitprice" type="text" class="form-control" id="unitprice" value="0.000000" maxlength="25" size="25">
+                      Rs<em><font color="#666666">18.00 Tax</font></em>
+                    </div> 
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="unitpricegross">Gross unit price</label>
+                      <input formControlName="unitpricegross" name="unitpricegross" type="text" class="form-control" id="unitpricegross" maxlength="25" size="25">
+                      Rs
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="unitpricetax">VAT</label>
+                      <input formControlName="unitpricetax" name="unitpricetax" type="text" class="form-control" id="unitpricetax" value="0.000000" size="25" readonly>
+                     Rs
+                   </div>
+                  </div>
+                  <div class="col-sm-6"> 
+                    <div class="form-group">
+                      <label for="unitpriceadd">Net additional unit price:</label>
+                      <input formControlName="unitpriceadd" name="unitpriceadd" type="text" class="form-control" id="unitpriceadd" value="0.000000" maxlength="25" size="25">
+                      Rs
+                    </div>
+                  </div>
+                  <div class="col-sm-6">  
+                    <div class="form-group">
+                      <label for="unitpriceaddgross">Gross additional unit price</label>
+                      <input formControlName="unitpriceaddgross" name="unitpriceaddgross" type="text" class="form-control" id="unitpriceaddgross" maxlength="25" size="25" >
+                      Rs 
+                    </div>
+                  </div>
+                  <div class="col-sm-6">  
+                    <div class="form-group">
+                      <label for="unitpriceaddtax">VAT</label>
+                      <input formControlName="unitpriceaddtax" name="unitpriceaddtax" type="text" class="form-control" id="unitpriceaddtax" value="0.000000" size="25" readonly>
+                      Rs
+                    </div>
+                  </div>
+                  <div class="col-sm-6">   
+                    <label class="custom-control custom-radio">
+                      <input formControlName="timeaddmodeexp" name="timeaddmodeexp" type="radio" class="custom-control-input" value="0" >
+                      <span class="custom-control-indicator"></span>Date addition mode
+                    </label>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="timeaddmodeexp" type="radio" class="custom-control-input" name="timeaddmodeexp" value="1" >
+                      <span class="custom-control-indicator"></span>Reset expiration date 
+                    </label>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="timeaddmodeexp" type="radio" class="custom-control-input" name="timeaddmodeexp" value="2" >
+                      <span class="custom-control-indicator"></span>Prolong expiration date 
+                    </label>
+                  </div>
+                  <div class="col-sm-6">   
+                    Time addition mode:
+                    <label class="custom-control custom-radio">
+                      <input formControlName="timeaddmodeonline" name="timeaddmodeonline" type="radio" class="custom-control-input" value="0" >
+                      <span class="custom-control-indicator"></span>Reset online time 
+                    </label> 
+                    <label class="custom-control custom-radio">
+                      <input formControlName="timeaddmodeonline" type="radio" class="custom-control-input" name="timeaddmodeonline" value="1">
+                      <span class="custom-control-indicator"></span>Add online time 
+                    </label>
+                  </div>
+                  <div class="col-sm-6">  
+                    Traffic addition mode:
+                    <label class="custom-control custom-radio">
+                      <input formControlName="trafficaddmode" name="trafficaddmode" type="radio" class="custom-control-input" value="0" >
+                      <span class="custom-control-indicator"></span>Reset traffic counters 
+                    </label> 
+                    <label class="custom-control custom-radio">
+                      <input formControlName="trafficaddmode" type="radio" class="custom-control-input" name="trafficaddmode" value="1" >
+                      <span class="custom-control-indicator"></span>Add traffic 
+                    </label>
+                  </div>
+                  <div class="col-sm-6">  
+                    <div class="form-group">
+                      <label for="timeunitexp">Expiration date unit</label>
+                      <input formControlName="timeunitexp" name="timeunitexp" type="text" class="form-control" id="timeunitexp" value="0" maxlength="25" size="15">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="inittimeexp">Initial</label>
+                      <input formControlName="inittimeexp" name="inittimeexp" type="text" class="form-control" id="inittimeexp" value="0" maxlength="25" size="15">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">   
+                    <div class="form-group">
+                      <label for="timebaseexp">Day Or Month</label>
+                      <select formControlName="timebaseexp" name="timebaseexp" class="form-control" id="timebaseexp">
+                        <option value=2>day(s)</option>
+                        <option value=3>month(s)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">  
+                    <div class="form-group">
+                      <label for="timeunitonline">Online time unit</label>
+                      <input formControlName="timeunitonline" name="timeunitonline" type="text" class="form-control" id="timeunitonline" value="0" maxlength="25" size="15">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="inittimeonline">Initial</label>
+                      <input formControlName="inittimeonline" name="inittimeonline" type="text" class="form-control" id="inittimeonline" value="0" maxlength="25" size="15">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">  
+                    <div class="form-group">
+                      <label for="timebaseonline">Minute Or Hour</label>
+                      <select formControlName="timebaseonline" name="timebaseonline" class="form-control" id="timebaseonline">
+                        <option value=0>minute(s)</option>
+                        <option value=1>hour(s)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="trafficunitdl">Download traffic unit</label>
+                      <input formControlName="trafficunitdl" name="trafficunitdl" type="text" class="form-control" id="trafficunitdl" value="0" maxlength="25" size="15">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="initdl">Initial</label>
+                      <input formControlName="initdl" name="initdl" type="text" class="form-control" id="initdl" value="0" maxlength="25" size="15">
+                      MB
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="trafficunitul">Upload traffic unit</label>
+                      <input formControlName="trafficunitul" name="trafficunitul" type="text" class="form-control" id="trafficunitul" value="0" maxlength="25" size="15">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="initul">Initial</label>
+                      <input formControlName="initul" name="initul" type="text" class="form-control" id="initul" value="0" maxlength="25" size="15">
+                      MB
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="trafficunitcomb">Total traffic unit</label>
+                      <input formControlName="trafficunitcomb" name="trafficunitcomb" type="text" class="form-control" id="trafficunitcomb" value="0" maxlength="25" size="15">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="inittotal">Initial</label>
+                      <input formControlName="inittotal" name="inittotal" type="text" class="form-control" id="inittotal" value="0" maxlength="25" size="15">
+                      MB
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="minamount">Minimal base quantity</label>
+                      <input formControlName="minamount" name="minamount" type="text" class="form-control" id="minamount" value="1" maxlength="25" size="15">
+                      unit(s)
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="addamount">Additional traffic unit</label>
+                      <input formControlName="addamount" name="addamount" type="text" class="form-control" id="addamount" value="1" maxlength="25" size="15">
+                      MB 
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="minamountadd">Minimal additional quantity</label>
+                      <input formControlName="minamountadd" name="minamountadd" type="text" class="form-control" id="minamountadd" value="1" maxlength="25" size="15">
+                      unit(s)
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nb-tab>
+          </nb-tabset>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-primary">Add Servise</button>
+            <button type="submit" class="btn btn-md btn-danger" [routerLink]="['/pages/service/service-list']">Cancel</button>
+          </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

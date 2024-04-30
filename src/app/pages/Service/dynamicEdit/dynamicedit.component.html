@@ -1,0 +1,219 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="dynamicForm" (ngSubmit)="AddDyn()">
+   <div class="modal-body">
+      <div class="row">
+         <div class="col-sm-12">
+            <div class="row">
+               <div class="col-sm-6">
+                  <select
+                     [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.pack.invalid&&submit}"
+                     name="pack" formControlName="pack">
+                     <option value="">Select Package</option>
+                     <option *ngFor="let item of pack" [ngValue]=item.srvid>{{item.srvname}}</option>
+                  </select>
+               </div>
+            </div>
+            <br>
+            <div class="row">
+               <div class="col-sm-6">
+                  <label>Start Time</label>
+                  <table>
+                     <tr>
+                        <td>
+                           <select name="shr" formControlName="shr"
+                              [ngClass]="{'form-control' : true, 'input-small': true,'form-control-danger':dynamicForm.controls.shr.invalid&&submit}">
+                              <option *ngFor="let item of hr" [ngValue]="item.value">{{item.value}}</option>
+                           </select>
+                        </td>
+                        <td>
+                           <select name="smin" formControlName="smin"
+                              [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.smin.invalid&&submit}">
+                              <option *ngFor="let item of minsec" [ngValue]="item.value">{{item.value}}</option>
+                           </select>
+                        </td>
+                        <td>
+                           <select name="ssec" formControlName="ssec"
+                              [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.ssec.invalid&&submit}">
+                              <option *ngFor="let item of minsec" [ngValue]="item.value">{{item.value}}</option>
+                           </select>
+                        </td>
+                     </tr>
+                  </table>
+               </div>
+               <br>
+               <div class="col-sm-6">
+                  <label>End Time</label>
+                  <table>
+                     <tr>
+                        <td>
+                           <select name="ehr" formControlName="ehr"
+                              [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.ehr.invalid&&submit}">
+                              <option *ngFor="let item of hr" [ngValue]="item.value">{{item.value}}</option>
+                           </select>
+                        </td>
+                        <td>
+                           <select name="emin" formControlName="emin"
+                              [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.emin.invalid&&submit}">
+                              <option *ngFor="let item of minsec" [ngValue]="item.value">{{item.value}}</option>
+                           </select>
+                        </td>
+                        <td>
+                           <select name="esec" formControlName="esec"
+                              [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.esec.invalid&&submit}">
+                              <option *ngFor="let item of minsec" [ngValue]="item.value">{{item.value}}</option>
+                           </select>
+                        </td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <br>
+            <div class="row">
+               <div class="col-sm-6">
+                  <span>Enable Burst Mode</span><br><br>
+                  <label class="switch">
+                     <input formControlName="enburst" type="checkbox" checked>
+                     <span class="slider round"></span>
+                  </label>
+               </div>
+            </div>
+            <br>
+            <div *ngIf="dynamicForm.value['enburst']">
+               <div class="row">
+                  <div class="col-sm-6">
+                     <label>Download Burst Limit</label>
+
+                     <div class="input-group">
+                        <input type="text" name="dlburst" formControlName="dlburst" placeholder="DL Burst Limit *"
+                           [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.dlburst.invalid&&submit}" />
+                        <span style="font-size: 17px;" class="input-group-addon success">Kbps</span>
+                     </div>
+                     <small *ngIf="dynamicForm.hasError('pattern','dlburst')&&submit" class="form-text error"> DL Burst
+                        Limit is Invalid! </small>
+                  </div>
+                  <div class="col-sm-6">
+                     <label>Upload Burst Limit</label>
+
+                     <div class="input-group">
+                        <input type="text" name="ulburst" formControlName="ulburst" placeholder="UL Burst Limit*"
+                           [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.ulburst.invalid&&submit}" />
+                        <span style="font-size: 17px;" class="input-group-addon success">Kbps</span>
+                     </div>
+                     <small *ngIf="dynamicForm.hasError('pattern','ulburst')&&submit" class="form-text error"> UL Burst
+                        Limit is Invalid! </small>
+                  </div>
+               </div>
+               <br>
+               <div class="row">
+                  <div class="col-sm-6">
+                     <label>Download Burst Treshold</label>
+
+                     <div class="input-group">
+                        <input type="text" name="dlburstth" formControlName="dlburstth"
+                           placeholder="DL Brust Threshold*"
+                           [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.dlburstth.invalid&&submit}" />
+                        <span style="font-size: 17px;" class="input-group-addon success">Kbps</span>
+                     </div>
+                     <small *ngIf="dynamicForm.hasError('pattern','dlburstth')&&submit" class="form-text error"> DL
+                        Brust Threshold Invalid! </small>
+                  </div>
+                  <div class="col-sm-6">
+                     <label>Upload Burst Treshold</label>
+
+                     <div class="input-group">
+                        <input type="text" name="ulburstth" formControlName="ulburstth"
+                           placeholder="UL Brust Threshold*"
+                           [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.ulburstth.invalid&&submit}" />
+                        <span style="font-size: 17px;" class="input-group-addon success">Kbps</span>
+                     </div>
+                     <small *ngIf="dynamicForm.hasError('pattern','ulburstth')&&submit" class="form-text error"> UL
+                        Brust Threshold is Invalid! </small>
+                  </div>
+               </div>
+               <br>
+               <div class="row">
+                  <div class="col-sm-6">
+                     <label>Download Burst Time</label>
+                     <div class="input-group">
+                        <input type="text" name="dlbursttime" formControlName="dlbursttime"
+                           placeholder="DL Brust Time *"
+                           [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.dlbursttime.invalid&&submit}" />
+                        <span style="font-size: 17px;" class="input-group-addon success">min</span>
+                     </div>
+                     <small *ngIf="dynamicForm.hasError('pattern','dlbursttime')&&submit" class="form-text error"> DL
+                        Brust Time is Invalid! </small>
+                  </div>
+                  <div class="col-sm-6">
+                     <label>Upload Burst Time</label>
+                     <div class="input-group">
+                        <input type="text" name="ulbrusttime" formControlName="ulbrusttime" placeholder="UL Brust Time*"
+                           [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.ulbrusttime.invalid&&submit}" />
+                        <span style="font-size: 17px;" class="input-group-addon success">min</span>
+                     </div>
+                     <small *ngIf="dynamicForm.hasError('pattern','ulbrusttime')&&submit" class="form-text error"> UL
+                        Brust Time is Invalid! </small>
+                  </div>
+               </div>
+               <br>
+            </div>
+            <div class="row">
+               <div class="col-sm-6">
+                  <label>Download Rate</label>
+                  <div class="input-group">
+                     <input type="text" name="dlrate" formControlName="dlrate" placeholder="Download Rate *"
+                        [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.dlrate.invalid&&submit}" />
+                     <span style="font-size: 17px;" class="input-group-addon success">Kbps</span>
+                  </div>
+                  <small *ngIf="dynamicForm.hasError('pattern','dlrate')&&submit" class="form-text error"> Upload Rate
+                     is Invalid! </small>
+                  <small *ngIf="dynamicForm.hasError('required','dlrate')&&submit" class="form-text error"> Download
+                     Rate is required! </small>
+               </div>
+               <div class="col-sm-6">
+                  <label>Upload Rate</label>
+                  <div class="input-group">
+                     <input type="text" name="uprate" formControlName="uprate" placeholder="Upload Rate*"
+                        [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.uprate.invalid&&submit}" />
+                     <span style="font-size: 17px;" class="input-group-addon success">Kbps</span>
+                  </div>
+                  <small *ngIf="dynamicForm.hasError('required','uprate')&&submit" class="form-text error"> Upload Rate
+                     is required! </small>
+                  <small *ngIf="dynamicForm.hasError('pattern','uprate')&&submit" class="form-text error"> Upload Rate
+                     is Invalid! </small>
+               </div>
+            </div>
+            <br>
+            <div class="row">
+               <div class="col-sm-6">
+                  <input type="text" name="priority" formControlName="priority" placeholder="Priority *"
+                     [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.priority.invalid&&submit}" />
+                  <small *ngIf="dynamicForm.hasError('required','priority')&&submit" class="form-text error"> Priority
+                     is required! </small>
+                  <small *ngIf="dynamicForm.hasError('pattern','priority')&&submit" class="form-text error"> Priority
+                     Range (0-8)! </small>
+               </div>
+            </div>
+         </div>
+      </div>
+      <br><br>
+      <div class="row">
+         <div class="col-sm-12">
+            <nb-checkbox formControlName="mon">Mon</nb-checkbox>
+            <nb-checkbox formControlName="tue">Tue</nb-checkbox>
+            <nb-checkbox formControlName="wed">Wed</nb-checkbox>
+            <nb-checkbox formControlName="thur">Thur</nb-checkbox>
+            <nb-checkbox formControlName="fri">Fri</nb-checkbox>
+            <nb-checkbox formControlName="sat">Sat</nb-checkbox>
+            <nb-checkbox formControlName="sun">Sun</nb-checkbox>
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button type="submit" class="btn btn-md btn-primary">Add Nas</button>
+   </div>
+</form>

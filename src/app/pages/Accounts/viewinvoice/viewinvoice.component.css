@@ -1,0 +1,47 @@
+@media only screen and (min-width: 700px) {
+    #hidedesktop {
+        display: none !important;
+    }
+
+    
+}
+
+@media only screen and (max-width: 700px) {
+    .modal-body {
+        font-size: 9px !important;
+    }
+
+    .mobileview {
+        margin-left: -2vh;
+    }
+
+    #hidemobile {
+        display: none !important;
+    }
+
+
+    /* width: 33%;
+    margin-top: -12px;
+    margin-left: 304px; */
+
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+/* 
+ @media print {
+    .imgstyle{
+        margin:0 163px;height:121px;
+    }
+  } */
+
+
+  .imgstyle{
+    margin:0 163px;margin-top:10px;margin-bottom: 10px;
+}
+
+.imgstylemobile{
+    margin:0 75px;margin-top:-87px;margin-left: 188px;
+}

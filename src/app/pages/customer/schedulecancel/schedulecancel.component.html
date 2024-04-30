@@ -1,0 +1,27 @@
+<!-- <ngx-loading [show]="loading"
+  [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+</ngx-loading> -->
+<div class="modal-header" style="background-color :  #01a7ee">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="CancelScheduleForm" (ngSubmit)="cancelsubmit()">
+  <div class="modal-body">
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <label>Cancel Reason <span style="color:red;">*</span></label>
+        <textarea formControlName="cancel_reason" placeholder="Cancel REason"
+          [ngClass]="{'form-control':true,'form-control-danger':CancelScheduleForm.controls.cancel_reason.invalid&&submit}"></textarea>
+        <small *ngIf="CancelScheduleForm.controls.cancel_reason.invalid&&submit" class="form-text error">Cancel Reason is
+          Required!</small>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-md btn-success">Update</button>
+    <button type="submit" class="btn btn-md btn-danger" (click)="closeModal()">Back </button>
+
+  </div>
+</form>

@@ -1,0 +1,36 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <!-- <toaster-container [toasterconfig]="config"> </toaster-container> -->
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="AddNasForm" (ngSubmit)="addPropass()">
+   <div class="modal-body">
+      <div class="form-group row">
+         <div class="col-sm-12">
+            <label>Password <span style="color:red;">*</span></label>
+            <input type="password" name="Password" formControlName="Password" placeholder="Password"
+               [ngClass]="{'form-control' : true,'form-control-danger':AddNasForm.controls.Password.invalid&&submit}" />
+            <small *ngIf="AddNasForm.hasError('required','Password')&&submit" class="form-text error">Password
+               is required! </small>
+            <small *ngIf="AddNasForm.hasError('pattern','Password')&&submit" class="form-text error">
+                  <span>Use 8 or more Characters with a mix of <br>
+                     [A-Z],[a-z] letters, numbers & symbols!</span>
+            </small>
+         </div>
+      </div>
+      <div class="form-group row">
+         <div class="col-sm-12">
+            <label>ConFirm Password <span style="color:red;">*</span></label>
+            <input type="password" name="CPassword" formControlName="CPassword" placeholder="ConFirm Password"
+              [ngClass]="{'form-control':true,'form-control-danger':AddNasForm.value['Password']!=AddNasForm.value['CPassword']}" />
+            <small *ngIf="AddNasForm.value['Password']!=AddNasForm.value['CPassword']" class="form-text error">Password
+              does not match! </small>
+          </div>
+      </div>
+   </div>
+   <div class="modal-footer" >
+      <button type="submit"  class="btn btn-md btn-primary">Update</button>
+   </div>
+</form>

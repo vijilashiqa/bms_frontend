@@ -1,0 +1,72 @@
+<div class="modal-header" style="background-color :  #01a7ee">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="AddVoiceForm" (ngSubmit)="voicesubmit()">
+  <div class="modal-body">
+    <div class="form-group row">
+      <div class="col-sm-3" *ngIf="role.getroleid()>777">
+        <label>ISP Name <span style="color:red;">*</span> </label>
+        <auto-completen
+          [addclass]="{'form-control' : true,'form-control-danger':AddVoiceForm.controls.bus_id.invalid&&submit}"
+          (changed)="showUser();" formControlName="bus_id" optValues="busname" placeholder='Select Business'
+          optId="id" [item]="busdata">
+        </auto-completen>
+        <small *ngIf="AddVoiceForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is
+          Required</small>
+      </div>
+      <div class="col-sm-3" [hidden]="item">
+        <label>Create Type <span style="color: red;">*</span></label>
+        <select formControlName="create_type" placeholder="Create Type" (change)="bulkvalid()"
+          [ngClass]="{'form-control':true,'form-control-danger':AddVoiceForm.controls.create_type.invalid&&submit}">
+            <option value="" selected>Select Create Type</option>
+            <option value="0">Individual Creation</option>
+            <option value="1">Bulk Creation</option>
+        </select>
+        <small *ngIf="AddVoiceForm.controls.create_type.invalid&&submit" class="form-text error">Create Type is Required!</small>
+      </div>
+      <div class="col-sm-3" *ngIf="AddVoiceForm.value['create_type']=='1'">
+        <a href="/assets/public/BulkVoice.xlsx" target="_blank" download><b>Download Sample Here</b></a>
+      </div>
+      <div class="col-sm-3" *ngIf="AddVoiceForm.value['create_type']=='1'">
+        <label>User Details</label>
+        <input type="file" (change)="changeListener($event.target.files[0])" class="form-control" accept=".xlsx">
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="AddVoiceForm.value['create_type'] == '0'">
+      <div class="col-sm-3">
+        <label>Voice Number <span style="color:red;">*</span></label>
+        <input type="number" formControlName="voice_num" placeholder="Voice Number"
+        [ngClass]="{'form-control':true,'form-control-danger':AddVoiceForm.controls.voice_num.invalid&&submit}">
+        <small *ngIf="AddVoiceForm.controls.voice_num.invalid&&submit" class="form-text error">Voice Number Is
+          Required!</small>
+      </div>
+      <div class="col-sm-3" [hidden]="item">
+        <label>Password <span style="color: red;">*</span></label>
+        <input type="text" formControlName="password" placeholder="Password"
+          [ngClass]="{'form-control':true,'form-control-danger':AddVoiceForm.controls.password.invalid&&submit}">
+        <small *ngIf="AddVoiceForm.controls.password.invalid&&submit" class="form-text error">Password is Required!</small>
+      </div> 
+      <div class="col-sm-3">
+        <label>Slot NO:</label>
+        <input type="number" formControlName="slot_num" placeholder="Slot Number"
+          [ngClass]="{'form-control':true,'form-control-danger':AddVoiceForm.controls.slot_num.invalid&&submit}">
+      </div>
+      <div class="col-sm-3">
+        <label>Status <span style="color: red;">*</span></label>
+        <select formControlName="status" disabled="true"
+        [ngClass]="{'form-control':true,'form-control-danger':AddVoiceForm.controls.status.invalid&&submit}">
+          <option value="0">Not Assigned</option>
+          <option value="1">Assigned</option>
+        </select>
+        <small *ngIf="AddVoiceForm.controls.status.invalid&&submit" class="form-text error">Status is Required!</small>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-md btn-success">{{item ? 'Update': 'Add'}} </button>
+    <button type="submit" class="btn btn-md btn-danger" (click)="closeModal()">Back </button>
+  </div>
+</form>

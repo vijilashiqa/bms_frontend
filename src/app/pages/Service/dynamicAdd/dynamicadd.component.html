@@ -1,0 +1,118 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+  <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="dynamicForm" (ngSubmit)="AddDyn()">
+<div class="modal-body">
+  <div class="form-group row">
+    <div class="col-sm-4">
+      <label>ISP Name</label>
+      <select formControlName="bus_name"
+        [ngClass]="{'form-control':true,'form-control-danger':dynamicForm.controls.invalid&&submit}"
+        (change)="busservice();group()">
+        <option value="" selected>Select ISP Name</option>
+        <option *ngFor="let item of busname" [ngValue]=item.id>{{item.busname}}</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label>Circle (Optional)</label>
+      <select formControlName="group_name"
+        [ngClass]="{'form-control':true,'form-control-danger':dynamicForm.controls.group_name.invalid&&submit}" (change)="grupser()">
+        <option value="" selected="">Select Circle Name</option>
+        <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+      </select>
+    </div>
+    <div class="col-sm-4">
+      <label>Package</label>
+      <select [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.pack.invalid&&submit}" name="pack" formControlName="pack" >
+        <option value="">Select Package</option>
+        <option *ngFor= "let item of pack" [ngValue]=item.srvid>{{item.srvname}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-6">
+      <label>Start Time</label>
+      <input type="Time" name="shr" formControlName="shr" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.shr.invalid&&submit}"/>
+    </div>
+    <div class="col-sm-6">
+      <label>End Time</label>
+      <input type="Time" name="ehr" formControlName="ehr" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.ehr.invalid&&submit}"/>
+    </div>
+  </div>
+  <div class="form-group row" >
+    <div class="col-sm-6">
+      <label>Download Rate</label>
+      <input type="text" name="dlrate" formControlName="dlrate" placeholder="Download  Rate *" [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.dlrate.invalid&&submit}"/>
+    </div>
+    <small *ngIf="dynamicForm.hasError('required','dlrate')&&submit" class="form-text error"> Download Rate is required! </small>
+    <div class="col-sm-6">
+      <label>Upload Rate</label>
+      <input type="text" name="ulrate" formControlName="ulrate" placeholder="Upload  Rate*" [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.ulrate.invalid&&submit}"/>
+      <small *ngIf="dynamicForm.hasError('required','ulrate')&&submit" class="form-text error"> Upload Rate is required! </small>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-md-6">
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="enable"  formControlName="enable" (change)="burst()"/>
+        <label class="custom-control-label" for="enable">Enable Burst Mode</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row"  [hidden]="!dynamicForm.value['enable']" >
+    <div class="col-sm-6"  >
+      <label>Download Burst Limit</label>
+      <input type="text" name="Limit" formControlName="Limit"  placeholder="Download Burst Limit " [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.Limit.invalid&&submit}"/>
+    </div>
+    <div class="col-sm-6"> 
+      <label>Upload Burst Limit</label>                     
+      <input type="text" name="Limit1" formControlName="Limit1"  placeholder="Upload Burst Limit" [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.Limit1.invalid&&submit}"/>
+    </div>
+  </div>
+  <div class="form-group row"  [hidden]="!dynamicForm.value['enable']" >
+    <div class="col-sm-6">
+      <label>Download Burst Treshold</label>
+      <input type="text" name="Treshold" formControlName="Treshold"  placeholder="Download Burst Treshold " [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.Treshold.invalid&&submit}"/>
+    </div>
+    <div class="col-sm-6">
+      <label>Upload Burst Treshold</label>
+      <input type="text" name="Treshold1" formControlName="Treshold1"   placeholder="Upload Burst Treshold " [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.Treshold1.invalid&&submit}"/>
+    </div>
+  </div>
+  <div class="form-group row"  [hidden]="!dynamicForm.value['enable']" >
+    <div class="col-sm-6">     
+      <label>Download Burst Time</label>                                
+      <input type="text" name="Time"  formControlName="Time"  placeholder="Download Burst Time " [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.Time.invalid&&submit}"/>
+    </div>
+    <div class="col-sm-6">
+      <label>Upload Burst Time</label>
+      <input type="text" name="Time1" formControlName="Time1"  placeholder="Upload Burst Time " [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.Time1.invalid&&submit}"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-6" [hidden]="!dynamicForm.value['enable']">
+      <label>Priority</label>
+      <input type="text" name="priority" formControlName="priority" placeholder="Priority *" [ngClass]="{'form-control' : true,'form-control-danger':dynamicForm.controls.priority.invalid&&submit}"/>
+      <small *ngIf="dynamicForm.hasError('required','priority')&&submit" class="form-text error"> Priority is required! </small>
+      <small *ngIf="dynamicForm.hasError('pattern','priority')&&submit" class="form-text error"> Priority Range (0-8)! </small>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-12">
+      <nb-checkbox formControlName="mon">Mon</nb-checkbox>
+      <nb-checkbox formControlName="tue">Tue</nb-checkbox>
+      <nb-checkbox formControlName="wed">Wed</nb-checkbox>
+      <nb-checkbox formControlName="thur">Thur</nb-checkbox>
+      <nb-checkbox formControlName="fri">Fri</nb-checkbox>
+      <nb-checkbox formControlName="sat">Sat</nb-checkbox>
+      <nb-checkbox formControlName="sun">Sun</nb-checkbox>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="submit" class="btn btn-md btn-primary">{{item ? 'Update': 'Add' }} Dynamic Data Rate</button>
+</div>
+</form>

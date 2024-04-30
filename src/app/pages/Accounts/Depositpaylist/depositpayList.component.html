@@ -1,0 +1,204 @@
+
+<nb-card>
+  <nb-card-header> List Deposit<a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <button *ngIf="!role.getmenurole(802)" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/Accounts/adddeposit']">Add </button>
+    <hr style="border: 0px;">
+    <div class="modal-body">
+      <div class="form-group row">
+        <div class="col-sm-2" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showProfileReseller();deposited();changeclear(1);" placeholder='Select Business'
+            id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" addclass="form-control" optValues="groupname"
+            (changed)="changeclear(2);" placeholder='Select Group' optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="[666,555].includes(this.role.getroleid())">
+          <label>Select List Type</label>
+          <select [(ngModel)]="showtype" name="showtype" id="showtype" class="form-control">
+            <option value="0" selected="selected">Reseller</option>
+            <option value="1">Own</option>
+          </select>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775 || role.getroleid() > 444)" [hidden]="showtype==1">
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" addclass="form-control"
+            (changed)="showResellerName();changeclear(3);" optValues="menu_name" placeholder='Select Reseller Type'
+            optId="role" [item]="profile">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775 || role.getroleid() > 444)" [hidden]="showtype==1">
+          <label>Reseller Name</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company" (keyUp)="showResellerName($event)"
+            placeholder='Select Reseller' id="res_name" [item]="res1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="role.getroleid()>=775">
+          <label>Deposited By</label>
+          <auto-completen [(ngModel)]="dep_by" addclass="form-control" optValues="res_name"
+            placeholder='Select Depositers' (keyUp)="deposited($event)" id="dep_by" [item]="depositer">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Deposit Amount</label>
+          <input type="number" [(ngModel)]="dep_amt" class="form-control" placeholder="Deposited Amount">
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <label>Reason</label>
+          <select [(ngModel)]="depReason" name="depReason" id="depReason"
+            class="form-control no-range-feature-val video-codec-list">
+            <option value=0 selected="selected">ALL</option>
+            <option *ngFor="let item of reasondata" [ngValue]="item.id">{{ item.reason }}</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <label>Deposit Type</label>
+          <select [(ngModel)]="dep_type" name="dep_type" id="dep_type"
+            class="form-control no-range-feature-val video-codec-list">
+             <option *ngFor="let item of deposit_type" [ngValue]="item.id">{{ item.label }}</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <label>Start Date</label>
+          <input type="date" pattern="Start Date" [(ngModel)]="start_date" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>End Date</label>
+          <input type="date" placeholder="End Date" [(ngModel)]="end_date" class="form-control">
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <!-- <label class="left">
+          <h5>Total Deposit : {{count}}</h5>
+        </label> -->
+        <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+      </div>
+    </div>
+    <table class="table table-bordered table-striped">
+      <thead class="success">
+        <th style="text-align:left;color:white"><b>Total records : {{count}}</b></th>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align:left;font-weight:800;"> TOTAL DEPOSIT AMOUNT :</td>
+        </tr>
+        <tr>
+          <td style="text-align: left;font-size: x-large;font-weight:600;">&nbsp;{{ totalDepositAmount || 0 | currency :
+            'INR': 'symbol' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <!-- <th>Action</th> -->
+          <th *ngIf="role.getroleid()>=775">ID</th>
+          <th *ngIf="role.getroleid()>777">ISP Name</th>
+          <th *ngIf="role.getroleid()>=775">Group Name</th>
+          <th *ngIf="role.getroleid()>=775">Reseller Type</th>
+          <th *ngIf="role.getroleid()>444">Reseller Business Name</th>
+          <th>Deposit Mode</th>
+          <th>Deposit Type</th>
+          <th>OrderID</th>
+          <th>UTR</th>
+          <th>Deposit Amount</th>
+          <th>Received Amount</th>
+          <th>Status</th>
+          <th>Reason</th>
+          <th>Notes</th>
+          <th>Cancel Reason</th>
+          <th>Deposited By</th>
+          <th>Deposit Date</th>
+        </tr>
+        <tr *ngFor="let item of pagedItems">
+          <!-- <td [hidden]="item.status > 0" style="padding: 1px;" class=" last"
+            data-title="'Action'">
+              <div class="dropdown ghost-dropdown" ngbDropdown>
+                <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin: 3px;" class="btn btn-primary btn-icon" type="button"
+                  ngbDropdownToggle>Action&nbsp;
+                </button>
+                <ul style="width: 75;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                  <li  class="dropdown-item" title="Edit"
+                    (click)="Canceldeposit(item.id)"><i style="font-size: 20px;color: red;" class="ion-close-round"></i>&nbsp;Cancel</li>
+                  <li [hidden]="(item.img==null||item.img=='')" class="dropdown-item" title="Proof" (click)="viewproof(item.id)">
+                    <i style="font-size: 20px;" class="far fa-eye "></i>&nbsp;Proof</li>
+                </ul>
+            </div>
+          </td>
+          <td *ngIf="item.status!=0"><a [ngStyle]="{'color' :item.status!=0 ? 'red' : 'green' }"
+            [ngClass]="{'ion-close-round':item.status== 0 ? false:true,'ion-checkmark-round': item.status==0 ? true:false  }"></a></td> -->
+          <td *ngIf="role.getroleid()>=775">{{item.id}}</td>
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td *ngIf="role.getroleid()>=775">{{item.groupname}}</td>
+          <td *ngIf="role.getroleid()>=775">{{item.role==333 ? 'Deposit Reseller':item.role==555 ? 'Sub ISP
+            Deposit':'Sub Distributor Deposit'}}</td>
+          <td *ngIf="role.getroleid()>444">{{item.company}}</td>
+          <td>{{item.dflag==1 ?'Deposit':item.dflag==2 ? 'Received':item.dflag==3?'Deposit against Payment':item.dflag==4?'Commission':item.dflag==5 ? 'Debit':item.dflag==6 ? 'Credit':'--'}}
+          <td style="text-align: center;">{{item.deposit_type==1 ? 'Cash':item.deposit_type==2 ? 'Bank
+            Payment':item.deposit_type==3 ?'Net Banking':item.deposit_type==4 ?'UPI':item.deposit_type==6?'Wallet':'Deposit'}}</td>
+          <td>{{item.txnid}}</td>
+          <td>{{item.utr==null ? '--':item.utr}}</td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.deposit_amount}}</i></td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.received_amount}}</i></td>
+          <td>{{item.status==1 ? 'Cancel': item.status==0 ? 'Active':'Revert'}}</td>
+          <td>{{item.dep_reason || '--'}}</td>
+          <td>
+            <i class="fa fa-envelope" placement="right" popoverClass="style:background: aliceblue;
+            font-size: 150%;" ngbPopover="{{item.note?item.note:'--'}}">
+            </i>
+          </td>
+          <td>{{item.cancel_reason==null ? '--': item.cancel_reason}}</td>
+          <td>{{item.deposited_by}}</td>
+          <td>{{item.c_date | date:'d MMM y h:mm:ss a'}}</td>
+        </tr>
+        <tr>
+          <td colspan="15" *ngIf="pagedItems==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,91 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="activeModal.close(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="LimitUpdateForm" class="form-horizontal" (ngSubmit)="subsupdate();">
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <div class="modal-body">
+    <div class="form-group row" *ngIf="dl_flag==1">
+      <div class="col-sm-7">
+        <label>Download <span style="color:red;">*</span></label>
+        <input type="number" formControlName="dl_limit" placeholder="Download limit"
+          [ngClass]="{'form-control':true,'form-control-danger':LimitUpdateForm.controls.dl_limit.invalid&&submit}">
+        <small *ngIf="LimitUpdateForm.controls.dl_limit.invalid&&submit" class="form-text error">Download Limit is
+          Required!</small>
+      </div>
+      <div class="col-sm-5">
+        <label>Size <span style="color: red;">*</span></label>
+        <select formControlName="dl_size" placeholder="Size"
+          [ngClass]="{'form-control':true,'form-control-danger':LimitUpdateForm.controls.dl_size.invalid&&submit}">
+          <option value="Bytes">Bytes</option>
+          <option value="KB">KB</option>
+          <option value="MB">MB</option>
+          <option value="GB">GB</option>
+          <option value="TB">TB</option>
+          <option value="PB">PB</option>
+          <option value="EB">EB</option>
+          <option value="ZB">ZB</option>
+        </select>
+        <small *ngIf="LimitUpdateForm.controls.dl_size.invalid&&submit" class="form-text error">Size is Required!
+        </small>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="ul_flag==1">
+      <div class="col-sm-7">
+        <label>Upload <span style="color:red;">*</span></label>
+        <input type="number" formControlName="ul_limit" placeholder="Upload limit"
+          [ngClass]="{'form-control':true,'form-control-danger':LimitUpdateForm.controls.ul_limit.invalid&&submit}">
+        <small *ngIf="LimitUpdateForm.controls.ul_limit.invalid&&submit" class="form-text error">Download Limit is
+          Required!</small>
+      </div>
+      <div class="col-sm-5">
+        <label>Size <span style="color: red;">*</span></label>
+        <select formControlName="ul_size" placeholder="Size"
+          [ngClass]="{'form-control':true,'form-control-danger':LimitUpdateForm.controls.ul_size.invalid&&submit}">
+          <option value="Bytes">Bytes</option>
+          <option value="KB">KB</option>
+          <option value="MB">MB</option>
+          <option value="GB">GB</option>
+          <option value="TB">TB</option>
+          <option value="PB">PB</option>
+          <option value="EB">EB</option>
+          <option value="ZB">ZB</option>
+        </select>
+        <small *ngIf="LimitUpdateForm.controls.ul_size.invalid&&submit" class="form-text error">Size is Required!
+        </small>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="tot_flag==1">
+      <div class="col-sm-7">
+        <label>Total <span style="color:red;">*</span></label>
+        <input type="number" formControlName="tot_limit" placeholder="Total limit"
+          [ngClass]="{'form-control':true,'form-control-danger':LimitUpdateForm.controls.tot_limit.invalid&&submit}">
+        <small *ngIf="LimitUpdateForm.controls.tot_limit.invalid&&submit" class="form-text error">Download Limit is
+          Required!</small>
+      </div>
+      <div class="col-sm-5">
+        <label>Size <span style="color: red;">*</span></label>
+        <select formControlName="tot_size" placeholder="Size"
+          [ngClass]="{'form-control':true,'form-control-danger':LimitUpdateForm.controls.tot_size.invalid&&submit}">
+          <option value="Bytes">Bytes</option>
+          <option value="KB">KB</option>
+          <option value="MB">MB</option>
+          <option value="GB">GB</option>
+          <option value="TB">TB</option>
+          <option value="PB">PB</option>
+          <option value="EB">EB</option>
+          <option value="ZB">ZB</option>
+        </select>
+        <small *ngIf="LimitUpdateForm.controls.tot_size.invalid&&submit" class="form-text error">Size is Required!
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-md btn-success">Update</button>
+  </div>
+</form>

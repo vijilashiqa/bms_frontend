@@ -1,0 +1,308 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+     [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>Renewal Report
+     <a type="button" class="btn btn-primary btn-sm btn-floating "
+        style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+        (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+     <toaster-container></toaster-container>
+     <hr style="border: 0px;">
+     <div style="border:0.2em solid #dadada" class="modal-body">
+      <div class="form-group row">
+           <div class="col-sm-2" *ngIf="role.getroleid()>777">
+              <label>ISP Name</label>
+              <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+                 (changed)="showGroupName();showProfileReseller();showResellerName();showService();showUser();showinvoicenum();servicetype();changeclear(1);"
+                 placeholder='Select Business' id="bus_name" [item]="bus">
+              </auto-completen>
+           </div>
+           <div class="col-sm-2" *ngIf="role.getroleid()>=775">
+              <label>Circle</label>
+              <auto-completen [(ngModel)]="group_name" (changed)="showResellerName();showUser();changeclear(2);"
+                 addclass="form-control" optValues="groupname" placeholder='Select Circle' optId="groupid"
+                 [item]="group1">
+              </auto-completen>
+           </div>
+           <div class="col-sm-2" *ngIf="(role.getroleid()>=775)|| (role.getroleid() >444)">
+              <label>Reseller Type</label>
+              <auto-completen [(ngModel)]="resel_type" addclass="form-control"
+                 (changed)="showResellerName();changeclear(3);" optValues="menu_name"
+                 placeholder='Select Reseller Type' optId="role" [item]="profile">
+              </auto-completen>
+           </div>
+           <div class="col-sm-2" *ngIf="role.getroleid() > 444">
+              <label>Reseller Name</label>
+              <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company"
+                 (keyUp)="showResellerName($event)" (changed)="showUser();showService();showResellerBranch();changeclear(4);"
+                 placeholder='Select Reseller' id="mid" [item]="res1">
+              </auto-completen>
+           </div>
+           <div class="col-sm-2">
+              <label>Invoice NO</label>
+              <auto-completen [(ngModel)]="invoice_num" addclass="form-control" optValues="rollid"
+                 placeholder='Select Invoice-NO' (keyUp)="showinvoicenum($event)" (changed)="changeclear(5);"
+                 optId="invid" [item]="invnum">
+              </auto-completen>
+           </div>
+           <div class="col-sm-2">
+              <label>Service Name</label>
+              <auto-completen [(ngModel)]="sername" addclass="form-control" optValues="srvname"
+                 (keyUp)="showService($event)" (changed)="showUser();subplanshow();changeclear(6);"
+                 placeholder='Select Service name' optId="srvid" [item]="pack">
+              </auto-completen>
+           </div>
+        </div>
+        <div class="form-group row">
+           <div class="col-sm-2">
+              <label>Sub Plan</label>
+              <auto-completen [(ngModel)]="sub_plan" addclass="form-control" optValues="sub_plan"
+                 (changed)="showUser();changeclear(7);" (keyUp)="subplanshow($event)" placeholder='Select Subplan name'
+                 id="sub_plan" [item]="subplandata">
+              </auto-completen>
+           </div>
+           <div class="col-sm-2">
+              <label>Subscriber ProfileID</label>
+              <auto-completen [(ngModel)]="cust_name" addclass="form-control" optValues="profileid"
+                 (keyUp)="showUser($event)" placeholder='Select ProfileID' optId="uid" [item]="custname">
+              </auto-completen>
+           </div>
+           <div class="col-sm-2">
+              <label>Invoice Type</label>
+              <select name="inv_type" [(ngModel)]="inv_type" class="form-control">
+                 <option value="" selected>Select Type</option>
+                 <option value="1">Non-GST</option>
+                 <option value="2">GST</option>
+              </select>
+           </div>
+           <div class="col-sm-2">
+              <label>Invoice Status</label>
+              <select class="form-control" id="inv_status" [(ngModel)]="inv_status">
+                 <option value="">Select Invoice Status</option>
+                 <option value="1">Active</option>
+                 <option value="2">Proforma Invoice</option>
+                 <option value="3">Cancelled</option>
+              </select>
+           </div>
+           <div class="col-sm-2">
+              <label>Pay Status</label>
+              <select [(ngModel)]="pay_status" class="form-control">
+                 <option value="" selected>Select Pay Status</option>
+                 <option value="2">Paid</option>
+                 <option value="1">Unpaid</option>
+              </select>
+           </div>
+           <div class="col-sm-2">
+              <label>Start Date</label>
+              <input type="date" pattern="Start Date"
+              [min]="minDate"
+              [max]="maxDate"
+               [(ngModel)]="start_date" class="form-control">
+           </div>
+        </div>
+        <div class="form-group row">
+         <!-- <div class="content">
+            <h4>datepicker should display current date:</h4>
+            <div class="row">
+              <div class="col-xs-12 col-12 col-md-4 form-group">
+                <input type="text"
+                      class="form-control"
+                      [minDate]="minDate"
+                      [maxDate]="maxDate"
+                     =
+                      #dp="bsDatepicker" [bsConfig]="bsConfig"
+                      bsDatepicker [(bsValue)]="myDateValue">
+              </div>
+            </div>
+          </div> -->
+           <div class="col-sm-2">
+              <label>End Date</label>
+              <input type="date" placeholder="End Date" [(ngModel)]="end_date" class="form-control">
+           </div>
+           <div class="col-sm-2">
+              <label>Service Type </label>
+              <auto-completen [(ngModel)]="serv_type" addclass="form-control" optValues="service_name"
+                 placeholder='Select Select Type' optId="srv_id" [item]="servtype">
+              </auto-completen>
+           </div>
+           <div class="col-sm-2">
+            <label>Branch Name</label>
+            <auto-completen [(ngModel)]="s_branch" addclass="form-control" optValues="branch" placeholder='Select Branch'
+              optId="b_id" [item]="sbranch">
+            </auto-completen>
+          </div>
+        </div>
+        <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();page=1;'
+           style="margin: auto; display: block;">Search</button>
+     </div>
+     <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+     <hr style="border: 0px;">
+     <table class="table table-bordered table-striped">
+        <thead class="success">
+           <th style="text-align: left;color: white;" colspan="7" class="black-muted-bg"><b> Total Invoice :
+              </b>{{count?count:0}}
+           </th>
+        </thead>
+        <tbody>
+           <tr>
+              <td style="text-align: center;" class="changesize"><b> Invoice Amount <br>
+                 </b>
+              </td>
+              <td style="text-align: center;" class="changesize"><b> Tax Amount <br>
+                 </b>
+              </td>
+              <td style="text-align: center;" class="changesize"><b> Total Amount <br>
+                 </b>
+              </td>
+           </tr>
+           <tr>
+              <td style="text-align: center;font-weight: 800;font-size: medium;">&nbsp;{{invamnt || 0 | currency: 'INR' :'symbol' }}</td>
+              <td style="text-align: center;font-weight: 800;font-size: medium;">&nbsp;{{taxamount || 0 | currency: 'INR' :'symbol'}}</td>
+              <td style="text-align: center;font-weight: 800;font-size: medium;">&nbsp;{{totinvamnt || 0 | currency: 'INR' :'symbol'}}</td>
+            </tr>
+        </tbody>
+     </table>
+   
+     <div class="pagination">
+        <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+           <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+           <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+           <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+              (click)="getlist(page)">{{page}}</a>
+           <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+           <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+              (click)="page=pager.totalPages;getlist();">Last</a>
+        </ul>
+        <select *ngIf="pager.pages && pager.pages.length" [(ngModel)]="limit" (change)="initiallist()"
+           class="form-control" style="height: calc(2rem + 12px);max-width: 10vh;min-width: 74px;border-radius: 5px;">
+           <option value="25">25</option>
+           <option value="50">50</option>
+           <option value="75">75</option>
+           <option value="100">100</option>
+        </select>
+     </div>
+      <div class="table-wrapper">
+        <table class="table table-hover table-striped">
+           <tr>
+              <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2"
+                 *ngIf="!role.getmenurole(813) || !role.getmenurole(1033)">Action</th>
+              <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="role.getroleid()>777">ISP Name
+              </th>
+              <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="role.getroleid()>=775">ID</th>
+              <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2">Invoice NO</th>
+              <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2">Renewal Type</th>
+              <th style="border: 3px solid #aeb8b9;color: white;" colspan="2" *ngIf="role.getroleid()>444">Reseller
+              </th>
+              <th style="border: 3px solid #aeb8b9;color: white;" colspan="5">Subscriber</th>
+              <th style="border: 3px solid #aeb8b9;color: white;" colspan="2">Service</th>
+              <th style="border: 3px solid #aeb8b9;color: white;" colspan="3">SubPlan</th>
+                
+              <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2">GST</th>
+              <th style="border: 3px solid #aeb8b9;color: white;" colspan="3">Invoice</th>
+               
+              <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2">Service Expiry</th>
+               <th style="border: 3px solid #aeb8b9;color: white;" colspan="3">Payment</th>
+              <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2">Renewal BY</th>
+              <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2">Renewal Note</th>
+
+           </tr>
+           <tr style="background-color :  #01a7ee;color:white;position: sticky;top: 38px;">
+              <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>444">Type</th>
+              <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>444">Business Name</th>
+              <th style="border: 3px solid #aeb8b9;">Name</th>
+              <th style="border: 3px solid #aeb8b9;">ProfileID</th>
+              <th style="border: 3px solid #aeb8b9;">Mobile</th>
+              <th style="border: 3px solid #aeb8b9;">IP Type</th>
+              <th style="border: 3px solid #aeb8b9;">Branch</th>
+
+              <th style="border: 3px solid #aeb8b9;">Type</th>
+              <th style="border: 3px solid #aeb8b9;">Name</th>
+              <th style="border: 3px solid #aeb8b9;">Name</th>
+              <th style="border: 3px solid #aeb8b9;">Price</th>
+              <th style="border: 3px solid #aeb8b9;">Tax</th>
+               
+
+               <th style="border: 3px solid #aeb8b9;">Type</th>
+              <th style="border: 3px solid #aeb8b9;">Status</th>
+              <th style="border: 3px solid #aeb8b9;">Renewal Date</th>
+               
+              <th style="border: 3px solid #aeb8b9;">Collected</th>
+              <th style="border: 3px solid #aeb8b9;">Status</th>
+              <th style="border: 3px solid #aeb8b9;">Date</th>
+           </tr>
+
+           <tr *ngFor='let item of pagedItems'>
+              <td  class="fix" *ngIf="!role.getmenurole(813) || !role.getmenurole(1033)" style="padding: 1px;" class=" last"
+                 data-title="'Action'">
+                 <div class="dropdown ghost-dropdown" ngbDropdown>
+                    <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;"
+                       class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+                    </button>
+                    <ul style="width: 75px;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                       <li *ngIf="!role.getmenurole(813)" class="dropdown-item" (click)="View(item.invid,1)"><i
+                             style="font-size: 20px;" class="far fa-eye "></i>&nbsp;View</li>
+                       <li *ngIf="!role.getmenurole(1033)" class="dropdown-item" (click)="inv_receipt(item.invid)">
+                          <i style="font-size: 20px;" class="fa fa-receipt "></i>&nbsp;Receipts
+                       </li>
+                    </ul>
+                 </div>
+              </td>
+              <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+              <td style="text-align: center;font-size: medium;" *ngIf="role.getroleid()>=775"><a
+                    (click)="inv_trans(item.invid)">
+                    {{item.invid}}
+                 </a></td>
+              <td style="text-align: center;">{{item.rollid}}</td>
+              <td>{{item.pay_through ==1? 'Manual' : item.pay_through==2? 'Scheduled' : item.pay_through == 3? 'Through Gateway By Subscriber' : 'Scheduled By Subscriber' }}</td>
+              <td *ngIf="role.getroleid()>444">{{item.role==444 ? 'Bulk Reseller':item.role==333 ? 'Deposit Reseller':item.role==666?'Sub ISP Bulk'
+                 :item.role==555 ? 'Sub ISP Deposit':item.role==551 ? 'Sub Distributor Deposit':item.role==661
+                 ? 'SubDistributor Bulk':'Hotel'}}</td>
+              <td *ngIf="role.getroleid()>444">{{item.company}}</td>
+              <td>{{item.user_name}}</td>
+              <td (click)="view_user(item.uid)" style="cursor: pointer;text-transform: none!important;"> <b>{{item.userid}}</b></td>
+              <td>{{item.mobile}}</td>
+              <td>{{item.ipmodecpe ==0 ? 'NAS Pool or DHCP': item.ipmodecpe ==1? 'Ippool': item.ipmodecpe ==2? 'Static': '--'}}</td>
+              <td>{{item.branch || '--'}}</td>
+              <td  
+                 style="cursor: pointer;"><b>{{item.service_name}}</b>
+              </td>
+              <td [hidden]="!this.role.getmenurole(1046)">{{item.service_name}}</td>
+              <td>{{item.srvname}}</td>
+              <td>{{item.sub_plan}}</td>
+              <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.invoice_amount}}</i></td>
+              <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.tax_amount}}</i></td>
+               <td style="text-align: center;">{{item.recipient_gst_number || '--'}}</td>
+              <td>{{item.inv_type==1 ? 'Invoice':'GST Invoice'}}</td>
+              <td>{{item.inv_status==1 ? 'Active':item.inv_status==2 ? 'Proforma Invoice': 'Cancelled'}}</td>
+              <td>{{item.inv_date | date:'d MMM y h:mm:ss a'}}</td>
+
+              <td>{{item.expiry_date | date : 'd MMM y h:mm:ss a'}}</td>
+              <td><i class="fas fa-rupee-sign">&nbsp;{{item.sub_payed_amt}}</i></td>
+              <td>{{item.pay_status==2 ? 'Paid': 'Unpaid'}}</td>
+              <td>{{item.pay_status==2 ? (item.paydate | date:'d MMM y h:mm:ss a'):'--'}}</td>
+             
+              <td *ngIf="item.c_role != 111">{{item.renewalby_name}}</td>
+              <td *ngIf="item.c_role == 111">{{item.userid}}</td>
+              <td>{{item.comment1? item.comment1 : '--'}}</td>
+           </tr>
+           <tr>
+              <td colspan="28" *ngIf="pagedItems==''">NO DATA FOUND</td>
+           </tr>
+        </table>
+     </div>
+      <br>
+     <div class="pagination">
+        <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+           <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+           <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+           <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+              (click)="getlist(page)">{{page}}</a>
+           <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+           <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+              (click)="page=pager.totalPages;getlist();">Last</a>
+        </ul>
+     </div>
+  </nb-card-body>
+</nb-card>

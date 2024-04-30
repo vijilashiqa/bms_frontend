@@ -1,0 +1,76 @@
+<nb-card>
+  <nb-card-header>
+    List AP
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <button *ngIf="!role.getmenurole(311)" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/AP/add-ap']">Add</button>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>Business Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showApName();showip();changeclear(1)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" addclass="form-control" (changed)="showApName();showip();changeclear(2)"
+            optValues="groupname" placeholder='Select Group' optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>AP Name</label>
+          <auto-completen [(ngModel)]="ap_name" addclass="form-control" (changed)="showip();ip_add=''" optValues="name"
+            placeholder='Select AP Name' id="apid" [item]="ap1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>IP Address</label>
+          <auto-completen [(ngModel)]="ip_add" addclass="form-control" optValues="ip" placeholder='Select IP Address'
+            id="ip" (keyUp)="showip($event)" [item]="ip1">
+          </auto-completen>
+        </div>
+      </div> <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <label>
+      <h5>Total Count: {{total}}</h5>
+    </label>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+    <hr style="border: 0px;">
+    <table class="table table-hover table-striped">
+      <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+        <th *ngIf="!role.getmenurole(312)">Action</th>
+        <th>Name </th>
+        <th>IP Address</th>
+        <th>Access Mode</th>
+        <th>SNMP Community</th>
+        <th>API Username</th>
+        <th>Description</th>
+      </tr>
+      <tr *ngFor="let item of datas">
+        <td *ngIf="!role.getmenurole(312)"><a [routerLink]="['/pages/AP/edit-ap']" [queryParams]='{id: item.id}' class="lightedit" style="cursor: pointer;text-decoration:none;color:#50505a;border: 2px solid #01a7ee;padding: 3px 8px 3px 5px;
+          border-radius: 10px;font-size:11px;"> <i class="nb-edit"> </i> Edit </a></td>
+        <td>{{item.name}}</td>
+        <td>{{item.ip}}</td>
+        <td>{{item.accessmode==0?'SNMP':'Mikrotik API'}}</td>
+        <td>{{item.community}}</td>
+        <td>{{item.apiusername}}</td>
+        <td>{{item.description}}</td>
+      </tr>
+      <tr>
+        <td colspan="7" *ngIf="datas==''">NO DATA FOUND</td>
+      </tr>
+    </table>
+  </nb-card-body>
+</nb-card>

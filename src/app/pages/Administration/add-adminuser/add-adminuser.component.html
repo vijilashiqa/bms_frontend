@@ -1,0 +1,403 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>{{id ? 'Edit':'Add'}} Adminuser </nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]></toaster-container>
+      <form [formGroup]="AddAdminForm" class="form-horizontal" (ngSubmit)="addAdminuser();">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-4" *ngIf="role.getroleid()>777">
+              <label>ISP Name <span style="color:red;">*</span></label>
+              <select formControlName="bus_id"
+                [ngClass]="{'form-control':true,'form-control-danger':AddAdminForm.controls.bus_id.invalid&&submit}"
+                (change)="GroupName();profile();department();">
+                <option value="" selected>Select ISP Name</option>
+                <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+              </select>
+              <small *ngIf="AddAdminForm.controls.bus_id.invalid&&submit" class="form-text error">Business name is
+                Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+              <label *ngIf="role.getroleid()<775">Circle<span style="color:red;">*</span></label>
+              <label *ngIf="role.getroleid()>=775">Circle</label>
+              <select formControlName="groupid"
+                [ngClass]="{'form-control':true,'form-control-danger':AddAdminForm.controls.groupid.invalid&&submit}">
+                <option value="" selected="">Select Circle</option>
+                <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+              </select>
+              <small *ngIf="AddAdminForm.controls.groupid.invalid&&submit" class="form-text error">Group Name is
+                Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+              <label>Profile <span style="color:red;">*</span></label>
+              <select name="Role" formControlName="Role" (change)="showReseller()"
+                [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.Role.invalid&&submit}">
+                <option value="" selected>Select Profile</option>
+                <option *ngFor="let item of pro" [ngValue]="item.role">{{item.menu_name}}</option>
+              </select>
+              <small *ngIf="AddAdminForm.controls.Role.invalid&&submit" class="form-text error">Profile Is
+                Required!</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775" [hidden]="AddAdminForm.value['Role']=='999'">
+              <label>Manager Name <span style="color:red;">*</span></label>
+              <auto-completen
+                [addclass]="{'form-control':true,'form-control-danger':AddAdminForm.controls.reseller.invalid&&submit}"
+                addclass="form-control" optValues="company" formControlName="reseller" (keyUp)="showReseller($event)"
+                (changed)="showallowman();showallowbranch();" placeholder='Select Reseller' id="id" [item]="resell">
+              </auto-completen>
+              <small *ngIf="AddAdminForm.hasError('required','reseller')&&submit" class="form-text error">Reseller
+                is required! </small>
+            </div>
+            <div class="col-sm-4" [hidden]="AddAdminForm.value['Role']=='999'">
+              <label>Department</label>
+              <select formControlName="user_dept"
+                [ngClass]="{'form-control':true,'form-control-danger':AddAdminForm.controls.user_dept.invalid&&submit}">
+                <option value="" selected>Select Department</option>
+                <option *ngFor="let item of deptdata" [ngValue]="item.ispdepid">{{item.department_name}}</option>
+              </select>
+              <small *ngIf="AddAdminForm.controls.user_dept.invalid&&submit" class="form-text error">Department is
+                Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775" [hidden]='id'>
+              <label>Create Type</label>
+              <select formControlName="create_type"
+                [ngClass]="{'form-control':true,'form-control-danger':AddAdminForm.controls.create_type.invalid&&submit}"
+                (change)="infovalid()">
+                <option value="" selected>Select Create Type</option>
+                <option value="0">Individual User Creation</option>
+                <option value="1">Bulk User Creation</option>
+              </select>
+              <small *ngIf="AddAdminForm.controls.create_type.invalid&&submit" class="form-text error">ISP Create Type
+                is
+                Required!</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4" *ngIf="AddAdminForm.value['create_type']=='1'">
+              <a href="/assets/public/AdminUser.xlsx" target="_blank" download><b>Download Sample Here</b></a>
+            </div>
+            <div class="col-sm-4" *ngIf="AddAdminForm.value['create_type']=='1'">
+              <label>User Details</label>
+              <input type="file" (change)="changeListener($event.target.files[0])" class="form-control" accept=".xlsx">
+            </div>
+          </div>
+          <ngb-tabset>
+            <ngb-tab title="Employee Info" *ngIf="AddAdminForm.value['create_type']=='0' || id">
+              <ng-template ngbTabContent>
+                <br>
+                <div class="row" *ngIf="AddAdminForm.value['create_type']=='0'  || id">
+                  <div class="col-md-6">
+                    <nb-card status="info">
+                      <nb-card-header style="background-color :  #01a7ee;">FUNDAMENTALS</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row" *ngIf="AddAdminForm.value['create_type']=='0'  || id">
+                          <div class="col-sm-6">
+                            <label>Full Name <span style="color:red;">*</span> </label>
+                            <input type="text" name="FName" formControlName="FName" placeholder="Full Name"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.FName.invalid&&submit}" />
+                            <small *ngIf="AddAdminForm.hasError('required','FName')&&submit"
+                              class="form-text error">Fullname
+                              is required! </small>
+                          </div>
+                          <!-- <div class="col-sm-6">
+                      <label>Last Name <span style="color:red;">*</span></label>
+                      <input type="text" name="LName" formControlName="LName" placeholder="Last Name"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.LName.invalid&&submit}" />
+                      <small *ngIf="AddAdminForm.hasError('required','LName')&&submit" class="form-text error">Lastname is
+                        required! </small>
+                    </div> -->
+                        </div>
+                        <div class="form-group row" *ngIf="AddAdminForm.value['create_type']=='0'  || id">
+                          <div class="col-sm-6">
+                            <label>Gender <span style="color:red;">*</span></label>
+                            <select name="gender" formControlName="gender"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.gender.invalid&&submit}">
+                              <option value="" selected="">Select Gender</option>
+                              <option value="1">Female</option>
+                              <option value="2">Male</option>
+                              <option value="3">Others</option>
+                            </select>
+                            <small *ngIf="AddAdminForm.hasError('required','gender')&&submit"
+                              class="form-text error">Gender
+                              is
+                              required! </small>
+                          </div>
+                          <div class="col-sm-6" *ngIf="AddAdminForm.value['create_type']=='0'|| id">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="status"
+                                formControlName="status" />
+                              <label class="custom-control-label" for="status">Active</label>
+                            </div>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                    <nb-card status="info">
+                      <nb-card-header style="background-color :  #01a7ee;">IDENTIFICATION & PERMISSIONS</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row" *ngIf="AddAdminForm.value['create_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>User Login Id <span style="color:red;">*</span></label>
+                            <input type="text" name="UserName" formControlName="UserName" placeholder="User Login Id"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.UserName.invalid&&submit}" />
+                            <small *ngIf="AddAdminForm.hasError('required','UserName')&&submit"
+                              class="form-text error">User
+                              login id is required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="this.id">
+                          <div class="col-sm-6">
+                            <label>User Login Id <span style="color:red;">*</span></label>
+                            <input readonly type="text" name="UserName" formControlName="UserName"
+                              placeholder="User Login Id"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.UserName.invalid&&submit}" />
+                            <small *ngIf="AddAdminForm.hasError('required','UserName')&&submit"
+                              class="form-text error">User
+                              login id is required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6" [hidden]="id">
+                            <label>Password <span style="color:red;">*</span></label>
+                            <input type="password" name="Password" formControlName="Password" placeholder="Password"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.Password.invalid&&submit}" />
+                            <small *ngIf="AddAdminForm.hasError('required','Password')&&submit"
+                              class="form-text error">Password
+                              is required! </small>
+                          </div>
+                          <div class="col-sm-6" [hidden]="id">
+                            <label>ConFirm Password <span style="color:red;">*</span></label>
+                            <input type="password" name="CPassword" formControlName="CPassword"
+                              placeholder="ConFirm Password"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddAdminForm.value['Password']!=AddAdminForm.value['CPassword']}" />
+                            <small *ngIf="AddAdminForm.value['Password']!=AddAdminForm.value['CPassword']"
+                              class="form-text error">Password
+                              does not match! </small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+
+
+
+                  <!-- <div class="row"> -->
+                  <div class="col-md-6">
+                    <nb-card status="info">
+                      <nb-card-header style="background-color :  #01a7ee;">COMMUNICATION</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>Email <span style="color:red;">*</span></label>
+                            <input type="email" name="email" formControlName="email" placeholder="Email"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.email.invalid&&submit}" />
+                            <small *ngIf="AddAdminForm.hasError('required','email')&&submit"
+                              class="form-text error">Email
+                              is
+                              required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Alternative Email</label>
+                            <input type="email" name="Aemail" formControlName="Aemail" placeholder="ALternative Email"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.Aemail.invalid&&submit}" />
+                            <!-- <small *ngIf="AddAdminForm.hasError('required','Aemail')&&submit" class="form-text error">Alternate
+                        email is required! </small> -->
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddAdminForm.value['create_type']=='0' || id">
+                          <div class="col-sm-6">
+                            <label>Mobile number <span style="color:red;">*</span></label>
+                            <input type="number" name="Mobile" formControlName="Mobile" placeholder="Mobile"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.Mobile.invalid&&submit}" />
+                            <small *ngIf="AddAdminForm.hasError('required','Mobile')&&submit"
+                              class="form-text error">Mobile
+                              number is required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Telephone No</label>
+                            <input type="number" name="Telephone" formControlName="Telephone" placeholder="Telephone No"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.Telephone.invalid&&submit}" />
+                            <!-- <small *ngIf="AddAdminForm.hasError('required','Telephone')&&submit"
+                        class="form-text error">Telephone number is required! </small> -->
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+
+                    <nb-card status="info">
+                      <nb-card-header style="background-color :  #01a7ee;">LOCATION</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row" *ngIf="AddAdminForm.value['create_type']=='0' || id">
+                          <div class="col-sm-6">
+                            <label>Branch Name</label>
+                            <input type="text" name="brname" formControlName="brname" placeholder="Branch Name"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.brname.invalid&&submit}" />
+                          </div>
+                          <div class="col-sm-6">
+                            <label>State <span style="color:red;">*</span></label>
+                            <auto-completen
+                              [addclass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.State.invalid&&submit}"
+                              optValues="name" (changed)="cityshow()" placeholder="Select State" formControlName="State"
+                              id="State" [item]="states">
+                            </auto-completen>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>City <span style="color:red;">*</span></label>
+                            <auto-completen
+                              [addclass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.City.invalid&&submit}"
+                              optValues="name" (keyup)="cityshow($event.target.value)" placeholder="Select city"
+                              formControlName="City" id="City" [item]="dist">
+                            </auto-completen>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Residential Address <span style="color:red;">*</span></label>
+                            <textarea name="Address" formControlName="Address" placeholder="Address"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.Address.invalid&&submit}"></textarea>
+                            <small *ngIf="AddAdminForm.hasError('required','Address')&&submit"
+                              class="form-text error">Residential
+                              address is required! </small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+
+            <ngb-tab title="Permissions"
+              *ngIf=" (AddAdminForm.value['create_type']=='0' || id ) && AddAdminForm.value['Role'] < 888 && AddAdminForm.value['Role']!=''  ">
+              <ng-template ngbTabContent>
+                <br>
+                <div class="row">
+                  <div class="col-md-12">
+                    <nb-card status="info">
+                      <nb-card-header style="background-color :  #01a7ee;">PERMISSIONS</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-6"
+                            *ngIf="AddAdminForm.value['Role']==665 || AddAdminForm.value['Role']==554 || AddAdminForm.value['Role']==660 
+                    || AddAdminForm.value['Role']==550 || AddAdminForm.value['Role'] == 775 || AddAdminForm.value['Role'] == 887">
+                            <label>Show Reseller <span style="color:red;">*</span></label>
+                            <select formControlName="man_flag"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddAdminForm.controls.man_flag.invalid&&submit}"
+                              (change)="manvalid();manchange();">
+                              <option value="" selected>Select Option</option>
+                              <option value="1">All</option>
+                              <option value="2">Selected</option>
+                            </select>
+                            <small *ngIf="AddAdminForm.controls.man_flag.invalid&&submit"
+                              class="form-text error">man_flag
+                              is
+                              Required!</small>
+                          </div>
+                          <!-- <div class="col-sm-6"
+                            *ngIf="AddAdminForm.value['man_flag'] == 2 && (AddAdminForm.value['Role']==665 || AddAdminForm.value['Role']==554 || AddAdminForm.value['Role']==660 
+                    || AddAdminForm.value['Role']==550 || AddAdminForm.value['Role'] == 775 || AddAdminForm.value['Role'] == 887)">
+                            <label>Select Reseller Shown <span style="color:red;">*</span></label>
+                            <auto-completen [MultiSelect]=true style="white-space: break-spaces;word-break: break-all;"
+                              [addclass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.show_man.invalid&&submit}"
+                              optValues="company" placeholder="Select Reseller" formControlName="show_man" id="id"
+                              (keyUp)="showallowman($event)" [item]="showman">
+                            </auto-completen>
+                            <small *ngIf="AddAdminForm.hasError('required','show_man')&&submit"
+                              class="form-text error">Reseller
+                              is required! </small>
+                          </div> -->
+                          </div>
+
+                          <div class="form-group row" *ngIf="AddAdminForm.value['man_flag'] == 2 && (AddAdminForm.value['Role']==665 || AddAdminForm.value['Role']==554 || AddAdminForm.value['Role']==660 
+                          || AddAdminForm.value['Role']==550 || AddAdminForm.value['Role'] == 775 || AddAdminForm.value['Role'] == 887)">
+                            <div class="col-sm-6" style="overflow: scroll;height: 68vh;">
+                              <table class="table table-header table-bordered table-striped">
+                                <thead>
+                                  <th colspan="5">
+                                    <input placeholder="Search Reseller Here" class="form-control"
+                                      [ngModelOptions]="{standalone:true}" [(ngModel)]="searchresell"
+                                      style="width:30%;border: none;border-bottom: 2px solid ;font-size: 15px;">
+                                  </th>
+                                </thead>
+                              </table>
+                              <div class="table-body table-wrapper table-scroll ">
+                                <table class="table table-bordered table-striped">
+                                  <tr>
+                                    <th class="text-center">
+                                      <label class="containerbox">All
+                                        <input type="checkbox" name="all"
+                                          (change)="resellcheck($event.target.checked);checkedreselitems();" />
+                                        <span class="checkmarkbox"></span>
+                                      </label>
+                                    </th>
+                                    <th>Reseller Name</th>
+                                   </tr>
+                                  <tr *ngFor="let item of showman | grdFilter: {company: searchresell }; let i=index;"
+                                    style="text-transform: uppercase;">
+                                    <td class="text-center">
+                                      <label class="containerbox">
+                                        <input type="checkbox" name="sizecb[]" [ngModelOptions]="{standalone:true}"
+                                          [(ngModel)]="item.data" (change)="checkedreselitems()" />
+                                        <span class="checkmarkbox"></span>
+                                      </label>
+                                    </td>
+                                    <td><a>{{item.company}}</a> </td>
+                                   </tr>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+
+                  
+                        <div class="form-group row">
+                          <div class="col-sm-6"
+                            *ngIf="AddAdminForm.value['Role']!='' && (AddAdminForm.value['Role']== 443 || AddAdminForm.value['Role'] == 332)">
+                            <label>Show Branch <span style="color:red;">*</span></label>
+                            <select formControlName="branch_flag"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddAdminForm.controls.branch_flag.invalid&&submit}"
+                              (change)="branchvalid();branchchange();">
+                              <option value="" selected>Select branch_flag</option>
+                              <option value="1">All</option>
+                              <option value="2">Selected</option>
+                            </select>
+                            <small *ngIf="AddAdminForm.controls.branch_flag.invalid&&submit"
+                              class="form-text error">branch_flag
+                              is
+                              Required!</small>
+                          </div>
+
+                          <div class="col-sm-6"
+                            *ngIf="AddAdminForm.value['branch_flag'] == 2  && (AddAdminForm.value['Role']== 443 || AddAdminForm.value['Role'] == 332)">
+                            <label>Select Reseller Shown <span style="color:red;">*</span></label>
+                            <auto-completen [MultiSelect]=true style="white-space: break-spaces;word-break: break-all;"
+                              [addclass]="{'form-control' : true,'form-control-danger':AddAdminForm.controls.show_branch.invalid&&submit}"
+                              optValues="branch" placeholder="Select Branch" formControlName="show_branch" optId="b_id"
+                              (keyUp)="showallowbranch($event)" [item]="showbranch">
+                            </auto-completen>
+                            <small *ngIf="AddAdminForm.hasError('required','show_branch')&&submit"
+                              class="form-text error">Branch
+                              is required! </small>
+                          </div>
+
+                        </div>
+                        <br><br><br><br><br><br><br><br><br><br><br><br>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+
+
+          </ngb-tabset>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">{{id ? 'Update': 'Create'}}</button>
+            <button class="btn btn-md btn-danger" [routerLink]="['/pages/administration/list-adminuser']">Back</button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

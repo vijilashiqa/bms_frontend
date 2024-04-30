@@ -1,0 +1,489 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>Dues Report
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <hr style="border: 0px;">
+    <div class="modal-body">
+      <div class="form-group row">
+        <div class="col-sm-2" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showProfileReseller();showResellerName();showService();showUser();showinvoicenum();servicetype();changeclear(1);"
+            placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" (changed)="showResellerName();changeclear(2);"
+            addclass="form-control" optValues="groupname" placeholder='Select Group' optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775) || (role.getroleid() > 444)">
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" addclass="form-control"
+            (changed)="showResellerName();changeclear(3);" optValues="menu_name" placeholder='Select Reseller Type'
+            optId="role" [item]="profile">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775) || (role.getroleid() > 444)">
+          <label>Reseller Name</label>
+          <auto-completen [(ngModel)]="res_name" (keyUp)="showResellerName($event)" addclass="form-control"
+            optValues="company" (changed)="showUser();showService();changeclear(4);" placeholder='Select Reseller'
+            id="mid" [item]="res1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Invoice NO</label>
+          <auto-completen [(ngModel)]="invoice_num" addclass="form-control" optValues="rollid"
+            placeholder='Select Invoice-NO' (changed)="changeclear(5);" (keyUp)="showinvoicenum($event)" optId="invid"
+            [item]="invnum">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Service Name</label>
+          <auto-completen [(ngModel)]="sername" (keyUp)="showService($event)" addclass="form-control"
+            optValues="srvname" (changed)="showUser();subplanshow();changeclear(6);" placeholder='Select Service name'
+            optId="srvid" [item]="pack">
+          </auto-completen>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <label>Sub Plan</label>
+          <auto-completen [(ngModel)]="sub_plan" (keyUp)="subplanshow($event)" addclass="form-control"
+            optValues="sub_plan" (changed)="showUser();changeclear(7);" placeholder='Select Subplan name' id="sub_plan"
+            [item]="subplandata">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Subscriber ProfileID</label>
+          <auto-completen [(ngModel)]="cust_name" (keyUp)="showUser($event)" addclass="form-control"
+            optValues="profileid" placeholder='Select ProfileID' optId="uid" [item]="custname">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Invoice Type</label>
+          <select name="inv_type" [(ngModel)]="inv_type" class="form-control">
+            <option value="" selected>Select Type</option>
+            <option value="1">Non-GST</option>
+            <option value="2">GST</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <label>Start Date</label>
+          <input type="date" pattern="Start Date" [(ngModel)]="start_date" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>End Date</label>
+          <input type="date" placeholder="End Date" [(ngModel)]="end_date" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>Service Type </label>
+          <auto-completen [(ngModel)]="serv_type" addclass="form-control" optValues="service_name"
+            placeholder='Select Select Type' optId="srv_id" [item]="servtype">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();page=1;'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+    <table class="table table-bordered table-striped">
+      <thead class="success">
+        <th style="text-align: left;color: white;" colspan="7" class="black-muted-bg"><b> Total Invoice :
+          </b>{{count?count:0}}
+          <span *ngIf="role.getroleid()>=775" style="cursor: pointer;float: right;color: white;"
+            (click)='share=!share'><b><u>Click here to Show
+                Details</u></b></span>
+        </th>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center;" class="changesize"><b> Invoice Amount <br>
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Tax Amount <br>
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Total Amount <br>
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Unpaid Amount <br>
+            </b>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{invamnt || 0 }}</i></td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{taxamount || 0 }}</i></td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{totinvamnt || 0 }}</i></td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{invunpaid || 0 }}</i></td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table table-bordered table-striped" [hidden]='!share'>
+      <thead class="success">
+        <th style="text-align: left;" colspan="7" class="black-muted-bg"><b>Share Details </b></th>
+      </thead>
+      <tbody>
+        <ng-container>
+          <tr>
+            <td style="text-align: center;" class="changesize"><b> Service Type <br>
+              </b>
+            </td>
+            <td style="text-align: center;" class="changesize"><b> ISP Share <br>
+              </b>
+            </td>
+            <td style="text-align: center;" class="changesize"><b> Sub ISP Share <br>
+              </b>
+            </td>
+            <td style="text-align: center;" class="changesize"><b> Sub Dist Share <br>
+              </b>
+            </td>
+            <td style="text-align: center;" class="changesize"><b> Reseller Share <br>
+              </b>
+            </td>
+            <td style="text-align: center;" class="changesize"><b> Amount <br>
+              </b>
+            </td>
+            <td style="text-align: center;" class="changesize"><b> Tax Amount <br>
+              </b>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center;"><b>Internet</b></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{intispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{subispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{subdistshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{reselshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{intamnt}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{intaxamt}}</i></td>
+          </tr>
+          <tr>
+            <td style="text-align: center;"><b>Voice</b></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Vispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Vsubispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Vsubdistshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Vreselshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Vamt}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Vtaxamt}}</i></td>
+          </tr>
+          <tr>
+            <td style="text-align: center;"><b>OTT</b></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Oispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Osubispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Osubdistshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Oreselshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Oamt}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{Otaxamt}}</i></td>
+          </tr>
+          <tr>
+            <td style="text-align: center;"><b>Add ON</b></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{AONispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{AONsubispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{AONsubdistshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{AONreselshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{AONamt}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{AONtaxamt}}</i></td>
+          </tr>
+          <tr>
+            <td style="text-align: center;"><b>Total Amount:</b></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{totispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{totsubispshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{totsubdistshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{totreselshare}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{invamnt}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{taxamount}}</i></td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+    <hr style="border: 0px;">
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+      <select *ngIf="pager.pages && pager.pages.length" [(ngModel)]="limit" (change)="initiallist()"
+        class="form-control" style="height: calc(2rem + 10px);max-width: 10vh;min-width: 74px;border-radius: 5px;">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="75">75</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7eee5;color:white;font-size: medium;">
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="!role.getmenurole(1035)">Action</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="role.getroleid()>777">ISP Name</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="role.getroleid()>=775">ID</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2">Invoice NO</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="2" *ngIf="role.getroleid()>444">Reseller
+          </th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="2">Subscriber</th>
+
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="2">Service</th>
+
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="4">SubPlan</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="4">Payment</th>
+
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="4" *ngIf="role.getroleid()>=775">Share
+            Amount</th>
+
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="2">GST</th>
+
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="3">Invoice</th>
+
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="8" *ngIf="role.getroleid()>111">Internet
+            Share Details
+          </th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="8" *ngIf="role.getroleid()>111">Voice Share
+            Details
+          </th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="8" *ngIf="role.getroleid()>111">OTT Share
+            Details
+          </th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="8" *ngIf="role.getroleid()>111">ADDON Share
+            Details
+          </th>
+
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2">Service Expiry</th>
+
+        </tr>
+        <tr style="background-color :  #01a7ee;color:white;position: sticky;top: 38px;">
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>444">Type</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>444">Business Name</th>
+          <th style="border: 3px solid #aeb8b9;">Name</th>
+          <th style="border: 3px solid #aeb8b9;">ProfileID</th>
+          <th style="border: 3px solid #aeb8b9;">Type</th>
+          <th style="border: 3px solid #aeb8b9;">Name</th>
+          <th style="border: 3px solid #aeb8b9;">Name</th>
+          <th style="border: 3px solid #aeb8b9;">Price</th>
+          <th style="border: 3px solid #aeb8b9;">Tax</th>
+          <th style="border: 3px solid #aeb8b9;">Total </th>
+          <th style="border: 3px solid #aeb8b9;">Status</th>
+          <th style="border: 3px solid #aeb8b9;">Paid</th>
+          <th style="border: 3px solid #aeb8b9;">Balance</th>
+          <th style="border: 3px solid #aeb8b9;">Date</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>=775">ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>=775">Sub ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>=775">Sub Dist</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>=775">Reseller</th>
+
+          <th style="border: 3px solid #aeb8b9;">Supplier</th>
+          <th style="border: 3px solid #aeb8b9;">Recipient</th>
+          <th style="border: 3px solid #aeb8b9;">Type</th>
+          <th style="border: 3px solid #aeb8b9;">Status</th>
+          <th style="border: 3px solid #aeb8b9;">Date</th>
+          <!-- <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>=775">ISP </th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>=775">Sub ISP </th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>=775">Sub Dist </th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>=775">Reseller </th> -->
+
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">ISP %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub ISP %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub Dist %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Reseller %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub Dist</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Reseller</th>
+
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">ISP %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub ISP %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub Dist %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Reseller %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub Dist</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Reseller</th>
+
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">ISP %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub ISP %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub Dist %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Reseller %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub Dist</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Reseller</th>
+
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">ISP %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub ISP %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub Dist %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Reseller %</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub ISP</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Sub Dist</th>
+          <th style="border: 3px solid #aeb8b9;" *ngIf="role.getroleid()>111">Reseller</th>
+
+        </tr>
+        <tr>
+          <td colspan="20" *ngIf="pagedItems==''">NO DATA FOUND</td>
+        </tr>
+        <tr *ngFor='let item of pagedItems'>
+          <td *ngIf="!role.getmenurole(1035)" style="padding: 1px;" class=" last" data-title="'Action'">
+            <div class="dropdown ghost-dropdown" ngbDropdown>
+              <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;"
+                class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75px;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                <li *ngIf="!role.getmenurole(1035)" class="dropdown-item" (click)="View(item.invid,1)"><i
+                    style="font-size: 20px;" class="far fa-eye "></i>&nbsp;View</li>
+                <li *ngIf="!role.getmenurole(1035)" class="dropdown-item" (click)="pay(item.invid,item.user_id,item.topay)"><i
+                      style="font-size: 20px;" class="fa fa-credit-card"></i>&nbsp;Pay</li>
+                <!-- <li class="dropdown-item" (click)="inv_receipt(item.invid,11)"><i style="font-size: 20px;"
+                      class="fa fa-receipt "></i>&nbsp;Receipt</li> -->
+              </ul>
+            </div>
+          </td>
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td style="text-align: center;font-size: medium;" *ngIf="role.getroleid()>=775"><a
+              (click)="inv_trans(item.invid)">
+              {{item.invid}}
+            </a></td>
+          <td style="text-align: center;">{{item.rollid}}</td>
+          <td *ngIf="role.getroleid()>444">{{item.role==444 ? 'Bulk Reseller':item.role==333 ? 'Deposit
+            Reseller':item.role==666?'Sub
+            ISP Bulk'
+            :item.role==555 ? 'Sub ISP Deposit':item.role==551 ? 'Sub Distributor Deposit':item.role==661
+            ? 'Sub
+            Distributor Bulk':'Hotel'}}</td>
+          <td *ngIf="role.getroleid()>444">{{item.company}}</td>
+          <td>{{item.user_name}}</td>
+          <td style="text-transform: none !important;">{{item.userid}}</td>
+          <td *ngIf="!role.getmenurole(1046)" (click)="shareshow(item.invid,item.service_type)"
+            style="cursor: pointer;"><b>{{item.service_name}}</b>
+          </td>
+          <td [hidden]="!this.role.getmenurole(1046)">{{item.service_name}}</td>
+          <td>{{item.srvname}}</td>
+          <td>{{item.sub_plan}}</td>
+          <!-- <td style="text-align: center;">{{item.amount}}</td> -->
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.invoice_amount}}</i></td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.tax_amount}}</i></td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.total_amount}}</i></td>
+
+          <td>{{item.pay_status==2 ? 'Paid': 'Unpaid'}}</td>
+          <td><i class="fas fa-rupee-sign">&nbsp;{{item.sub_payed_amt}}</i></td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.topay}}</i></td>
+          <td>{{ !item.paydate ? '--' : item.paydate | date:'d MMM y' }}</td>
+          <td *ngIf="role.getroleid()>=775"><i class="fas fa-rupee-sign">&nbsp;{{item.all_ispamt}}</i></td>
+          <td *ngIf="role.getroleid()>=775"><i class="fas fa-rupee-sign">&nbsp;{{item.allsubispamt}}</i></td>
+          <td *ngIf="role.getroleid()>=775"><i class="fas fa-rupee-sign">&nbsp;{{item.allsubdistamt}}</i></td>
+          <td *ngIf="role.getroleid()>=775"><i class="fas fa-rupee-sign">&nbsp;{{item.allreselleramt}}</i></td>
+          <td style="text-align: center;">{{item.supplier_gst_number}}</td>
+          <td style="text-align: center;">{{item.recipient_gst_number}}</td>
+          <td>{{item.inv_type==1 ? 'Invoice':'GST Invoice'}}</td>
+          <td>{{item.inv_status==1 ? 'Active':item.inv_status==2 ? 'Proforma Invoice': 'Cancelled'}}</td>
+          <td>{{item.inv_date | date:'d MMM y h:mm:ss a'}}</td>
+          <!-- <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>=775">{{item.cum_ispper | number : '1.0-2'
+            }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>=775">{{item.cum_subispper | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>=775">{{item.cum_subdistper | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>=775">{{item.cum_resellerper | number :
+            '1.0-2' }}&nbsp;<b>%</b></td> -->
+
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.isp_per | number : '1.0-2'
+            }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.sub_isp_per | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.sub_dist_per | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.reseller_per | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.isp_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.sub_isp_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.sub_dist_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.resel_amt}}</i></td>
+
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.Visp_share | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.Vsub_isp_share | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.Vsub_dist_share | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.Vreseller_share | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.Visp_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.Vsub_isp_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.Vsub_dist_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.Vreseller_amt}}</i></td>
+
+
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.Oisp_share | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.Osub_isp_share | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.Osub_dist_share | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.Oreseller_share | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.Oisp_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.Osub_isp_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.Osub_dist_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.Oreseller_amt}}</i></td>
+
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.AONisp_share | number :
+            '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.AONsub_isp_share | number
+            : '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.AONsub_dist_share | number
+            : '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="font-weight:bold;color:#181818" *ngIf="role.getroleid()>111">{{item.AONreseller_share | number
+            : '1.0-2' }}&nbsp;<b>%</b></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.AONisp_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.AONsub_isp_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.AONsub_dist_amt}}</i></td>
+          <td style="text-align: center;" *ngIf="role.getroleid()>111"><i
+              class="fas fa-rupee-sign">&nbsp;{{item.AONreseller_amt}}</i></td>
+
+
+
+
+          <td>{{item.expiry_date | date :'d MMM y h:mm:ss a'}}</td>
+
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

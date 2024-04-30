@@ -1,0 +1,15 @@
+<ngx-loading [show]="loading"
+  [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+</ngx-loading>
+  <div class="modal-header" style="width: 100%;background: #01a7ee">
+    <span style="    font-weight: 600;">{{ modalHeader }}</span>
+    <button class="close" aria-label="Close" (click)="closeModal()">
+      <span style="font-weight: 600" aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-content">
+    <img *ngIf="item.flag==1" [src]='img_result ? img_result.day:""' />
+    <img *ngIf="item.flag==2" [src]='img_result ? img_result.week:""' />
+    <img *ngIf="item.flag==3" [src]='img_result ? img_result.month:""' />
+    <img *ngIf="item.flag==4" [src]='img_result ? img_result.year:""' />
+  </div>

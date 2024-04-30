@@ -1,0 +1,134 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>Edit Top-Up</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form [formGroup]="EditTopupForm" class="form-horizontal" (ngSubmit)="edittopup();">  
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-sm-6" *ngIf="role.getroleid()>777">
+            <label>ISP Name <span style="color:red;">*</span></label>
+            <select formControlName="bus_id"
+              [ngClass]="{'form-control':true,'form-control-danger':EditTopupForm.controls.invalid&&submit}"
+              (change)="GroupName();reseller();">
+              <option value="" selected>Select ISP Name</option>
+              <option *ngFor="let item of busname" [ngValue]=item.id>{{item.busname}}</option>
+            </select>
+            <small *ngIf="EditTopupForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is
+              Required!</small>
+          </div>
+          <div class="col-sm-6" *ngIf="role.getroleid()>=775">
+            <label>Circle <!-- <span style="color:red;">*</span> --></label>
+            <select formControlName="groupid" (change)="reseller()"
+              [ngClass]="{'form-control':true,'form-control-danger':EditTopupForm.controls.groupid.invalid&&submit}">
+              <option value="" selected="">Select Circle</option>
+              <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+            </select>
+            <!-- <small *ngIf="EditTopupForm.controls.bus_id.invalid&&submit" class="form-text error">Circle Name is
+              Required!</small> -->
+          </div>
+        </div>
+        <div class="row" >
+          <div class="col-md-6" *ngIf="(role.getroleid()!= 444 && role.getroleid()!=443)">
+            <div class="scroller">
+              <table class="table table-header table-bordered table-striped">
+                <thead>
+                  <th colspan="5">
+                    <input placeholder="Search Reseller Here" class="form-control"
+                      [ngModelOptions]="{standalone:true}" [(ngModel)]="searchresell"
+                      style="width:30%;border: none;border-bottom: 2px solid ;font-size: 15px;">
+                  </th>
+                </thead>
+              </table>
+              <div class="table-body table-wrapper table-scroll ">
+                <table class="table table-bordered table-striped">
+                  <tr>
+                    <th class="text-center">
+                      <label class="containerbox">All
+                        <input type="checkbox" name="all"
+                          (change)="resellcheck($event.target.checked);checkedresel();" />
+                        <span class="checkmarkbox"></span>
+                      </label>
+                    </th>
+                    <th>Reseller Name <span style="color:red;">*</span></th>
+                  </tr>
+                  <tr *ngFor="let item of resdata | grdFilter: {company: searchresell }; let i=index;"
+                    style="text-transform: uppercase;">
+                    <td class="text-center">
+                      <label class="containerbox">
+                        <input type="checkbox" name="sizecb[]" [ngModelOptions]="{standalone:true}"
+                          [(ngModel)]="item.data" (change)="checkedresel()" />
+                        <span class="checkmarkbox"></span>
+                      </label>
+                    </td>
+                    <td><a>{{item.company}}</a> </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <nb-card>
+              <nb-card-header style="background-color :  #01a7ee">Top-Up Details</nb-card-header>
+              <nb-card-body>
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label>Topup Name <span style="color:red;">*</span></label>
+                    <input type="text" formControlName="topup_name" 
+                    [ngClass]="{'form-control':true,'form-control-danger':EditTopupForm.controls.topup_name.invalid&&submit}">
+                    <small *ngIf="EditTopupForm.controls.topup_name.invalid&&submit" class="form-text error">Topup Name is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Limit Size <span style="color:red;">*</span></label>
+                    <select formControlName="limit_size" [ngClass]="{'form-control':true,'form-control-danger':EditTopupForm.controls.limit_size.invalid&&submit}">
+                      <option value="" selected>Select Limit Size</option>
+                      <option value="1">MB</option>
+                      <option value="2">GB</option>
+                      <option value="3">TB</option>
+                    </select>
+                    <small *ngIf="EditTopupForm.controls.limit_size.invalid&&submit" class="form-text error">Limit Size is Required!</small>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Limit <span style="color:red;">*</span></label>
+                    <input type="text" placeholder="Limit" formControlName="limit" 
+                    [ngClass]="{'form-control':true,'form-control-danger':EditTopupForm.controls.limit.invalid&&submit}">
+                    <small *ngIf="EditTopupForm.controls.limit.invalid&&submit" class="form-text error">Limit is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Tax <span style="color:red;">*</span></label>
+                    <select formControlName="tax_type" 
+                    [ngClass]="{'form-control':true,'form-control-danger':EditTopupForm.controls.tax_type.invalid&&submit}">
+                      <option value="" selected>Select Tax type</option>
+                      <option value="0">Including Tax</option>
+                      <option value="1">Excluding Tax</option>
+                    </select>
+                    <small *ngIf="EditTopupForm.controls.tax_type.invalid&&submit" class="form-text error">Tax Type is Required!</small>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Price <span style="color:red;">*</span></label>
+                    <input type="number" formControlName="price" placeholder="Price" [ngClass]="{'form-control':true,'form-control-danger':EditTopupForm.controls.invalid&&submit}">
+                    <small *ngIf="EditTopupForm.controls.price.invalid&&submit" class="form-text error">Price is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <nb-checkbox formControlName="status">Status</nb-checkbox>
+                  </div>
+                </div>
+              </nb-card-body>
+            </nb-card>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-md btn-success" >Update</button>
+        <button class="btn btn-md btn-danger "[routerLink]="['/pages/service/list-topup']">Back</button>
+      </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

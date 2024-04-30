@@ -1,0 +1,160 @@
+<nb-card>
+  <nb-card-header> List State & city
+    <a [hidden]="dts==1" type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="stsearch=!stsearch;"><i
+        class="fa fa-search"></i></a>
+    <a [hidden]="dts==1" type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="Srefresh()"><i class="fa fa-sync"></i></a>
+
+    <a *ngIf="dts==1" type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+          background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="dtsearch=!dtsearch;"><i
+        class="fa fa-search"></i></a>
+    <a *ngIf="dts==1" type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="Drefresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]></toaster-container>
+    <hr style="border: 0px;">
+    <ngb-tabset>
+      <ngb-tab >
+        <ng-template ngbTabTitle>
+          <div (click)="searchST();initiallist()">List State</div>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <nb-card-body>
+            <div class="modal-body" [hidden]='!stsearch'>
+              <div class="form-group row">
+                <div class="col-sm-3">
+                  <label>State Name</label>
+                  <auto-completen [(ngModel)]="state" addclass="form-control" optValues="name"
+                    placeholder='Select State Name' (keyUp)="stateshow($event)" id="id" [item]="states">
+                  </auto-completen>
+                </div>
+              </div>
+              <button type="button" class="btn btn-md btn-success" (click)='initiallist();'
+                style="margin: auto; display: block;">Search</button>
+            </div>
+            <br>
+            <label>
+              <h5>Total Count: {{count}}</h5>
+            </label>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="pagination">
+                  <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                    <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+                    <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+                    <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                      (click)="getlist(page)">{{page}}</a>
+                    <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                      (click)="page=page+1;getlist();">Next</a>
+                    <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                      (click)="page=pager.totalPages;getlist();">Last</a>
+                  </ul>
+                </div>
+                <i (click)="stateDL()" style="margin: 5px;" class="green right fas fa-file-excel fa-2x"
+                  aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table class="table table-hover table-striped">
+                <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+                  <th>State ID</th>
+                  <th>State</th>
+                </tr>
+                <tr *ngFor="let item of pagedItems">
+                  <td>{{item.id}}</td>
+                  <td>{{item.name}}</td>
+                </tr>
+              </table>
+            </div>
+            <br>
+            <div class="pagination">
+              <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+                <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+                <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                  (click)="getlist(page)">{{page}}</a>
+                <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                  (click)="page=page+1;getlist();">Next</a>
+                <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                  (click)="page=pager.totalPages;getlist();">Last</a>
+              </ul>
+            </div>
+          </nb-card-body>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <div (click)="disctrict();cityshow();distsearch()">List District</div>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <nb-card-body>
+            <div class="modal-body" [hidden]="!dtsearch">
+              <div class="form-group row">
+                <div class="col-sm-3">
+                  <label>District Name</label>
+                  <auto-completen [(ngModel)]="district" addclass="form-control" optValues="name"
+                    placeholder='Select Disctrict' (keyUp)="cityshow($event)" id="id" [item]="distdata">
+                  </auto-completen>
+                </div>
+              </div>
+              <button type="button" class="btn btn-md btn-success" (click)='disctrict();'
+                style="margin: auto; display: block;">Search</button>
+            </div>
+            <br>
+            <label>
+              <h5>Total Count: {{Dcount}}</h5>
+            </label>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="pagination">
+                  <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                    <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+                    <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+                    <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+                      (click)="getlist(page)">{{page}}</a>
+                    <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                      (click)="page=page+1;getlist();">Next</a>
+                    <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+                      (click)="page=pager.totalPages;getlist();">Last</a>
+                  </ul>
+                </div>
+                <i (click)="districtDL()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table class="table table-hover table-striped">
+                <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+                  <th>Disctrict ID</th>
+                  <th>District</th>
+                </tr>
+                <tr *ngFor="let item of pagedDItems">
+                  <td>{{item.id}}</td>
+                  <td>{{item.name}}</td>
+                </tr>
+              </table>
+            </div>
+            <br>
+            <div class="pagination">
+              <ul *ngIf="Dpager.pages && Dpager.pages.length" class="pagination">
+                <a [ngClass]="{disabled:Dpager.currentPage === 1}" (click)="Dpage=1;getDlist();">First</a>
+                <a [ngClass]="{disabled:Dpager.currentPage === 1}" (click)="Dpage=Dpage-1;getDlist();">Previous</a>
+                <a *ngFor="let Dpage of Dpager.pages" [ngClass]="{active:Dpager.currentPage === Dpage}"
+                  (click)="getDlist(Dpage)">{{Dpage}}</a>
+                <a [ngClass]="{disabled:Dpager.currentPage === Dpager.totalPages}"
+                  (click)="Dpage=Dpage+1;getDlist();">Next</a>
+                <a [ngClass]="{disabled:Dpager.currentPage === Dpager.totalPages}"
+                  (click)="Dpage=Dpager.totalPages;getDlist();">Last</a>
+              </ul>
+            </div>
+          </nb-card-body>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </nb-card-body>
+</nb-card>

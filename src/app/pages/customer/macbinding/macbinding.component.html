@@ -1,0 +1,55 @@
+<ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+<div class="modal-header" style="background-color :  #01a7ee">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="MacbindForm" (ngSubmit)="macsubmit()">
+  <div class="modal-body">
+    <table style="width: 100%">
+      <tr [hidden]="item.expiry_status==0">
+        <th >Status</th>
+        <td style=" height: 50px;">
+          <span *ngIf="item.online_status==1&&item.expiry_status==1"
+            style="background-color:#42f456;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Online</span>
+          <span *ngIf="item.online_status==0&&item.expiry_status==1"
+            style="background-color:#565656 ;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Offline</span>
+        </td>
+      </tr>
+      <tr [hidden]="item.online_status==1&&item.expiry_status==1">
+        <th>Expiry Status</th>
+        <td style=" height: 50px;">
+          <span *ngIf="item.expiry_status==1&&item.online_status==0"
+            style="background-color:  #0380fc;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Active</span>
+          <span *ngIf="item.expiry_status==0"
+            style="background-color:#ffa100;color:white;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Expired</span>
+        </td>
+      </tr>
+      <tr>
+        <th>Login Type</th>
+        <td style=" height: 50px;">{{item.acctype==0 ? 'Regular':'MAC'}}</td>
+      </tr>
+      <tr>
+        <th>Allow MAC</th>
+        <td>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input"  name="mac_addr"
+               formControlName="mac_addr" id="mac_addr" >
+            <label class="custom-control-label" for="mac_addr">Allow only this mac</label>
+         </div>
+        </td>
+      </tr>
+      <tr *ngIf="MacbindForm.value['mac_addr']==true">
+        <th>MAC Address</th>
+        <td>
+          <input class="form-control" name="amac" id="amac" formControlName="amac" type="text"
+          placeholder="MAC Format: XX:XX:XX:XX:XX:XX" maxlength="60">
+        </td>
+      </tr>
+    </table>
+  </div>
+  <button type="submit" class="btn btn-md btn-success" style="margin: auto; display: block;">Update</button>
+</form>

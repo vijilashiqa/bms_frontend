@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <toaster-container [toasterconfig]="config"> </toaster-container>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+     <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="AuthPassform" >
+  <div class="modal-body">
+     <div class="form-group row">
+        <div class="col-sm-12">
+           <label>{{item['password'] == 1 ? 'Profile Password':'Auth Password'}}</label>
+           <input style="font-weight:700;font-size:medium;" type="text" [readonly]="isReadOnly" name="Password" formControlName="Password" placeholder="Password"
+              [ngClass]="{'form-control' : true,'form-control-danger':AuthPassform.controls.Password.invalid&&submit}" />
+           <small *ngIf="AuthPassform.hasError('required','Password')&&submit" class="form-text error">Password
+              is required! </small>
+        </div>
+     </div>
+  </div>
+  <div class="modal-footer" >
+     <button type="submit" (click)="closeModal()"  class="btn btn-md btn-primary">Ok</button>
+  </div>
+</form>

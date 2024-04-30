@@ -1,0 +1,53 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>Online Subscriber</nb-card-header>
+    <nb-card-body>
+      <form [formGroup]="SubsonlineForm" class="form-horizontal" (ngSubmit)="subsOnline();">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-6">
+              <label>Reseller Name</label>
+              <select name="Name" formControlName="Name" placeholder="Pool Name" [ngClass]="{'form-control' : true,'form-control-danger':SubsonlineForm.controls.Name.invalid&&submit}">
+                <option value="" selected> Select Reseller</option>
+              </select>
+            </div>
+            <div class="col-sm-6">
+              <label>Reason</label>
+              <select name="Reason" formControlName="Reason"  [ngClass]="{'form-control' : true,'form-control-danger':SubsonlineForm.controls.Reason.invalid&&submit}">
+                <option value="0" selected>Recharge</option>
+                <option value="1" >Static IP</option>
+                <option value="2" >Wrong Renewal</option>
+                <option value="3" >Material Adjustment</option>
+                <option value="4" >Double Renewal</option>
+                <option value="5">Online Renewal</option>
+                <option value="6">Voice Renewal</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-6">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="Allow" formControlName="Allow" />
+                <label class="custom-control-label" for="Allow">Allow To Deposit</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-6">
+              <label>Deposit Amount</label>
+              <input type="text" name="Deposit" formControlName="Deposit" placeholder="INR" [ngClass]="{'form-control' : true,'form-control-danger':SubsonlineForm.controls.Deposit.invalid&&submit}"/>
+            </div>
+            <div class="col-sm-6">
+              <label>Notes</label>
+              <textarea name="Description" formControlName="Description" placeholder="Description" [ngClass]="{'form-control' : true,'form-control-danger':SubsonlineForm.controls.Description.invalid&&submit}"></textarea>
+            </div>
+          </div>
+       </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-md btn-success">Submit</button>
+        <button type="submit" class="btn btn-md btn-danger "(click)='cancel()'>Reset</button>
+      </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

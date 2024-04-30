@@ -1,0 +1,75 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>{{id ? 'Edit':'Add'}} Circle</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form [formGroup]="AddGroupForm" (ngSubmit)="addGroup()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-8">
+              <nb-card>
+                <nb-card-header style="background-color :  #01a7ee">Circle Creation</nb-card-header>
+                <nb-card-body>
+                  <div class="form-group row">
+                    <div class="col-sm-6" *ngIf="role.getroleid()>777">
+                      <br>
+                      <label>ISP Name <span style="color:red;">*</span> </label>
+                      <select formControlName="bus_id"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddGroupForm.controls.bus_id.invalid&&submit}">
+                        <option value="" selected>Select ISP</option>
+                        <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+                      </select>
+                      <small *ngIf="AddGroupForm.controls.bus_id.invalid&&submit" class="form-text error">Business name
+                        is Required!</small>
+                    </div>
+                    <div class="col-sm-6" *ngIf="role.getroleid()>=775" [hidden]=id><br>
+                      <label>Create Type <span style="color:red;">*</span></label>
+                      <select formControlName="create_type"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddGroupForm.controls.create_type.invalid&&submit}"
+                        (change)="groupvalid()">
+                        <option value="" selected>Select Create Type</option>
+                        <option value="0">Individual Circle Creation</option>
+                        <option value="1">Bulk Circle Creation</option>
+                      </select>
+                      <small *ngIf="AddGroupForm.controls.create_type.invalid&&submit" class="form-text error">ISP
+                        Create Type is Required!</small>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6" *ngIf="AddGroupForm.value['create_type']=='1'">
+                      <a href="/assets/public/GroupBulk.xlsx" target="_blank" download><b>Download Sample Here</b></a>
+                    </div>
+                    <div class="col-sm-6" *ngIf="AddGroupForm.value['create_type']=='1'">
+                      <label>Circle Details</label>
+                      <input type="file" (change)="changeListener($event.target.files[0])" class="form-control"
+                        accept=".xlsx">
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="AddGroupForm.value['create_type']=='0'||id">
+                    <div class="col-sm-6"><br>
+                      <label>Circle<span style="color:red;">*</span> </label>
+                      <input type="text" name="groupid" formControlName="groupid" placeholder="Circle Name"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddGroupForm.controls.groupid.invalid&&submit}" />
+                      <small *ngIf="AddGroupForm.controls.groupid.invalid&&submit" class="form-text error">Circle Name is
+                        required! </small>
+                    </div>
+                    <div class="col-sm-6"><br>
+                      <label>Description</label>
+                      <textarea name="descp" formControlName="descp" placeholder="Description"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddGroupForm.controls.descp.invalid&&submit}"></textarea>
+                    </div>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">
+              {{id ? 'Update': 'Add'}}</button>
+            <button class="btn btn-md btn-danger " [routerLink]="['/pages/group/list-group']">Back</button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

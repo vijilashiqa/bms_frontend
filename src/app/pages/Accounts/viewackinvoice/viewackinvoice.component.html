@@ -1,0 +1,212 @@
+<div class="modal-header" style="background-color :  #01a7ee">
+   <span>{{ modalHeader }}</span>
+   <button class="close" aria-label="Close" (click)="activeModal.close()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<div class="modal-body " style="overflow-x: visible;">
+   <div id="main_cont" style="background-color: #FFFFFF;">
+      <div id="Pdf" style="background-color: #FFFFFF;">
+         <div class="page" style="border: 1px solid black;width: 100%;overflow-x: visible;">
+            <table style="width:100%;">
+               <tbody>
+                  <div style="font-weight: 700;text-align: center;">ACKNOWLEDGE INVOICE</div>
+                  <p style="color: darkblue;margin-bottom: 2px;font-weight: 400;">
+                     &nbsp;<img style="width:180px" src="/assets/images/Bluelotus_logo_bold4.png">
+                     <img style="height: 150px;width:150px;float:right;padding-right: 10px;"
+                        [src]='qrimage ? qrimage.qr_code:" "'>&nbsp;&nbsp;&nbsp;&nbsp;
+                     <br>
+                     <b>
+                        <span style="white-space: break-spaces;">
+                           &nbsp;Company :{{data? data.busname:'--'}}<br>
+                           &nbsp;Address :{{busAddress? busAddress:'--'}}<br>
+                           &nbsp;GST No :{{data ? data.supplier_gst_number:'--'}}<br>
+                        </span>
+                     </b>
+                  </p>
+               </tbody>
+            </table>
+            <div style="border:1px solid black;width: 98%;padding: 1px;margin: 5px;">
+               <div style="border-bottom: 1px solid black;"> <b>1.e-Invoice Details</b></div>
+               <table>
+                  <tbody>
+                     <tr>
+                        <td style=" font-weight: normal;white-space: break-spaces;"><b>IRN</b>:<span
+                              style="white-space: break-spaces;line-break: anywhere;">{{data?data.irn:'--'}} </span>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <table>
+                  <div class="row">
+                     <div class="col-sm-6">
+                        <td>
+                           <table>
+                              <tbody>
+                                 <tr>
+                                    <td style=" font-weight: normal;white-space: nowrap;">
+                                       <b> Ack NO:</b>&nbsp;{{data?data.ack_no:'--'}}
+                                    </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                     </div>
+                     <div class="col-sm-6">
+                        <td>
+                           <table>
+                              <tbody>
+                                 <tr>
+                                    <td style="  font-weight: normal;"><b>Ack.Date</b>
+                                       &nbsp;:{{data?(data.ack_date | date:'d MMM y'):'--'}} </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                     </div>
+                  </div>
+               </table>
+            </div>
+            <br>
+            <div style="border:1px solid black;width: 98%;padding: 1px;margin: 5px;">
+               <div style="border-bottom: 1px solid black;"> <b>2.Transaction Details</b>
+               </div>
+               <table style=" width:99%;margin:5px;">
+                  <div class="row">
+                     <div class="col-sm-3">
+                        <td>
+                           <table>
+                              <tbody>
+                                 <tr>
+                                    <td style="  font-weight: normal;">
+                                       <b>Invoice NO:</b>&nbsp;{{data?data.rollid:'--'}}
+                                    </td>
+
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                     </div>
+                     <div class="col-sm-3">
+                        <td style="text-align: left;">
+                           <table>
+                              <tbody>
+                                 <tr>
+                                    <td style=" line-break: anywhere;font-weight: normal;">
+                                       <b> Invoice Date</b>&nbsp;:{{data? (data.ack_date|date:'d MMM y'):'--'}}
+                                    </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                     </div>
+                     <div class="col-sm-3">
+                        <td style="text-align: left;">
+                           <table>
+                              <tbody>
+                                 <tr>
+                                    <td style=" line-break: anywhere;font-weight: normal;">
+                                       <b> Invoice Period</b>&nbsp;:{{data ? data.period:'--'}}
+                                    </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                     </div>
+                  </div>
+               </table>
+            </div>
+            <br>
+            <div style="border:1px solid black;width: 98%;padding: 1px;margin: 5px;">
+               <div style="border-bottom: 1px solid black;"> <b>3.Customer Details</b>
+               </div>
+               <table style=" width:99%;margin:5px;">
+                  <div class="row">
+                     <div class="col-sm-3">
+                        <td style="text-align:left; ">
+                           <table>
+                              <tbody>
+                                 <tr>
+                                    <td><b>GST NO :</b></td>
+                                    <td>{{data ? data.recipient_gst_number:'--'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <td><b>Subscriber Name :</b></td>
+                                    <td>{{data?data.user_name:'--'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <td><b>Address :</b></td>
+                                    <td>{{data?data.billing_addr:'--'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <td><b>Mobile NO :</b></td>
+                                    <td>{{data?data.user_mobile:'--'}}</td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                     </div>
+                     <!-- <div class="col-sm-3">
+                        <td style="text-align:left; ">
+                           <table>
+                              <tbody>
+                                 <tr>
+                                 </tr>
+                                 <tr>
+                                 </tr>
+                                 <tr>
+                                 </tr>
+                                 <tr>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </td>
+                     </div> -->
+                  </div>
+               </table>
+            </div>
+            <br>
+            <div style="border: 1px solid black;border-collapse: collapse; width:98%;margin: 5px;"> <b>4.Service
+                  Details</b>
+               <table
+                  style="border: 1px solid black;border-collapse: collapse; width:98%;margin: 5px;line-break: anywhere;white-space: break-spaces;">
+                  <thead>
+                     <tr>
+                        <th style="text-align: center;border: 1px solid black;">SI.NO</th>
+                        <th style="text-align: center;border: 1px solid black;">Service<br>Name</th>
+                        <th style="text-align: center;border: 1px solid black;">Sub-Plan<br>Name</th>
+                        <th style="text-align: center;border: 1px solid black;">HSN No</th>
+                        <th style="text-align: center;border: 1px solid black;">Invoice<br>Amount</th>
+                        <th style="text-align: center;border: 1px solid black;">IGST</th>
+                        <th style="text-align: center;border: 1px solid black;">CGST</th>
+                        <th style="text-align: center;border: 1px solid black;">SGST</th>
+                        <th style="text-align: center;border: 1px solid black;">Tax<br>Amount</th>
+                        <th style="text-align: center;border: 1px solid black;">Total<br>Amount</th>
+                     </tr>
+                  </thead>
+                  <tbody style="border: 1px solid black;border-collapse: collapse;">
+                     <tr>
+                        <td style="text-align: center;border: 1px solid black;">1</td>
+                        <td style="text-align: center;border: 1px solid black;">{{data?data.srvname:'--'}}</td>
+                        <td style="text-align: center;border: 1px solid black;">{{data?data.sub_plan:'--'}}</td>
+                        <td style="text-align: center;border: 1px solid black;">{{data?data.hsn:'--'}}</td>
+                        <td style="text-align: center;border: 1px solid black;">{{data?data.inv_amt:'--'}}</td>
+                        <td style="text-align: center;border: 1px solid black;">{{data?data.igst+""+'%':'--'}}</td>
+                        <td style="text-align: center;border: 1px solid black;">{{data?data.cgst+""+'%':'--'}}</td>
+                        <td style="text-align: center;border: 1px solid black;">{{data?data.sgst+""+'%':'--'}}</td>
+                        <td style="text-align: center;border: 1px solid black;">{{data?data.inv_tax:'--'}}</td>
+                        <td style="text-align: center;border: 1px solid black;">{{data?data.totamount:'--'}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+               <br>
+            </div>
+            <br>
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button type="submit" class="btn btn-md btn-success" (click)="print();">Print</button>
+      <!--    <button type="submit" class="btn btn-md btn-info" (click)="captureScreen();">Download</button>
+       --> <button type="button" class="btn btn-md btn-danger" (click)="activeModal.close();">Cancel</button>
+   </div>

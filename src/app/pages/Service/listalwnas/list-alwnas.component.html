@@ -1,0 +1,24 @@
+<nb-card>
+  <nb-card-header>List Allowed Nas</nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]="config"></toaster-container>
+    <button class="btn btn-sm btn-success" [routerLink]="['/pages/service/allow-nas']">Add</button>
+    <hr style="border: 0px;">
+    <table class="table">
+      <tr>
+        <th>Action</th>
+        <th>Circle</th>
+        <th>Primary Nas</th>
+        <th>Secondary Nas</th>
+        <th>Services</th>
+      </tr>
+      <tr *ngFor="let item of groups">
+        <td> <a (click)="Edit_User(item.anas_id);" style="cursor: pointer;"> <i class="nb-edit" > </i> Edit  </a></td>
+        <td>{{item.groupname}}</td>
+        <td>{{item.shortname}}</td>
+        <td>{{item.shortname}}</td>
+        <td>{{item.sername}}</td>
+      </tr>
+    </table>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,880 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>Add Service</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"> </toaster-container>
+      <form [formGroup]="AddServiceForm" class="form-horizontal" (ngSubmit)="addService();">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-4" *ngIf="role.getroleid()>777">
+              <label>ISP Name <span style="color:red;">*</span></label>
+              <select formControlName="bus_id"
+                [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.invalid&&submit}"
+                (change)="AddServiceForm.controls.serassign_type.setValue('');group();AddServiceForm.controls.reseller.setValue('');">
+                <option value="" selected>Select ISP Name</option>
+                <option *ngFor="let item of busname" [ngValue]=item.id>{{item.busname}}</option>
+              </select>
+              <small *ngIf="AddServiceForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is
+                Required!</small>
+            </div>
+            <div class="col-md-4" *ngIf="role.getroleid()>774">
+              <label>Circle</label>
+              <select formControlName="groupid" (change)="AddServiceForm.controls.serassign_type.setValue('')"
+                [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.groupid.invalid&&submit}">
+                <option value="" selected="">Select Circle Name</option>
+                <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="role.getroleid()>444">
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+              <label>Service Create Type <span style="color:red;">*</span></label>
+              <select formControlName="create_type" (change)="busresell()"
+                [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.create_type.invalid&&submit}">
+                <option value="" selected>Select Create type</option>
+                <option value="1">Individual Service Creation</option>
+                <option value="2">Bulk Service Creation</option>
+              </select>
+              <small *ngIf="AddServiceForm.controls.create_type.invalid&&submit" class="form-text error">Creation Type
+                is Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="AddServiceForm.value['create_type']=='2'">
+              <label>Reseller</label>
+              <auto-completen [addclass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.reseller.invalid&&submit}"
+                addclass="form-control" optValues="company" formControlName="reseller" (keyUp)="busresell($event)"
+                 placeholder='Select Reseller' id="id"
+                [item]="buresellitems">
+              </auto-completen>
+            </div>
+          </div>
+          <div class="row form-group" *ngIf="AddServiceForm.value['create_type']=='2'">
+            <div class="col-sm-4">
+              <label>Please Upload The Excel File Format</label>
+              <input type="file" (change)="changeListener($event.target.files[0])" class="form-control" accept=".xlsx">
+              <small *ngIf="bulk.length==0&&submit" class="form-text error"> No Record Found! </small>
+            </div>
+            <div class="col-sm-2">
+              <br>
+              <br>
+              <a href="/assets/public/BulkService.xlsx" target="_blank" download><b>Download Sample Here</b></a>
+            </div>
+          </div>
+          <ngb-tabset>
+            <ngb-tab title="Nas & Reseller" *ngIf="role.getroleid()>444&&AddServiceForm.value['create_type']=='1'">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-4" *ngIf="role.getroleid()>444">
+                    <label>Service Assign type <span style="color:red;">*</span></label>
+                    <select formControlName="serassign_type"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.serassign_type.invalid&&submit}"
+                      (change)="busgrupnas();busresell();fallbackser() ">
+                      <option value="" selected>Select Service Assign type</option>
+                      <option value="1">Nas wise</option>
+                      <option value="2">Reseller wise</option>
+                    </select>
+                    <small *ngIf="AddServiceForm.controls.serassign_type.invalid&&submit"
+                      class="form-text error">Service Assign type is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="role.getroleid()>444">
+                  <div class="col-sm-6" *ngIf="AddServiceForm.value['serassign_type']=='1'">
+                    <table class="table table-header table-bordered table-striped">
+                      <thead>
+                        <th colspan="5">
+                          <input placeholder="Search Nas Here" class="form-control" [ngModelOptions]="{standalone:true}"
+                            [(ngModel)]="searchnas" 
+                            style="width:30%;border: none;border-bottom: 2px solid ;font-size: 15px;">
+                        </th>
+                      </thead>
+                    </table>
+                    <div class="table-wrapper">
+                      <table class="table table-bordered table-striped">
+                        <tr>
+                          <th class="text-center">
+                            <label class="containerbox">All
+                              <input type="checkbox" name="all"
+                                (change)="checkAll($event.target.checked);nasresll();" />
+                              <span class="checkmarkbox"></span>
+                            </label>
+                          </th>
+                          <th>NAS Name <span style="color:red;">*</span></th>
+                        </tr>
+                        <tr *ngFor="let item of alnas | grdFilter: {shortname: searchnas }; let i=index;"
+                          style="text-transform: uppercase;">
+                          <td class="text-center">
+                            <label class="containerbox">
+                              <input type="checkbox" name="sizecb[]" [ngModelOptions]="{standalone:true}"
+                                [(ngModel)]="item.state" (change)=" nasresll()" />
+                              <span class="checkmarkbox"></span>
+                            </label>
+                          </td>
+                          <td><a>{{item.shortname+" ("+item.nasname+")"}}</a> </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-sm-6" *ngIf="AddServiceForm.value['serassign_type']=='1'">
+                    <table class="table table-header table-bordered table-striped">
+                      <thead>
+                        <th colspan="5">
+                          <input placeholder="Search Reseller Here" class="form-control"
+                            [ngModelOptions]="{standalone:true}" [(ngModel)]="searchresell"
+                            style="width:30%;border: none;border-bottom: 2px solid ;font-size: 15px;">
+                        </th>
+                      </thead>
+                    </table>
+                    <div class="table-wrapper">
+                      <table class="table table-bordered table-striped">
+                        <tr>
+                          <th class="text-center">
+                            <label class="containerbox">All
+                              <input type="checkbox" name="all"
+                                (change)="resellcheck($event.target.checked);checkedreselitems();" />
+                              <span class="checkmarkbox"></span>
+                            </label>
+                          </th>
+                          <th>Reseller Name <span style="color:red;">*</span></th>
+                        </tr>
+                        <tr *ngFor="let item of nasresel | grdFilter: {managername: searchresell }; let i=index;"
+                          style="text-transform: uppercase;">
+                          <td class="text-center">
+                            <label class="containerbox">
+                              <input type="checkbox" name="sizecb[]" [ngModelOptions]="{standalone:true}"
+                                [(ngModel)]="item.data" (change)="checkedreselitems()" />
+                              <span class="checkmarkbox"></span>
+                            </label>
+                          </td>
+                          <td><a>{{item.company}}</a> </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddServiceForm.value['serassign_type']=='2'&& role.getroleid()>444">
+                  <div class="col-sm-6">
+                    <table class="table table-header table-bordered table-striped">
+                      <thead>
+                        <th colspan="5">
+                          <input placeholder="Search Reseller Here" class="form-control"
+                            [ngModelOptions]="{standalone:true}" [(ngModel)]="searchresell"
+                            style="width:30%;border: none;border-bottom: 2px solid ;font-size: 15px;">
+                        </th>
+                      </thead>
+                    </table>
+                    <div class="table-body table-wrapper table-scroll ">
+                      <table class="table table-bordered table-striped">
+                        <tr>
+                          <th class="text-center">
+                            <label class="containerbox">All
+                              <input type="checkbox" name="all"
+                                (change)="resellcheck($event.target.checked);checkedreselitems();" />
+                              <span class="checkmarkbox"></span>
+                            </label>
+                          </th>
+                          <th>Reseller Name</th>
+                          <th>Nas</th>
+                        </tr>
+                        <tr *ngFor="let item of buresellitems | grdFilter: {company: searchresell }; let i=index;"
+                          style="text-transform: uppercase;">
+                          <td class="text-center">
+                            <label class="containerbox">
+                              <input type="checkbox" name="sizecb[]" [ngModelOptions]="{standalone:true}"
+                                [(ngModel)]="item.datas" (change)="checkedreselitems()" />
+                              <span class="checkmarkbox"></span>
+                            </label>
+                          </td>
+                          <td><a>{{item.company}}</a> </td>
+                          <td><a>{{item.nasname}}</a></td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Service Info" *ngIf="AddServiceForm.value['create_type']=='1'||role.getroleid()==444">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Service Name <span style="color:red;">*</span></label>
+                    <input type="text" name="Name" formControlName="Name" placeholder="Service Name"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Name.invalid&&submit}" />
+                    <small *ngIf="AddServiceForm.controls.Name.invalid&&submit" class="form-text error">Service Name is Required!</small>
+                    </div>
+                  <div class="col-sm-4">
+                    <label>Service Mode <span style="color:red;">*</span></label>
+                    <select (change)="srvmodechange()"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Type.invalid&&submit}"
+                      name="Type" formControlName="Type">
+                      <option value="" selected>Select Service Mode</option>
+                      <option value="0">Regular</option>
+                      <option value="1">Fallback</option>
+                      <option value="2">Expiry Service</option>
+                      <option value="3">Disabled </option>
+                    </select>
+                    <small *ngIf="AddServiceForm.controls.Type.invalid&&submit" class="form-text error">Service Mode
+                      Is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <div class="custom-control custom-checkbox">
+                      <input formControlName="ciscopolicy" name="ciscopolicy" class="custom-control-input"
+                        type="checkbox" id="ciscopolicy" (change)="ciscovalid()">
+                      <label class="custom-control-label" for="ciscopolicy">Cisco Policy</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div *ngIf="AddServiceForm.value['ciscopolicy']" class="col-sm-4">
+                    <label>Cisco Download Policy Map </label>
+                    <input type="text" name="cisco_dl" formControlName="cisco_dl" placeholder="Download Map"
+                      [ngClass]="{'form-control': true, 'form-control-danger':AddServiceForm.controls.cisco_dl.invalid&&submit}" />
+                  </div>
+                  <div *ngIf="AddServiceForm.value['ciscopolicy']" class="col-sm-4">
+                    <label>Cisco Upload Policy Map</label>
+                    <input type="text" name="cisco_ul" formControlName="cisco_ul" placeholder="Upload Map"
+                      [ngClass]="{'form-control': true, 'form-control-danger':AddServiceForm.controls.cisco_ul.invalid&&submit}" />
+                  </div>
+                  <div *ngIf="!AddServiceForm.value['ciscopolicy']" class="col-sm-4">
+                    <label> Set Data Download Rates </label>
+                    <input type="number" name="datadl_rate" formControlName="datadl_rate" placeholder="Download KBps"
+                      [ngClass]="{'form-control': true, 'form-control-danger':AddServiceForm.controls.datadl_rate.invalid&&submit}" />
+                    <small style="text-align: right;float: right; font-size: 10px !important;">Download Rate in KBps
+                      !</small>
+                  </div>
+                  <div *ngIf="!AddServiceForm.value['ciscopolicy']" class="col-sm-4">
+                    <label> Set Data Upload Rates </label>
+                    <input type="number" name="dataul_rate" formControlName="dataul_rate" placeholder="Upload KBps"
+                      [ngClass]="{'form-control': true, 'form-control-danger':AddServiceForm.controls.dataul_rate.invalid&&submit}" />
+                    <small style="text-align: right;float: right; font-size: 10px !important;">Upload Rate in KBps
+                      !</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Select Service </label>
+                    <table>
+                      <td>
+                         <label class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" value="0"
+                               formControlName="srv_type" name="srv_type">
+                            <span class="custom-control-indicator"></span>Broadband
+                         </label>
+                      </td>
+                      <td>
+                         <label class="custom-control custom-radio">
+                            <input type="radio" value="1" class="custom-control-input"
+                               formControlName="srv_type" name="srv_type" (change)="assignCardService()">
+                            <span class="custom-control-indicator"></span>Card</label>
+                      </td>
+                   </table>
+                  </div>
+                  <div class="col-sm-4" *ngIf="AddServiceForm.value.srv_type == 0">
+                    <label>Service Type <span style="color:red;">*</span></label>
+                    <select
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Service.invalid&&submit}"
+                      name="Service" formControlName="Service" (change)="expvalid()">
+                      <option value="" selected>Select Service Type</option>
+                      <option value="0">Prepaid</option>
+                      <!-- <option value="1">Prepaid Card or IAS</option> -->
+                      <option value="2">Postpaid</option>
+                      <!-- <option value="3">EMAIL</option> -->
+                      <!-- <option value="4">Radius Access List </option> -->
+                    </select>
+                    <small *ngIf="AddServiceForm.controls.Service.invalid&&submit" class="form-text error">Service
+                      Type Is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Service Expiry Type <span style="color:red;">*</span></label>
+                    <select
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Expiry.invalid&&submit}"
+                      name="Expiry" formControlName="Expiry">
+                      <option value="" selected>Select Service Expiry Type</option>
+                      <option value="0">No Expiry</option>
+                      <option value="1">Expiry</option>
+                    </select>
+                    <small *ngIf="AddServiceForm.controls.Expiry.invalid&&submit" class="form-text error">Service ExpiryType is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="role.getroleid()>=775||role.getroleid()==666||role.getroleid()==665">
+                  <div class="col-sm-4">
+                    <label>Service Validity <span style="color:red;">*</span></label>
+                    <select formControlName="ser_validity" (change)="servalidcheck()"
+                     [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.ser_validity.invalid&&submit}">
+                      <option value="" selected>Select Service Validity</option>
+                      <option value="1">All time</option>
+                      <option value="2">Period</option>
+                      <option value="3">New Service</option>
+                    </select>
+                    <small *ngIf="AddServiceForm.controls.ser_validity.invalid&&submit" class="form-text error">Service Validty is required! </small>
+                  </div>
+                  <div class="col-sm-4" *ngIf="AddServiceForm.value['ser_validity']==2">
+                    <label>Start Date <span style="color:red;">*</span></label>
+                    <input type="datetime-local"  formControlName="st_date" 
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.st_date.invalid&&submit}" />
+                    <small *ngIf="AddServiceForm.controls.st_date.invalid&&submit" class="form-text error">Start Date is required! </small>
+                  </div>
+                  <div class="col-sm-4" *ngIf="AddServiceForm.value['ser_validity']==2">
+                    <label>End Date <span style="color:red;">*</span></label>
+                    <input type="datetime-local"  formControlName="end_date" 
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.end_date.invalid&&submit}" />
+                    <small *ngIf="AddServiceForm.controls.end_date.invalid&&submit" class="form-text error">End Date is required! </small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <!-- <div class="custom-control custom-checkbox"> -->
+                      <!-- <input type="checkbox" class="custom-control-input" id="data_split"
+                        formControlName="data_split" />
+                      <label class="custom-control-label" for="data_split">Data Split (Month Wise)</label> -->
+                      <label>
+                        <input  type="checkbox" formControlName="data_split" >
+                        Data Split (Month Wise)
+                      </label>
+                    <!-- </div> -->
+                  </div>
+                  <div class="col-sm-2">
+                    <!-- <div class="custom-control custom-checkbox"> -->
+                      <!-- <input type="checkbox" class="custom-control-input" id="serstatus" formControlName="serstatus" />
+                      <label class="custom-control-label" for="serstatus">Enable</label> -->
+                      <label>
+                        <input  type="checkbox" formControlName="serstatus" >
+                       Enable
+                      </label>
+                    <!-- </div> -->
+                  </div>
+                  <div class="col-sm-2">
+                    <label>
+                       <input  type="checkbox" formControlName="renewalmode" >
+                      RenewalMode
+                     </label>
+                 </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Data Type" *ngIf="AddServiceForm.value['create_type']=='1'">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Service Data Type <span style="color:red;">*</span></label>
+                    <select (change)="srvdatachange();changecheck()"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Data.invalid&&submit}"
+                      name="Data" formControlName="Data">
+                      <option value="" selected>Select Data Type </option>
+                      <option value="1">Unlimited</option>
+                      <option value="2">FUP</option>
+                    </select>
+                    <small *ngIf="AddServiceForm.controls.Data.invalid&&submit" class="form-text error">Service DataType is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="AddServiceForm.value['Total']==true"
+                  *ngIf='AddServiceForm.value["Data"]==2'>
+                  <div class="col-md-4">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" (change)='changecheck()' class="custom-control-input" id="Download"
+                        formControlName="Download" />
+                      <label class="custom-control-label" for="Download">Limit Download </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="AddServiceForm.value['Total']==true"
+                  *ngIf='AddServiceForm.value["Download"]==true'>
+                  <div class="col-sm-4">
+                    <label>Download Traffic Unit (MB)</label>
+                    <input type="number" name="dTraffic" formControlName="dTraffic" placeholder="Download Traffic Unit"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.dTraffic.invalid&&submit}" />
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Initial (MB)</label>
+                    <input type="number" formControlName="dltraf_initial" placeholder="Initial"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.dltraf_initial.invalid&&submit}">
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="AddServiceForm.value['Total']==true"
+                  *ngIf='AddServiceForm.value["Data"]==2'>
+                  <div class="col-md-4">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" (change)='changecheck()' class="custom-control-input" id="Upload"
+                        formControlName="Upload" />
+                      <label class="custom-control-label" for="Upload">Limit Upload </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="AddServiceForm.value['Total']==true"
+                  *ngIf='AddServiceForm.value["Upload"]==true'>
+                  <div class="col-md-4">
+                    <label>Upload Traffic Unit(MB)</label>
+                    <input type="number" name="uTraffic" formControlName="uTraffic" placeholder="Upload Traffic Unit"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.uTraffic.invalid&&submit}" />
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Initial (MB)</label>
+                    <input type="number" formControlName="ultraf_initial" placeholder="Initial"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.ultraf_initial.invalid&&submit}">
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf='AddServiceForm.value["Data"]==2'>
+                  <div class="col-md-4">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" (change)='changecheck()' class="custom-control-input" id="Total"
+                        formControlName="Total" />
+                      <label class="custom-control-label" for="Total">Limit Total </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf='AddServiceForm.value["Total"]==true'>
+                  <div class="col-sm-4">
+                    <label>Total Traffic Unit (MB)</label>
+                    <input type="number" name="tTraffic" formControlName="tTraffic" placeholder="Total Traffic Unit"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.tTraffic.invalid&&submit}" />
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Initial (MB)</label>
+                    <input type="number" formControlName="tottraf_initial" placeholder="Initial"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.tottraf_initial.invalid&&submit}">
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf='AddServiceForm.value["Data"]!=""'>
+                  <div class="col-md-4">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" (change)='changecheck()' class="custom-control-input" id="Online"
+                        formControlName="Online" />
+                      <label class="custom-control-label" for="Online">Limit Online Time</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf='AddServiceForm.value["Online"]'>
+                  <div class="col-sm-4">
+                    <label>Time Unit Online</label>
+                    <input type="number" name="ontime" formControlName="ontime" placeholder="Time Unit Online"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.ontime.invalid&&submit}" />
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Initial</label>
+                    <input type="number" name="initial" formControlName='initial' placeholder="Initial"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.initial.invalid&&submit}" />
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Time Unit</label>
+                    <select
+                      [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.timeunit.invalid&&submit}"
+                      formControlName="timeunit">
+                      <option value="" selected>Select Time Unit</option>
+                      <option value="0">Minute(s)</option>
+                      <option value="1">Hour(s)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Next Fallback Service</label>
+                    <select
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.exp_service.invalid&&submit}"
+                      name="exp_service" formControlName="exp_service">
+                      <option value="" selected>Select Fallback Service</option>
+                      <option *ngFor="let item of falback" [ngValue]="item.sid">{{item.srvname}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Next Daily Service</label>
+                    <select
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.daily_service.invalid&&submit}"
+                      name="daily_service" formControlName="daily_service">
+                      <option value="" selected>Select Daily service</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Next Disabled Service</label>
+                    <select
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.disable_ser.invalid&&submit}"
+                      name="disable_ser" formControlName="disable_ser">
+                      <option value="" selected>Select Disabled Service</option>
+                    </select>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Quota" *ngIf="AddServiceForm.value['create_type']=='1'">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Download Quota Per Day</label>
+                    <input type="number" name="dQuota" formControlName="dQuota" placeholder="MB"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.dQuota.invalid&&submit}" />
+                    <small style="text-align: right;float: right; ">Download Quota in MB
+                      !</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Upload Quota Per Day</label>
+                    <input type="number" name="uQuota" formControlName="uQuota" placeholder="MB"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.uQuota.invalid&&submit}" />
+                    <span style="text-align: right;float: right; ">Upload Quota in MB
+                      !</span>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Total Quota Per Day</label>
+                    <input type="number" name="tQuota" formControlName="tQuota" placeholder="MB"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.tQuota.invalid&&submit}" />
+                    <span style="text-align: right;float: right; ">Total Quota in MB
+                      !</span>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Time Quota Per Day</label>
+                    <input type="time" step='1' min="00:00:00" max="20:00:00" name="sQuota" formControlName="sQuota"
+                      placeholder="HH:MM:SS"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.sQuota.invalid&&submit}" />
+                    <span style="text-align: right;float: right; ">Time HH:MM:SS !</span>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Addition Mode" *ngIf="AddServiceForm.value['create_type']=='1'||role.getroleid()==444">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-3">
+                    <div class="custom-control custom-checkbox">
+                      <input (change)="carryover()" type="checkbox" class="custom-control-input" id="carry_over"
+                        formControlName="carry_over" />
+                      <label class="custom-control-label" for="carry_over">Carry Over remaining MBs</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="reset_dateexp"
+                        formControlName="reset_dateexp" />
+                      <label class="custom-control-label" for="reset_dateexp">Reset counters if date is
+                        expired</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="traffic_neg"
+                        formControlName="traffic_neg" />
+                      <label class="custom-control-label" for="traffic_neg">Reset counters if traffic is
+                        negative</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="add_credits"
+                        formControlName="add_credits" />
+                      <label class="custom-control-label" for="add_credits">Enable additional credits</label>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label><b>Data Addition Mode</b></label>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="srvtype" type="radio" name="srvtype" class="custom-control-input"
+                        value="0">
+                      <span class="custom-control-indicator"></span>Reset Expiration Date
+                    </label>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="srvtype" type="radio" class="custom-control-input" name="srvtype"
+                        value="1">
+                      <span class="custom-control-indicator"></span>Prolong Expiration Date
+                    </label>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="srvtype" type="radio" class="custom-control-input" name="srvtype"
+                        value="2">
+                      <span class="custom-control-indicator"></span>Prolong Expiration Date with correction
+                    </label>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label><b>Time Addition Mode</b></label>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="srvtype1" type="radio" name="srvtype1" class="custom-control-input"
+                        value="0">
+                      <span class="custom-control-indicator"></span>Reset Online Time
+                    </label>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="srvtype1" type="radio" class="custom-control-input" name="srvtype1"
+                        value="1">
+                      <span class="custom-control-indicator"></span>Add Online Time
+                    </label>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label><b>Traffic Addition Mode</b></label>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="srvtype2" type="radio" name="srvtype2" class="custom-control-input"
+                        value="0">
+                      <span class="custom-control-indicator"></span>Reset Traffic Counters
+                    </label>
+                    <label class="custom-control custom-radio">
+                      <input formControlName="srvtype2" type="radio" class="custom-control-input" name="srvtype2"
+                        value="1">
+                      <span class="custom-control-indicator"></span>Add Trafic
+                    </label>
+                  </div>
+                </div>
+                <hr>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Bust Mode" *ngIf="AddServiceForm.value['create_type']=='1'||role.getroleid()==444">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-md-6">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="burst_mode" formControlName="burst_mode"
+                        (change)="burst()" />
+                      <label class="custom-control-label" for="burst_mode">Enable Burst Mode</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="!AddServiceForm.value['burst_mode']">
+                  <div class="col-sm-6">
+                    <label>Burst Limit</label>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="!AddServiceForm.value['burst_mode']">
+                  <div class="col-sm-4">
+                    <input type="number" name="Limit" formControlName="Limit" placeholder="Download KBps "
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Limit.invalid&&submit}" />
+                    <span class="form-text error"
+                      style="text-align: right;float: right; font-size: 0.5px !important;">Download Rate in KBps
+                      !</span>
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="number" name="Limit1" formControlName="Limit1" placeholder="Upload KBps"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Limit1.invalid&&submit}" />
+                    <small class="form-text error"
+                      style="text-align: right;float: right; font-size: 0.5px !important;">Upload Rate in KBps
+                      !</small>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="!AddServiceForm.value['burst_mode']">
+                  <div class="col-sm-6">
+                    <label>Burst Treshold</label>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="!AddServiceForm.value['burst_mode']">
+                  <div class="col-sm-4">
+                    <input type="number" name="Treshold" formControlName="Treshold" placeholder="Download KBps "
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Treshold.invalid&&submit}" />
+                    <small class="form-text error"
+                      style="text-align: right;float: right; font-size: 0.5px !important;">Download Rate in KBps
+                      !</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="number" name="Treshold1" formControlName="Treshold1" placeholder="Upload KBps"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Treshold1.invalid&&submit}" />
+                    <small class="form-text error"
+                      style="text-align: right;float: right; font-size: 0.5px !important;">Upload Rate in KBps
+                      !</small>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="!AddServiceForm.value['burst_mode']">
+                  <div class="col-sm-6">
+                    <label>Burst Time</label>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="!AddServiceForm.value['burst_mode']">
+                  <div class="col-sm-4">
+                    <input type="number" name="Time" formControlName="Time" placeholder="Download Seconds"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Time.invalid&&submit}" />
+                    <small class="form-text error"
+                      style="text-align: right;float: right; font-size: 0.5px !important;">Seconds !</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="number" name="Time1" formControlName="Time1" placeholder="Upload Seconds"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddServiceForm.controls.Time1.invalid&&submit}" />
+                    <small class="form-text error"
+                      style="text-align: right;float: right; font-size: 0.5px !important;">Seconds !</small>
+                  </div>
+                </div>
+                <div class="form-group row" [hidden]="!AddServiceForm.value['burst_mode']">
+                  <div class="col-sm-4">
+                    <label>Priority</label>
+                    <select
+                      [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.Priority.invalid&&submit}"
+                      formControlName="Priority">
+                      <option value="" selected>Select Priority</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                    </select>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Price" *ngIf="role.getroleid()==444&&AddServiceForm.value['Type']== 0">
+              <ng-template ngbTabContent>
+                <div class="modal-body">
+                  <div class="form-group row">
+                    <div class="col-md-4">
+                      <label></label>
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="ser_tax" formControlName="ser_tax" />
+                        <label class="custom-control-label" for="ser_tax">Enable Service Tax</label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <label>Tax Calculation</label>
+                      <select formControlName="sertax_cal"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.sertax_cal.invalid&&submit}">
+                        <option value="" selected>Select Tax Calculation</option>
+                        <option value="1">Including Tax</option>
+                        <option value="0">Excluding Tax</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-4">
+                      <label>Status</label>
+                      <select class="form-control"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddServiceForm.controls.price_status.invalid&&submit}"
+                        formControlName="price_status">
+                        <option value="" selected>Select Status</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                      </select>
+                      <small *ngIf="AddServiceForm.controls.price_status.invalid&&submit" class="form-text error">Status
+                        is required!
+                      </small>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-12">
+                      <nb-card>
+                        <nb-card-header style="background-color :  #01a7ee; height:40px!important">Pricing
+                        </nb-card-header>
+                        <nb-card-body style="overflow: visible;">
+                          <div class="form-group row" formArrayName="priceDetails">
+                            <div class="col-sm-12">
+                              <div *ngFor="let user of priceDetails.controls; index as idx;let last = last;">
+                                <div class="form-group row" [formGroupName]="idx">
+                                  <div class="col-sm-2">
+                                    <label>Sub Plan Name <span style="color:red;">*</span></label>
+                                    <input type="text" formControlName="sub_plan" placeholder="Plan Name" style=" height:40px; width:137px!important
+                                    " class="form-control"
+                                      [ngClass]="{'form-control':true,'form-control-danger':user['controls']['sub_plan'].invalid&&submit}">
+                                    <small *ngIf="AddServiceForm.hasError('required','sub_plan')&&submit"
+                                      class="form-text error">Sub Plan Name is Required</small>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <label>Price <span style="color:red;">*</span></label>
+                                    <input type="number" style=" height:40px; width:137px!important
+                                      " class="form-control" formControlName="ser_price"
+                                      [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['ser_price'].invalid&&submit}">
+                                    <small *ngIf="AddServiceForm.hasError('required','ser_price')&&submit"
+                                      class="form-text error">Price is required!
+                                    </small>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <label>Time Unit Type <span style="color:red;">*</span></label>
+                                    <select class="form-control" style=" height:40px; width:137px!important"
+                                      formControlName="timeunit_type"
+                                      [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['timeunit_type'].invalid&&submit}">
+                                      <option value="" selected>Time Unit Type</option>
+                                      <option value="0">Days</option>
+                                      <option value="1">Month</option>
+                                    </select>
+                                    <small *ngIf="AddServiceForm.hasError('required','timeunit_type')&&submit"
+                                      class="form-text error">Time unit type is
+                                      required! </small>
+                                  </div>
+                                  <div class="col-sm-2" *ngIf="user.value['timeunit_type']==0">
+                                    <label>Days <span style="color:red;">*</span></label>
+                                    <select class="form-control" style=" height:40px; width:137px!important"
+                                       formControlName="dayflag"
+                                       [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['dayflag'].invalid&&submit}">
+                                       <option value="" selected>Time Unit Type</option>
+                                       <option value="0">28 Days</option>
+                                       <option value="1">30 Days</option>
+                                    </select>
+                                    <small *ngIf="AddServiceForm.hasError('required','dayflag')&&submit"
+                                       class="form-text error">Days is required!
+                                    </small>
+                                 </div>
+                                  <div class="col-sm-2">
+                                    <label>Time Unit <span style="color:red;">*</span></label>
+                                    <input type="number" style=" height:40px; width:137px!important"
+                                      class="form-control" formControlName="time_unit"
+                                      [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['time_unit'].invalid&&submit}">
+                                    <small *ngIf="AddServiceForm.hasError('required','time_unit')&&submit"
+                                      class="form-text error">Time unit is required!
+                                    </small>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <label>Additional Days</label>
+                                    <input type="number" placeholder="Add Days" style=" height:40px; width:137px!important" class="form-control"
+                                      formControlName="add_days"
+                                      [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['add_days'].invalid&&submit}">
+                                  </div>
+                                </div>
+                                <div class="form-group row" [formGroupName]="idx">
+                                  <div class="col-sm-2">
+                                    <label>Sub-Plan Validity <span style="color:red;">*</span></label>
+                                    <select class="form-control" formControlName="subplan_validity" style=" height:40px; width:137px!important"
+                                      [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subplan_validity'].invalid&&submit}">
+                                      <option value="1">Disable</option>
+                                      <option value="2">Enable</option>
+                                    </select>
+                                    <small *ngIf="AddServiceForm.hasError('required','subplan_validity')&&submit"
+                                    class="form-text error">Sub-Plan Validity is required!
+                                  </small>
+                                  </div>
+                                  <div class="col-sm-2" *ngIf="user.value['subplan_validity']==2">
+                                    <label>Start Date</label>
+                                    <input type="text" placeholder="Start Date" [nbDatepicker]="subst_date" class="form-control" formControlName="subst_date"  style=" height:40px; width:137px!important"
+                                    [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subst_date'].invalid&&submit}">
+                                    <nb-datepicker #subst_date></nb-datepicker>
+                                  </div>
+                                  <div class="col-sm-2"  *ngIf="user.value['subplan_validity']==2">
+                                    <label>End Date</label>
+                                    <input type="text" placeholder="End Date" [nbDatepicker]="subend_date" class="form-control" formControlName="subend_date"  style=" height:40px; width:137px!important"
+                                    [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subend_date'].invalid&&submit}">
+                                    <nb-datepicker #subend_date></nb-datepicker>
+                                  </div>
+                                  <div *ngIf="last||idx !=0" class="col-sm-2">
+                                    <div class="dropdown ghost-dropdown" ngbDropdown>
+                                      <button style="width: 75px;font-size: 10px;margin-top: 31px;" class="btn btn-primary btn-icon"
+                                        type="button" ngbDropdownToggle>Action
+                                      </button>
+                                      <ul class="dropdown-menu" ngbDropdownMenu style="width: 30px;">
+                                        <li (click)="deletepriceField(idx)" class="dropdown-item" *ngIf="idx !=0"><i
+                                            title="Edit Service" class="ion-android-delete"></i>&nbsp;Delete</li>
+                                        <li (click)="addPrice()" class="dropdown-item" *ngIf="last"><i
+                                            title="Edit Service" class="ion-ios-plus-outline"></i>&nbsp;ADD</li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </nb-card-body>
+                      </nb-card>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">Create</button>
+            <button type="submit" class="btn btn-md btn-danger " (click)='cancel()'>Back </button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

@@ -1,0 +1,47 @@
+<!-- <ngx-loading [show]="loading"
+  [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+</ngx-loading> -->
+<div class="modal-header" style="background-color :  #01a7ee">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="AddSmsCreditForm" (ngSubmit)="smsCreditSubmit()">
+  <div class="modal-body">
+    <div class="form-group row">
+      <div class="col-sm-4" *ngIf="role.getroleid()>777">
+        <label>ISP Name <span style="color:red;">*</span> </label>
+        <auto-completen
+          [addclass]="{'form-control' : true,'form-control-danger':AddSmsCreditForm.controls.isp_id.invalid&&submit}"
+          (changed)="resellername();" (keyUp)="business($event)" formControlName="isp_id" optValues="busname" placeholder='Select Business'
+          id="id" [item]="busdata">
+        </auto-completen>
+        <small *ngIf="AddSmsCreditForm.controls.isp_id.invalid&&submit" class="form-text error">ISP Name is
+          Required</small>
+      </div>
+      <div class="col-sm-4">
+        <label>Reseller Name <span style="color:red;">*</span></label>
+        <auto-completen
+          [addclass]="{'form-control' : true,'form-control-danger':AddSmsCreditForm.controls.manid.invalid&&submit}"
+          optValues="company" (keyUp)="resellername($event)" formControlName="manid" placeholder='Select Reseller' id="id"
+          [item]="reseldata">
+        </auto-completen>
+        <small *ngIf="AddSmsCreditForm.controls.manid.invalid&&submit" class="form-text error">Reseller Name is
+          Required!</small>
+      </div>
+      <div class="col-sm-3">
+        <label>SMS Count <span style="color:red;">*</span></label>
+        <input type="number" formControlName="sms" placeholder="Sms Count"
+          [ngClass]="{'form-control':true,'form-control-danger':AddSmsCreditForm.controls.sms.invalid&&submit}">
+        <small *ngIf="AddSmsCreditForm.controls.sms.invalid&&submit" class="form-text error">Sms count is
+          Required!</small>
+      </div>
+    </div>
+  
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-md btn-success">{{item ? 'Update': 'Add'}} </button>
+    <button type="submit" class="btn btn-md btn-danger" (click)="closeModal()">Back </button>
+  </div>
+</form>

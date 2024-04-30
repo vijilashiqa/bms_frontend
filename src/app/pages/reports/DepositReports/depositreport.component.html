@@ -1,0 +1,68 @@
+<div class="col-md-12">
+   <nb-card>
+      <nb-card-header>Deposit Report</nb-card-header>
+      <nb-card-body>
+         <nb-card>
+            <nb-card-header>Search</nb-card-header>
+            <nb-card-body>
+               <form [formGroup]="ReportsForm" class="form-horizontal" (ngSubmit)="addNas();">
+                  <div class="modal-body">
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label>Reseller Name</label>
+                           <input list="Reseller_name" placeholder="choose your Reseller" name="Reseller_name"
+                              formControlName="Reseller_name" class="form-control" />
+                           <datalist id="Reseller_name">
+                              <option value="aaa"></option>
+                              <option value="bbb"></option>
+                           </datalist>
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Deposit By</label>
+                           <input list="Depositer" placeholder="choose your Depositer" name="Depositer"
+                              formControlName="Depositer" class="form-control" />
+                           <datalist id="Depositer">
+                              <option value="xxx"></option>
+                              <option value="yyy"></option>
+                           </datalist>
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Reason</label>
+                           <select name="reason" formControlName="reason"
+                              [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.reason.invalid&&submit}">
+                              <option value="" selected> ALL</option>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <div class="col-sm-4">
+                           <label>Deposit From</label>
+                           <input type="Date" name="Deposit_from" formControlName="Deposit_from" placeholder=""
+                              [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.Deposit_from.invalid&&submit}" />
+                        </div>
+                        <div class="col-sm-4">
+                           <label>Deposit To</label>
+                           <input type="Date" name="Deposit_to" formControlName="Deposit_to" placeholder=""
+                              [ngClass]="{'form-control' : true,'form-control-danger':ReportsForm.controls.Deposit_to.invalid&&submit}" />
+                        </div>
+                     </div>
+                  </div>
+                  <button type="submit" class="btn btn-md btn-success"
+                     style="margin: auto; display: block;">Search</button>
+               </form>
+            </nb-card-body>
+         </nb-card>
+         <table class="table">
+            <tr>
+               <th>Reseller Name</th>
+               <th>User Name</th>
+               <th>Deposit Amount</th>
+               <th>Deposit Date</th>
+               <th>Notes</th>
+               <th>Depositor Name</th>
+               <th>Reason</th>
+            </tr>
+         </table>
+      </nb-card-body>
+   </nb-card>
+</div>

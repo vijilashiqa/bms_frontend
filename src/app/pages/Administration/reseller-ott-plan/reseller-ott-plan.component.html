@@ -1,0 +1,136 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>OTT PLAN
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]="config"></toaster-container>
+    <button *ngIf="role.getroleid()>=775" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/administration/ott-plan']">Add</button>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>Business Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showReseller();showOTTPlanCode();showOTTPlanName();group_name='';ottplan_name='';ottplan_code='';resel_name='';"
+            (keyUp)="showBusName($event)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" addclass="form-control" optValues="groupname"
+            (changed)="showReseller();" placeholder='Select Circle' (keyUp)="showGroupName($event)" optId="groupid"
+            [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Reseller</label>
+          <auto-completen [(ngModel)]="resel_name" addclass="form-control" optValues="company"
+            placeholder="Select Reseller" (keyUp)="showReseller($event)" id="id" [item]="reseller"></auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>OTT PlanName</label>
+          <auto-completen [(ngModel)]="ottplan_name" addclass="form-control" optValues="ottplan_name"
+            (changed)="ottplan_code=''" placeholder='Select OTTPlanName' (keyUp)="showOTTPlanName($event)"
+            optId="ottplanid" [item]="ottplanname">
+          </auto-completen>
+        </div>
+
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label>OTT PlanCode</label>
+          <auto-completen [(ngModel)]="ottplan_code" addclass="form-control" optValues="ottplancode"
+            placeholder='Select OTTPlanCode' (keyUp)="showOTTPlanCode($event)" optId="ottplanid" [item]="ottplandata">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Select Vendor</label>
+          <select [(ngModel)]="ott_vendor" class="form-control">
+            <option value="">Select Vendor</option>
+            <option value="1">M2MIT</option>
+            <option value="2">PLAYBOX</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-md btn-success" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <toaster-container [toasterconfig]></toaster-container>
+    <label class="left">
+      <h5>Total Count : {{total}}</h5>
+    </label>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+    <table class="table table-hover table-striped">
+      <tr style="background-color : #01a7ee;color:white;font-size: medium;">
+        <!-- <th *ngIf="role.getmenurole(1030)">Action</th> -->
+        <th *ngIf="role.getroleid()>777">Business Name</th>
+        <th *ngIf="role.getroleid()>444">Reseller Name</th>
+        <th>OTT Plan Name</th>
+        <th>OTT PlanCode</th>
+        <th>Vendor</th>
+        <!-- <th>GLTV Code</th> -->
+        <th>Tax Type</th>
+        <th>Time Unit</th>
+        <th>Amount</th>
+        <th>OTTPlatform</th>
+        <th>Status</th>
+      </tr>
+      <tr *ngFor="let item of pagedItems">
+        <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+        <td *ngIf="role.getroleid()>444">{{item.company}}</td>
+        <td>{{item.ottplan_name}}</td>
+        <td>{{item.ottplancode}}</td>
+        <td>{{item.ott_vendor == 1 ? 'M2MIT': 'PLAYBOX'}}</td>
+        <!-- <td>{{item.gltvplanid}}</td> -->
+        <td>{{item.taxtype == 0? 'Inclusive':'Exclusive'}}</td>
+        <td>{{item.dayormonth == 1 ? item.days +" "+ "Days": item.days +" "+ "Months"}}</td>
+        <td><i class="fas fa-rupee-sign">&nbsp;{{item.ottamt}}</i></td>
+        <td style="font-size: medium;font-weight: 900;cursor: pointer;"><a
+            (click)="ottcount(item.ottplanid)">{{item.tot}}</a></td>
+        <!-- <td>{{item.omstatus==1 ? 'Enable':'Disable'}}</td> -->
+        <td style="text-align: center;"> <a [ngStyle]="{'color' :item.omstatus==1 ? 'green' : 'red' }"
+            [ngClass]="{'ion-close-round':item.omstatus!=1? true:false,'ion-checkmark-round': item.omstatus==1 ? true:false  }">
+          </a> </td>
+      </tr>
+      <tr>
+        <td colspan="4" *ngIf="pagedItems==''">NO DATA FOUND</td>
+      </tr>
+    </table>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

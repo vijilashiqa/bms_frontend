@@ -1,0 +1,66 @@
+.table-wrapper{
+  overflow-y: scroll;
+  height: auto;
+}
+
+.table-wrapper th{
+    position: sticky;
+    top: -1px;
+}
+
+
+.table-wrapper{
+  background: white;
+}
+
+table{
+  border-collapse: collapse;
+  width: 100%;
+
+}
+
+th{
+    background:#01a7ee;
+}
+
+td,th{
+  padding: 10px;
+  text-align: center;
+}
+
+.table td {
+  white-space: nowrap;
+}
+.table th {
+  white-space: nowrap;
+    z-index:998;
+}
+
+.btn.btn-primary:hover {
+  background-color:#73a1ff!important;
+  font-weight:700!important;
+  color:white;
+
+}
+
+.btn.btn-primary:focus {
+  background-color:#73a1ff!important;
+  font-weight:700!important;
+  color:white;
+}
+
+.btn.btn-primary:active {
+  background-color:#73a1ff!important;
+  font-weight:700!important;
+  color:white;
+
+}
+
+.my-custom-class .popover-body {
+  background: rgb(105, 4, 21);
+  font-size: 150%;
+}
+.my-custom-class .arrow::after {
+  border-top-color: rgb(244, 240, 255);
+}
+

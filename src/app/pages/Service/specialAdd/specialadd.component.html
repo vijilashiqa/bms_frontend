@@ -1,0 +1,87 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+  <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="SpecialForm" (ngSubmit)="AddSpecialAervice()">
+<div class="modal-body">
+  <div class="form-group row">
+      <div class="col-sm-4">
+        <label>ISP Name</label>
+        <select formControlName="bus_name"
+          [ngClass]="{'form-control':true,'form-control-danger':SpecialForm.controls.invalid&&submit}"
+          (change)="busservice();group()">
+          <option value="" selected>Select ISP Name</option>
+          <option *ngFor="let item of busname" [ngValue]=item.id>{{item.busname}}</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label>Circle (Optional)</label>
+        <select formControlName="group_name"
+          [ngClass]="{'form-control':true,'form-control-danger':SpecialForm.controls.group_name.invalid&&submit}" (change)="grupser()">
+          <option value="" selected="">Select Circle </option>
+          <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+        </select>
+      </div>
+    <div class="col-sm-4">
+      <label>Package</label>
+      <select [ngClass]="{'form-control' : true,'form-control-danger':SpecialForm.controls.pack.invalid&&submit}" name="pack" formControlName="pack" >
+        <option value="" >Select Package</option>
+        <option *ngFor= "let item of pack" [ngValue]=item.srvid>{{item.srvname}}</option>
+      </select>
+      <small *ngIf="SpecialForm.controls.pack.invalid&&submit" class="form-text error"> Package is required! </small>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-4">
+      <label>Start Time</label>
+      <input type="Time" name="shr" formControlName="shr" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':SpecialForm.controls.shr.invalid&&submit}"/>
+    </div>
+    <div class="col-sm-4">
+      <label>End Time</label>
+      <input type="Time" name="ehr" formControlName="ehr" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':SpecialForm.controls.ehr.invalid&&submit}"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-4">
+      <label>Time Ratio</label>
+      <select [ngClass]="{'form-control' : true,'form-control-danger':SpecialForm.controls.tratio.invalid&&submit}" name="tratio" formControlName="tratio" >
+        <option value="" >Select Time Ratio</option>
+        <option *ngFor= "let item of ratio" [ngValue]=item.value>{{item.percentage}}%</option>
+      </select>
+      <small *ngIf="SpecialForm.controls.tratio.invalid&&submit" class="form-text error"> Time Ratio is required! </small>
+    </div>
+    <div class="col-sm-4">
+      <label>Download Ratio</label>
+      <select [ngClass]="{'form-control' : true,'form-control-danger':SpecialForm.controls.dlratio.invalid&&submit}" name="dlratio" formControlName="dlratio" >
+        <option value="" >Select Download Ratio</option>
+        <option *ngFor= "let item of ratio" [ngValue]=item.value>{{item.percentage}}%</option>
+      </select>
+      <small *ngIf="SpecialForm.controls.dlratio.invalid&&submit" class="form-text error"> Download Ratio is required! </small>
+    </div>
+    <div class="col-sm-4">
+      <label>Upload Ratio</label>
+      <select [ngClass]="{'form-control' : true,'form-control-danger':SpecialForm.controls.upratio.invalid&&submit}" name="upratio" formControlName="upratio" >
+        <option value="" >Select Upload Ratio</option>
+        <option *ngFor= "let item of ratio" [ngValue]=item.value>{{item.percentage}}%</option>
+      </select>
+      <small *ngIf="SpecialForm.controls.upratio.invalid&&submit" class="form-text error"> Upload Ratio is required! </small>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-8">
+      <nb-checkbox formControlName="mon">Mon</nb-checkbox>
+      <nb-checkbox formControlName="tue">Tue</nb-checkbox>
+      <nb-checkbox formControlName="wed">Wed</nb-checkbox>
+      <nb-checkbox formControlName="thur">Thur</nb-checkbox>
+      <nb-checkbox formControlName="fri">Fri</nb-checkbox>
+      <nb-checkbox formControlName="sat">Sat</nb-checkbox>
+      <nb-checkbox formControlName="sun">Sun</nb-checkbox>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="submit" class="btn btn-md btn-primary">{{item ? 'Update':'Add' }} Special Service</button>
+</div>
+</form>

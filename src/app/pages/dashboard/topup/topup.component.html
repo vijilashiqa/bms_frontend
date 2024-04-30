@@ -1,0 +1,62 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <!-- <toaster-container [toasterconfig]="config"> </toaster-container> -->
+  <button class="close" aria-label="Close" (click)="closeModal()">
+     <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+<form [formGroup]="TopupForm" (ngSubmit)="addPay()">
+  <div class="modal-body">
+     <div class="form-group row">
+        <div class="col-sm-12">
+           <label>Amount <span style="color:red;">*</span></label>
+           <input type="number" name="amt" formControlName="amt" placeholder="Amount"
+              [ngClass]="{'form-control' : true,'form-control-danger':TopupForm.controls.amt.invalid&&submit}" />
+           <small *ngIf="TopupForm.hasError('required','amt')&&submit" class="form-text error">Amount
+              is required! </small>
+        </div>
+        <div class="col-sm-12">
+         <label>Remarks</label>
+         <textarea formControlName="trnRemarks" placeholder="Remarks" 
+         [ngClass]="{'form-control':true,'form-control-danger':TopupForm.controls.trnRemarks.invalid&&submit}"></textarea>
+        </div>
+         <button class="btn btn-outline" type="button" style="margin:35px;color: red;cursor: pointer;line-height: 25px;" (click)="onNavigate()">
+            Terms & Conditions Applied
+        </button>
+        <!-- <small (click)="condition=!condition">
+         <span style="padding-left: 209px;color: red;cursor: pointer;line-height: 25px;">T & C Applied</span>
+      </small> -->
+        <!-- <div class="col-sm-12" [hidden]="!condition">
+           <p style="white-space: break-spaces;">
+            <b>1.</b>LEBSPL (Limras Eronet Broadband services Pvt Ltd.) 
+            shall perform its obligations and do inspection under 
+            this agreement including collection of subscription charges, 
+            deposits, rents, either through its employees or through its 
+            Franchise any other authorized representative.<br>
+            <br>
+            <b>Refund and Cancellation Policy</b><br>
+            <br>
+            For any change, addition, deletion, substitution, 
+            modification of the subscribed service, 
+            the subscriber shall submit the requisite for together with the applicable 
+            processing fee/charge least five days in advance to enable processing 
+            of the same and be bound by the additional terms as may be applicable. 
+            Any change or withdrawal from the subscriber service shall entitle 
+            the subscriber to any refunds or adjustments of the money already paid, 
+            billed or to be billed under the terms and conditions.<br>
+            <br>
+            <b>Privacy Policy</b><br>
+            <br>
+            <b>1.</b>The subscriber shall be provided a Account Number to enable the subscriber to use LEBSPL services ,subject to the compliance of the terms and conditions of this agreement .including any modification alterations, additions, substitution therein, from time to time. The Account number should not be shared to any other.
+            <br><b>2.</b>We collect, use and are responsible for certain personal data about you.
+           </p>
+        </div> -->
+     </div>
+  </div>
+  <div class="modal-footer" >
+     <button type="submit" class="btn btn-md btn-primary">Ok</button>
+  </div>
+</form>

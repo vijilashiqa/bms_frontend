@@ -1,0 +1,79 @@
+:host ::ng-deep .ck.ck-editor__editable:not([contenteditable]) {
+	background: #14a10f;
+	color: rgb(184, 48, 48);
+}
+
+// .cke_editable {
+//     cursor: text;
+//     color: black;
+// }
+
+// :host ::ng-deep .ck-editor__editable_inline {
+//     min-height: 500px ;
+// }
+
+
+// :host ::ng-deep.cke_1 .cke_bottom {
+//     // background-color: #ec7f7f;
+//     // border-top-color: rgb(36, 22, 7);
+//     background-color: #dadada  ;
+//     border-top: 2px solid #181818; 
+//     border-top-color:  #181818  ;
+//  }
+
+// :host ::ng-deep.cke_1 .cke_top {
+//     // background-color: #ba7fec;
+//     // border-bottom-color: rgb(14, 8, 1);
+//     background-color: #dadada  ;
+//     border-bottom-color: #181818  ;
+//     border-bottom: 2px solid #181818; 
+// }
+
+
+
+:host ::ng-deep.cke_top {
+    // border-bottom: 1px solid #4b4b4b  ;
+    // background: #a4abb3; 
+    // padding: 6px 8px 2px ; 
+    // white-space: normal; 
+    background-color: #CCEAEE  ;
+    border-bottom-color: #181818  ;
+    border-bottom: 2px solid #181818; 
+}
+:host ::ng-deep.cke_bottom {
+    // border-bottom: 1px solid #4b4b4b  ;
+    // background: #a4abb3; 
+    // padding: 6px 8px 2px ; 
+    // white-space: normal; 
+    background-color: #CCEAEE  ;
+    border-top-color: #181818  ;
+    border-top: 2px solid #181818; 
+}
+
+// :host ::ng-deep.cke_1 .cke_button_on {
+//     background-color: #eed294 ; 
+//     border-color: #eed294; 
+// }
+ 
+:host ::ng-deep.cke_button_on {
+     background-color: #eed294 ; 
+    border-color: #eed294; 
+}
+ 
+ 
+:host ::ng-deep.cke_reset {
+    width: auto ; 
+}
+
+// :host ::ng-deep.cke_1.cke_chrome {
+//     // border-color: #181818  ;
+//     display: block;
+//     border: 2px solid #181818; 
+//     padding: 0;
+// }
+:host ::ng-deep.cke_chrome {
+    display: block;
+    border: 2px solid #181818; 
+    padding: 0;
+}
+ 

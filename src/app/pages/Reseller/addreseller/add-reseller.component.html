@@ -1,0 +1,2085 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>Add Reseller</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"> </toaster-container>
+      <ngx-loading [show]="loading"
+        [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+      </ngx-loading>
+      <form [formGroup]="AddReselForm" class="form-horizontal" (ngSubmit)="addReseller();">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-4" *ngIf="role.getroleid()>777">
+              <label>ISP Name <span style="color:red;">*</span></label>
+              <select formControlName="bus_id"
+                [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.bus_id.invalid&&submit}"
+                (change)="GroupName();profile();servicetype();SMSgateway();payGateway()">
+                <option value="" selected>Select ISP</option>
+                <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+              </select>
+              <small *ngIf="AddReselForm.controls.bus_id.invalid&&submit" class="form-text error">Business name is
+                Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+              <label>Circle<span style="color:red;">*</span></label>
+              <!-- <label *ngIf="role.getroleid()<=777">Group</label> -->
+              <select name="groupid" formControlName="groupid"
+                [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.groupid.invalid&&submit}"
+                (change)="Nas()">
+                <option value="" selected>Select Circle</option>
+                <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+              </select>
+              <small *ngIf="AddReselForm.hasError('required','groupid')&&submit" class="form-text error">Circle Name is
+                required!
+              </small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+              <label>Reseller Create Type <span style="color:red;">*</span></label>
+              <select formControlName="reselcreate_type"
+                [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.reselcreate_type.invalid&&submit}"
+                (change)="infovalid();reselunderempty();AddReselForm.controls.Role.setValue('')">
+                <option value="" selected>Select Reseller Create Type</option>
+                <option value="0">Individual Reseller Creation</option>
+                <option value="1">Bulk Reseller Creation</option>
+              </select>
+              <small *ngIf="AddReselForm.controls.reselcreate_type.invalid&&submit" class="form-text error">Reseller
+                Creation type Is Required!</small>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='1'">
+            <div class="col-sm-4">
+              <label></label>
+              <a href="/assets/public/Bulkreseller.xlsx" target="_blank" download><b>Download Sample Here</b></a>
+            </div>
+            <div class="col-sm-4">
+              <label>Reseller Details</label>
+              <input type="file" (change)="changeListener($event.target.files[0])" class="form-control" accept=".xlsx">
+            </div>
+            <div class="col-sm-4">
+              <label>Excell Format</label>
+              <table class="table table-striped table-bordered">
+                <tr>
+                  <th>Date Format</th>
+                  <td>YYYY-MM-DD</td>
+                </tr>
+              </table>
+            </div>
+            <div *ngIf="isOpening" style="font-weight:800;font-size:larger;padding:1rem 31rem;">
+              <i class='fas fa-spinner fa-pulse fa-spin fa-1x' style="color: #01a7ee;font-size: 1.5em;"></i>
+              Please wait! File is reading...
+            </div>
+            <!-- <div *ngIf="isOpening" class="spinner-border text-primary" role="status">
+              <span><i class="fa fa-spinner fa-spin"></i> ...Loading  </span>   
+             </div> -->
+          </div>
+          <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+            <div class="col-sm-4">
+              <label>Service Type <span style="color:red;">*</span></label>
+              <select formControlName="serv_type" (change)="ottplatform()"
+                [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.serv_type.invalid&&submit}">
+                <option value="" selected>Select Service Type</option>
+                <option *ngFor="let item of servtype" [ngValue]="item.srv_id">{{item.service_name}}</option>
+              </select>
+              <small *ngIf="AddReselForm.controls.serv_type.invalid&&submit" class="form-text error">Service Type is
+                Required!</small>
+            </div>
+            <!-- <div class="col-sm-4"
+              *ngIf="AddReselForm.value['serv_type']==3||AddReselForm.value['serv_type']==5||AddReselForm.value['serv_type']==7||AddReselForm.value['serv_type']==8">
+              <label>OTT Platform</label>
+              <auto-completen MultiSelect=true
+                [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.ott_name.invalid&&submit}"
+                optValues="ott_platform" placeholder="Select Platform" formControlName="ott_name" optId="ott_id"
+                [item]="ottdata">
+              </auto-completen>
+            </div> -->
+            <div class="col-sm-4">
+              <label>Reseller Type<span style="color:red;">*</span></label>
+              <select name="Role" formControlName="Role"
+                [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.Role.invalid&&submit}"
+                (change)="showResellerUnder();AddReselForm.controls.reseller_under.setValue('');
+                sharedefault();nasipflag();reselundervalid();nasipcreate();getService() ">
+                <option value="" selected>Select Reseller Type</option>
+                <option *ngFor="let item of pro" [ngValue]="item.role">{{item.menu_name}}</option>
+              </select>
+              <small *ngIf="AddReselForm.controls.Role.invalid&&submit" class="form-text error">Profile Is
+                Required!</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4"
+              *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'||((role.getroleid()!= 666 && role.getroleid()!=665) && AddReselForm.value['Role']=='551')">
+              <label>Reseller Under</label>
+              <select formControlName="reseller_under" (change)="showResellerUnder();reselunderempty();sharedefault()"
+                [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.reseller_under.invalid&&submit}">
+                <option value="" selected>Select Reseller Under</option>
+                <option
+                  [hidden]="AddReselForm.value['Role']=='551' || (role.getroleid() > '444' && role.getroleid() < '775')"
+                  value="0">None</option>
+                <option [hidden]="role.getroleid()=='555' || role.getroleid()=='554' "
+                  *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'"
+                  value="1">Sub ISP Bulk</option>
+                <option [hidden]="role.getroleid()=='666' || role.getroleid()=='665' "
+                  *ngIf="AddReselForm.value['Role']!='444'||AddReselForm.value['Role']=='551'" value="2">Sub ISP Deposit
+                </option>
+                <option [hidden]="role.getroleid()=='555'|| role.getroleid()=='554'||AddReselForm.value['Role']=='551'"
+                  value="3">Sub Distributor
+                  Bulk</option>
+                <option [hidden]="AddReselForm.value['Role']=='551'" *ngIf="AddReselForm.value['Role']!='444'"
+                  value="4">Sub
+                  Distributor Deposit</option>
+              </select>
+              <small *ngIf="AddReselForm.controls.reseller_under.invalid&&submit" class="form-text error">Reseller Under
+                is Required!</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4"
+              [hidden]="role.getroleid() == '666'|| role.getroleid() == '555' || role.getroleid()=='665' " *ngIf="AddReselForm.value['Role']=='661'||(AddReselForm.value['Role']=='444'&&AddReselForm.value['reseller_under']=='1')||(AddReselForm.value['Role']=='333'&&
+              AddReselForm.value['reseller_under']=='1')||(AddReselForm.value['Role']=='551'&& AddReselForm.value['reseller_under']=='1')
+               || (role.getroleid()=='666' && AddReselForm.value['Role']=='551')">
+              <label>Sub ISP Bulk <span style="color:red;">*</span></label>
+              <auto-completen
+                [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.subisp_bulk.invalid&&submit}"
+                optValues="company" (changed)="sharedefault()" placeholder="Select subisp_bulk"
+                (keyUp)="showResellerUnder($event)" formControlName="subisp_bulk" id="subisp_bulk" [item]="resellist">
+              </auto-completen>
+              <small *ngIf="AddReselForm.controls.subisp_bulk.invalid&&submit" class="form-text error">Sub ISP BUlk is
+                Required!</small>
+            </div>
+            <div class="col-sm-4"
+              [hidden]="role.getroleid() == '666'|| role.getroleid() == '555' || role.getroleid()=='554'"
+              *ngIf="AddReselForm.value['reseller_under']=='2'||(AddReselForm.value['Role']=='551'&& AddReselForm.value['reseller_under']=='2')">
+              <label>Sub Isp Deposit <span style="color:red;">*</span></label>
+              <auto-completen
+                [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.subdep_name.invalid&&submit}"
+                optValues="company" (changed)="sharedefault()" placeholder='Select ISP Deposit'
+                (keyUp)="showResellerUnder($event)" formControlName="subdep_name" id="subdep_name" [item]="resellist">
+              </auto-completen>
+              <small *ngIf="AddReselForm.controls.subdep_name.invalid&&submit" class="form-text error">Sub ISP Deposit
+                is Required!</small>
+            </div>
+            <div class="col-sm-4"
+              *ngIf="AddReselForm.value['reseller_under']=='3'||(AddReselForm.value['Role']=='444'&&AddReselForm.value['reseller_under']=='3')">
+              <label>Sub Distributor Bulk <span style="color:red;">*</span></label>
+              <auto-completen
+                [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.subdist_bulk.invalid&&submit}"
+                optValues="company" (changed)="sharedefault()" placeholder='Select Distributor Bulk'
+                (keyUp)="showResellerUnder($event)" formControlName="subdist_bulk" id="subdist_bulk" [item]="resellist">
+              </auto-completen>
+              <small *ngIf="AddReselForm.controls.subdist_bulk.invalid&&submit" class="form-text error">Sub Distributor
+                BUlk is Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="AddReselForm.value['reseller_under']=='4'">
+              <label>Sub Distributor Deposit <span style="color:red;">*</span></label>
+              <auto-completen
+                [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.subdis_name.invalid&&submit}"
+                optValues="company" (changed)="sharedefault()" placeholder='Select Distributor Deposit'
+                (keyUp)="showResellerUnder($event)" formControlName="subdis_name" id="subdis_name" [item]="resellist">
+              </auto-completen>
+              <small *ngIf="AddReselForm.controls.subdis_name.invalid&&submit" class="form-text error">Sub Distributor
+                Deposit is Required!</small>
+            </div>
+          </div>
+          <ngb-tabset>
+            <ngb-tab title="Basic Info" *ngIf='AddReselForm.value["reselcreate_type"]=="0"'>
+              <ng-template ngbTabContent><br>
+                <div class="row">
+                  <div class="col-md-6">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">RESELLER CREATION</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>Reseller Business Name <span style="color:red;">*</span></label>
+                            <input type="text" name="RName" formControlName="RName" placeholder="Reseller Business Name"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.RName.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.hasError('required','RName')&&submit"
+                              class="form-text error">Reseller
+                              name is required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>First Name <span style="color:red;">*</span></label>
+                            <input type="text" name="FName" formControlName="FName" placeholder="First Name"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.FName.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.hasError('required','FName')&&submit"
+                              class="form-text error">Firstname
+                              is required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>Last Name <span style="color:red;">*</span></label>
+                            <input type="text" name="LName" formControlName="LName" placeholder="Last Name"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.LName.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.hasError('required','LName')&&submit"
+                              class="form-text error">Lastname is
+                              required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Gender <span style="color:red;">*</span></label>
+                            <select name="gender" formControlName="gender"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.gender.invalid&&submit}">
+                              <option value="" selected="">Select Gender</option>
+                              <option value="1">Female</option>
+                              <option value="2">Male</option>
+                              <option value="3">Others</option>
+                            </select>
+                            <small *ngIf="AddReselForm.hasError('required','gender')&&submit"
+                              class="form-text error">Gender is
+                              required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>Email <span style="color:red;">*</span></label>
+                            <input type="email" name="email" formControlName="email" placeholder="Email"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.email.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.hasError('required','email')&&submit"
+                              class="form-text error">Email
+                              is
+                              required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Alternative Email</label>
+                            <input type="email" name="Aemail" formControlName="Aemail" placeholder="ALternative Email"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.Aemail.invalid&&submit}" />
+                            <!-- <small *ngIf="AddReselForm.hasError('required','Aemail')&&submit" class="form-text error">Alternate
+                                    email is required! </small> -->
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>Mobile number <span style="color:red;">*</span></label>
+                            <input type="number" name="Mobile" formControlName="Mobile" placeholder="Mobile"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.Mobile.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.hasError('required','Mobile')&&submit"
+                              class="form-text error">Mobile
+                              number is required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Telephone No</label>
+                            <input type="number" name="Telephone" formControlName="Telephone" placeholder="Telephone No"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.Telephone.invalid&&submit}" />
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>Residential Address <span style="color:red;">*</span></label>
+                            <textarea name="Address" formControlName="Address" placeholder="Address"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.Address.invalid&&submit}"></textarea>
+                            <small *ngIf="AddReselForm.hasError('required','Address')&&submit"
+                              class="form-text error">Residential address
+                              is required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Reseller Login Id <span style="color:red;">*</span></label>
+                            <input type="text" name="UserName" formControlName="UserName" placeholder="User Login Id"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.UserName.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.hasError('required','UserName')&&submit"
+                              class="form-text error">User
+                              login id is required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>Password <span style="color:red;">*</span></label>
+                            <input type="password" name="Password" formControlName="Password" placeholder="Password"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.Password.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.hasError('required','Password')&&submit"
+                              class="form-text error">Password
+                              is required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>ConFirm Password <span style="color:red;">*</span></label>
+                            <input type="password" name="CPassword" formControlName="CPassword"
+                              placeholder="ConFirm Password"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.value['Password']!=AddReselForm.value['CPassword']}" />
+                            <small *ngIf="AddReselForm.value['Password']!=AddReselForm.value['CPassword']"
+                              class="form-text error">Password
+                              does not match! </small>
+                          </div>
+                        </div>
+
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                  <div class="col-md-6">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">RESELLER POSITION</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>Bandwith Rate</label>
+                            <input type="number" formControlName="band_rate" placeholder="Bandwith Rate"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.band_rate.invalid&&submit}">
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Bandwith Amount</label>
+                            <input type="text" formControlName="band_amount" placeholder="Bandwith Amount"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.band_amount.invalid&&submit}">
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>Branch Name <span style="color:red;">*</span></label>
+                            <input type="text" name="brname" formControlName="brname" placeholder="Branch Name"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.brname.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.hasError('required','brname')&&submit"
+                              class="form-text error">Branch
+                              name is required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>GST No</label>
+                            <input type="text" formControlName="gst_no" placeholder="GST Number"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.gst_no.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.gst_no.invalid&&submit" class="form-texy erroe">GST
+                              Number is
+                              Required!</small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>Business Address <span style="color:red;">*</span></label>
+                            <textarea name="Address1" formControlName="Address1" placeholder="Business Address"
+                              [ngClass]="{'form-control' :true, 'form-control-danger':AddReselForm.controls.Address1.invalid&&submit}"></textarea>
+                            <small *ngIf="AddReselForm.hasError('required','Address1')&&submit"
+                              class="form-text error">Business
+                              Address is required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>State <span style="color:red;">*</span></label>
+                            <auto-completen
+                              [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.State.invalid&&submit}"
+                              optValues="name" (changed)="cityshow()" (keyUp)="stateshow($event)"
+                              placeholder="Select State" formControlName="State" id="State" [item]="states">
+                            </auto-completen>
+                          </div>
+                          <!-- <div class="col-sm-6">
+                      <label>Pin Code <span style="color:red;">*</span></label>
+                      <input type="text" name="Pin" formControlName="Pin" placeholder="Pin Code"
+                        [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.Pin.invalid&&submit}" />
+                      <small *ngIf="AddReselForm.hasError('required','Pin')&&submit" class="form-text error">Pincode is
+                        required! </small>
+                    </div> -->
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6">
+                            <label>City <span style="color:red;">*</span></label>
+                            <auto-completen
+                              [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.City.invalid&&submit}"
+                              optValues="name" (keyUp)="cityshow($event)" placeholder="Select City"
+                              formControlName="City" id="City" [item]="dist">
+                            </auto-completen>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Subscriber Limit <span style="color:red;">*</span></label>
+                            <input type="text" formControlName="subs_limit" placeholder="0 (unlimited subscribers)"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.subs_limit.invalid&&submit}">
+                            <small *ngIf="AddReselForm.value['subs_limit']=='0'"
+                              style="text-align: right;float: right; font-size: 10px !important;"
+                              class="form-text error">No Limit</small>
+                            <small *ngIf="AddReselForm.controls.subs_limit.invalid&&submit"
+                              class="form-text error">Subscriber Limit is
+                              Required!</small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+                          <div class="col-sm-6" *ngIf="role.getroleid()>777">
+                            <label>Tax pay by <span style="color:red;">*</span></label>
+                            <select formControlName="tax_pay"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.tax_pay.invalid&&submit}">
+                              <option value="" selected>Select Tax Payee</option>
+                              <option value="1">ISP</option>
+                              <option value="2">Resller</option>
+                            </select>
+                            <small *ngIf="AddReselForm.controls.tax_pay.invalid&&submit" class="form-text error">Tax
+                              Payee is
+                              Required!</small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Notes</label>
+                            <textarea name="Notes" formControlName="Notes" placeholder="Notes"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.Notes.invalid&&submit}"></textarea>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="status">Active Status</nb-checkbox>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Share"
+              *ngIf="AddReselForm.value['Role']=='555'||AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='333'||((AddReselForm.value['Role']=='444'||AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')&& (AddReselForm.value['serv_type']!='1'))">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Sharing Type</label>
+                    <select formControlName="share_type"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.share_type.invalid&&submit}">
+                      <option value="" selected>Select Sharing Type</option>
+                      <option value="1">Common Sharing</option>
+                      <option value="2">Package wise Sharing</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Show Share</label>
+                    <select formControlName="share_show"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.share_show.invalid&&submit}">
+                      <option value="" selected>Select Sharing Show</option>
+                      <option value="1">Show ISP</option>
+                      <option value="2">Show Ason</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <nb-checkbox formControlName="share_imed">Share Immediate</nb-checkbox>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6"
+                    *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='555'||AddReselForm.value['Role']=='551'">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">Internet Share</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-3">
+                            <label style="white-space: nowrap;">ISP Share <span style="color:red;">*</span></label>
+                            <input [readonly]="ispsharedefault" type="number" formControlName="isp_share"
+                              placeholder="ISP Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.isp_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.isp_share.invalid&&submit" class="form-text error">ISP
+                              Share is
+                              Required!</small>
+                          </div>
+                          <div class="col-sm-3" *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                            (AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='1')">
+                            <label style="white-space: nowrap;">Sub ISP Share <span style="color:red;">*</span></label>
+                            <input [readonly]="isReadonly" type="number" formControlName="subisp_share"
+                              placeholder="Sub ISP Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.subisp_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.subisp_share.invalid&&submit"
+                              class="form-text error">Sub ISP
+                              Share is Required!</small>
+                          </div>
+                          <div class="col-sm-3"
+                            *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                            (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')">
+                            <label style="white-space: nowrap;">Sub Dist Share<span style="color:red;">*</span></label>
+                            <input type="number" formControlName="subdis_share" placeholder="Sub Distributor share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.subdis_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.subdis_share.invalid&&submit"
+                              class="form-text error">Sub
+                              Distributor Share is Requird! </small>
+                          </div>
+                          <div class="col-sm-3"
+                            *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                            <label style="white-space: nowrap;">Resell Share <span style="color:red;">*</span></label>
+                            <input type="number" formControlName="resel_share" placeholder="Resell Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.resel_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.resel_share.invalid&&submit"
+                              class="form-text error">Reseller
+                              Share Is Required</small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                  <div class="col-md-6" *ngIf="(AddReselForm.value['Role']=='444' &&(AddReselForm.value['serv_type']=='2'||AddReselForm.value['serv_type']=='5'||
+                  AddReselForm.value['serv_type']=='6'||AddReselForm.value['serv_type']=='8'))||((AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='555'||AddReselForm.value['Role']=='551')&& (AddReselForm.value['serv_type']=='2'||AddReselForm.value['serv_type']=='5'||
+                  AddReselForm.value['serv_type']=='6'||AddReselForm.value['serv_type']=='8'))||((AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')&&(AddReselForm.value['serv_type']=='2'||AddReselForm.value['serv_type']=='5'||
+                  AddReselForm.value['serv_type']=='6'||AddReselForm.value['serv_type']=='8') ) ">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">Voice Share</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-4">
+                            <nb-checkbox formControlName="vo_enable">Enable</nb-checkbox>
+                          </div>
+                          <div class="col-sm-4" *ngIf="AddReselForm.value['vo_enable']==true">
+                            <!-- <label>Share Type</label> -->
+                            <select formControlName="voshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.voshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['voshare_type']=='1'">
+                          <div class="col-sm-3">
+                            <label style="white-space: nowrap;">ISP Share <span style="color:red;">*</span></label>
+                            <input [readonly]="ispsharedefault" type="number" formControlName="VOisp_share"
+                              placeholder="ISP Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.VOisp_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.VOisp_share.invalid&&submit" class="form-text error">ISP
+                              Share is
+                              Required!</small>
+                          </div>
+                          <div class="col-sm-3" *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                            (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))
+                            ||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                            <label style="white-space: nowrap;">Sub ISP Share <span style="color:red;">*</span></label>
+                            <input [readonly]="isReadonly" type="number" formControlName="VOsubisp_share"
+                              placeholder="Sub ISP Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.VOsubisp_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.VOsubisp_share.invalid&&submit"
+                              class="form-text error">Sub ISP
+                              Share is Required!</small>
+                          </div>
+                          <div class="col-sm-3" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                            (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                            ||(AddReselForm.value['Role']=='661')">
+                            <label style="white-space: nowrap;">Sub Dist Share<span style="color:red;">*</span></label>
+                            <input type="number" formControlName="VOsubdis_share" placeholder="Sub Distributor share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.VOsubdis_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.VOsubdis_share.invalid&&submit"
+                              class="form-text error">Sub
+                              Distributor Share is Requird! </small>
+                          </div>
+                          <div class="col-sm-3"
+                            *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                            <label style="white-space: nowrap;">Resell Share <span style="color:red;">*</span></label>
+                            <input type="number" formControlName="VOresel_share" placeholder="Resell Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.VOresel_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.VOresel_share.invalid&&submit"
+                              class="form-text error">Reseller
+                              Share Is Required</small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6" *ngIf="(AddReselForm.value['Role']=='444' &&(AddReselForm.value['serv_type']=='3'||
+                  AddReselForm.value['serv_type']=='5'||AddReselForm.value['serv_type']=='7'||AddReselForm.value['serv_type']=='8'))||((AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='555'||AddReselForm.value['Role']=='551')&& (AddReselForm.value['serv_type']=='3'||AddReselForm.value['serv_type']=='5'||
+                  AddReselForm.value['serv_type']=='7'||AddReselForm.value['serv_type']=='8'))||((AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')&& (AddReselForm.value['serv_type']=='3'||AddReselForm.value['serv_type']=='5'||
+                  AddReselForm.value['serv_type']=='7'||AddReselForm.value['serv_type']=='8')) ">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">OTT Share</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-4">
+                            <nb-checkbox formControlName="ott_enable">Enable</nb-checkbox>
+                          </div>
+                          <div class="col-sm-4" *ngIf="AddReselForm.value['ott_enable']==true">
+                            <!-- <label>Share Type</label> -->
+                            <select formControlName="ottshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.ottshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['ottshare_type']=='1'">
+                          <div class="col-sm-3">
+                            <label style="white-space: nowrap;">ISP Share <span style="color:red;">*</span></label>
+                            <input [readonly]="ispsharedefault" type="number" formControlName="OTTisp_share"
+                              placeholder="ISP Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.OTTisp_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.OTTisp_share.invalid&&submit"
+                              class="form-text error">ISP Share is
+                              Required!</small>
+                          </div>
+                          <div class="col-sm-3"
+                            *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                            (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                            <label style="white-space: nowrap;">Sub ISP Share <span style="color:red;">*</span></label>
+                            <input [readonly]="isReadonly" type="number" formControlName="OTTsubisp_share"
+                              placeholder="Sub ISP Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.OTTsubisp_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.OTTsubisp_share.invalid&&submit"
+                              class="form-text error">Sub ISP
+                              Share is Required!</small>
+                          </div>
+                          <div class="col-sm-3" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                            (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                            ||(AddReselForm.value['Role']=='661')">
+                            <label style="white-space: nowrap;">Sub Dist Share<span style="color:red;">*</span></label>
+                            <input type="number" formControlName="OTTsubdis_share" placeholder="Sub Distributor share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.OTTsubdis_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.OTTsubdis_share.invalid&&submit"
+                              class="form-text error">Sub
+                              Distributor Share is Requird! </small>
+                          </div>
+                          <div class="col-sm-3"
+                            *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                            <label style="white-space: nowrap;">Resell Share <span style="color:red;">*</span></label>
+                            <input type="number" formControlName="OTTresel_share" placeholder="Resell Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.OTTresel_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.OTTresel_share.invalid&&submit"
+                              class="form-text error">Reseller
+                              Share Is Required</small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                  <div class="col-md-6" *ngIf="(AddReselForm.value['Role']=='444' &&(AddReselForm.value['serv_type']=='3'||
+                  AddReselForm.value['serv_type']=='5'||AddReselForm.value['serv_type']=='7'||AddReselForm.value['serv_type']=='8'))||((AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='555'||AddReselForm.value['Role']=='551')&& (AddReselForm.value['serv_type']=='3'||AddReselForm.value['serv_type']=='5'||
+                  AddReselForm.value['serv_type']=='7'||AddReselForm.value['serv_type']=='8'))||((AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')&& (AddReselForm.value['serv_type']=='3'||AddReselForm.value['serv_type']=='5'||
+                  AddReselForm.value['serv_type']=='7'||AddReselForm.value['serv_type']=='8')) ">
+                    <!-- <nb-card class="scroller">
+                      <nb-card-header style="background-color :  #01a7ee">OTT Platforms</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="disney_flag" (change)="ottchange()">Hotstar+</nb-checkbox>
+                          </div>
+                          <div class="col-sm-6" *ngIf="AddReselForm.value['disney_flag']">
+                             <select formControlName="disneyshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.disneyshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <nb-card *ngIf="AddReselForm.value['disneyshare_type']==1">
+                          <nb-card-header>Hotstar Share</nb-card-header>
+                          <nb-card-body>
+                            <div class="form-group row" *ngIf="AddReselForm.value['disneyshare_type']=='1'">
+                              <div class="col-sm-6">
+                                <label>ISP Share</label>
+                                <input type="number" formControlName="disney_isp_share" placeholder="Hotstar ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.disney_isp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.disney_isp_share.invalid&&submit"
+                                  class="form-text error">Hotstar ISP Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6"
+                                *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                                (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                                <label>Sub-ISP Share</label>
+                                <input type="number" formControlName="disney_subisp_share"
+                                  placeholder="Hotstar Sub-ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.disney_subisp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.disney_subisp_share.invalid&&submit"
+                                  class="form-text error">Hotstar Sub-ISP Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                            <div class="form-group row" *ngIf="AddReselForm.value['disneyshare_type']=='1'">
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                                (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                                ||(AddReselForm.value['Role']=='661')">
+                                <label>Dist Share</label>
+                                <input type="number" formControlName="disney_dist_share" placeholder="Hotstar Dist Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.disney_dist_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.disney_dist_share.invalid&&submit"
+                                  class="form-text error">Hotstar Distributor Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6"
+                                *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                                <label>Reseller Share</label>
+                                <input type="number" formControlName="disney_resel_share"
+                                  placeholder="Hotstar Reseller Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.disney_resel_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.disney_resel_share.invalid&&submit"
+                                  class="form-text error">Hotstar Reseller Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                          </nb-card-body>
+                        </nb-card>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="amazon_flag" (change)="ottchange()">Amazon Prime</nb-checkbox>
+                          </div>
+                          <div class="col-sm-6" *ngIf="AddReselForm.value['amazon_flag']">
+                             <select formControlName="amazonshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.amazonshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <nb-card *ngIf="AddReselForm.value['amazonshare_type']==1">
+                          <nb-card-header>Amazon Share</nb-card-header>
+                          <nb-card-body>
+                            <div class="form-group row" *ngIf="AddReselForm.value['amazonshare_type']=='1'">
+                              <div class="col-sm-6">
+                                <label>ISP Share</label>
+                                <input type="number" formControlName="amazon_isp_share" placeholder="Amazon ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.amazon_isp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.amazon_isp_share.invalid&&submit"
+                                  class="form-text error">Amazon ISP Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                                (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))
+                                ||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                                <label>Sub-ISP Share</label>
+                                <input type="number" formControlName="amazon_subisp_share"
+                                  placeholder="Amazon Sub-ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.amazon_subisp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.amazon_subisp_share.invalid&&submit"
+                                  class="form-text error">Amazon Sub-ISP Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                            <div class="form-group row" *ngIf="AddReselForm.value['amazonshare_type']=='1'">
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                                (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                                ||(AddReselForm.value['Role']=='661')">
+                                <label>Dist Share</label>
+                                <input type="number" formControlName="amazon_dist_share" placeholder="Amazon Dist Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.amazon_dist_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.amazon_dist_share.invalid&&submit"
+                                  class="form-text error">Amazon Distributor Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6"
+                                *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                                <label>Reseller Share</label>
+                                <input type="number" formControlName="amazon_resel_share"
+                                  placeholder="Amazon Reseller Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.amazon_resel_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.amazon_resel_share.invalid&&submit"
+                                  class="form-text error">Amazon Reseller Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                          </nb-card-body>
+                        </nb-card>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="netflix_flag" (change)="ottchange()">Netflix</nb-checkbox>
+                          </div>
+                          <div class="col-sm-6" *ngIf="AddReselForm.value['netflix_flag']">
+                             <select formControlName="netflixshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.netflixshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <nb-card *ngIf="AddReselForm.value['netflixshare_type']==1">
+                          <nb-card-header>Netflix Share</nb-card-header>
+                          <nb-card-body>
+                            <div class="form-group row" *ngIf="AddReselForm.value['netflixshare_type']=='1'">
+                              <div class="col-sm-6">
+                                <label>Netflix ISP Share</label>
+                                <input type="number" formControlName="netflix_isp_share" placeholder="Netflix ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.netflix_isp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.netflix_isp_share.invalid&&submit"
+                                  class="form-text error">Netflix ISP Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                                (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))
+                                ||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                                <label>Netflix Sub-ISP Share</label>
+                                <input type="number" formControlName="netflix_subisp_share"
+                                  placeholder="Netflix Sub-ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.netflix_subisp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.netflix_subisp_share.invalid&&submit"
+                                  class="form-text error">Netflix Sub-ISP Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                            <div class="form-group row" *ngIf="AddReselForm.value['netflixshare_type']=='1'">
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                                (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                                ||(AddReselForm.value['Role']=='661')">
+                                <label>Netflix Dist Share</label>
+                                <input type="number" formControlName="netflix_dist_share" placeholder="Netflix Dist Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.netflix_dist_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.netflix_dist_share.invalid&&submit"
+                                  class="form-text error">Netflix Distributor Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6"
+                                *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                                <label>Netflix Reseller Share</label>
+                                <input type="number" formControlName="netflix_resel_share"
+                                  placeholder="Netflix Reseller Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.netflix_resel_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.netflix_resel_share.invalid&&submit"
+                                  class="form-text error">Netflix Reseller Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                          </nb-card-body>
+                        </nb-card>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="sun_flag" (change)="ottchange()">Sun NXT</nb-checkbox>
+                          </div>
+                          <div class="col-sm-6" *ngIf="AddReselForm.value['sun_flag']">
+                             <select formControlName="sunshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sunshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <nb-card *ngIf="AddReselForm.value['sunshare_type']==1">
+                          <nb-card-header>SunNXT Share</nb-card-header>
+                          <nb-card-body>
+                            <div class="form-group row" *ngIf="AddReselForm.value['sunshare_type']=='1'">
+                              <div class="col-sm-6">
+                                <label>Sun ISP Share</label>
+                                <input type="number" formControlName="sun_isp_share" placeholder="Sun ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sun_isp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.sun_isp_share.invalid&&submit"
+                                  class="form-text error">Sun ISP Share is
+                                  Required!</small>
+                              </div>
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                                (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))
+                                ||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                                <label>Sun Sub-ISP Share</label>
+                                <input type="number" formControlName="sun_subisp_share" placeholder="Sun Sub-ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sun_subisp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.sun_subisp_share.invalid&&submit"
+                                  class="form-text error">Sun Sub-ISP Share is
+                                  Required!</small>
+                              </div>
+                            </div>
+                            <div class="form-group row" *ngIf="AddReselForm.value['sunshare_type']=='1'">
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                                (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                                ||(AddReselForm.value['Role']=='661')">
+                                <label>Sun Dist Share</label>
+                                <input type="number" formControlName="sun_dist_share" placeholder="Sun Dist Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sun_dist_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.sun_dist_share.invalid&&submit"
+                                  class="form-text error">Sun Distributor Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6"
+                                *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                                <label>Sun Reseller Share</label>
+                                <input type="number" formControlName="sun_resel_share" placeholder="Sun Reseller Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sun_resel_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.sun_resel_share.invalid&&submit"
+                                  class="form-text error">Sun Reseller Share is
+                                  Required!</small>
+                              </div>
+                            </div>
+                          </nb-card-body>
+                        </nb-card>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="zee_flag" (change)="ottchange()">Zee5</nb-checkbox>
+                          </div>
+                          <div class="col-sm-6" *ngIf="AddReselForm.value['zee_flag']">
+                             <select formControlName="zeeshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.zeeshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <nb-card *ngIf="AddReselForm.value['zeeshare_type']==1">
+                          <nb-card-header>ZEE5 Share</nb-card-header>
+                          <nb-card-body>
+                            <div class="form-group row" *ngIf="AddReselForm.value['zeeshare_type']=='1'">
+                              <div class="col-sm-6">
+                                <label>ISP Share</label>
+                                <input type="number" formControlName="zee_isp_share" placeholder="ZEE5 ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.zee_isp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.zee_isp_share.invalid&&submit"
+                                  class="form-text error">ZEE5 ISP Share is
+                                  Required!</small>
+                              </div>
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                                (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))
+                                ||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                                <label>Sub-ISP Share</label>
+                                <input type="number" formControlName="zee_subisp_share" placeholder="ZEE5 Sub-ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.zee_subisp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.zee_subisp_share.invalid&&submit"
+                                  class="form-text error">ZEE5 Sub-ISP is
+                                  Required!</small>
+                              </div>
+                            </div>
+                            <div class="form-group row" *ngIf="AddReselForm.value['zeeshare_type']=='1'">
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                                (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                                ||(AddReselForm.value['Role']=='661')">
+                                <label>Dist Share</label>
+                                <input type="number" formControlName="zee_dist_share" placeholder="ZEE5 Dist Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.zee_dist_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.zee_dist_share.invalid&&submit"
+                                  class="form-text error">ZEE5 Distributor Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6"
+                                *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                                <label>Reseller Share</label>
+                                <input type="number" formControlName="zee_resel_share" placeholder="ZEE5 Reseller Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.zee_resel_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.zee_resel_share.invalid&&submit"
+                                  class="form-text error">ZEE5 Reseller Share is
+                                  Required!</small>
+                              </div>
+                            </div>
+                          </nb-card-body>
+                        </nb-card>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="raj_flag" (change)="ottchange()">Raj NXT</nb-checkbox>
+                          </div>
+                          <div class="col-sm-6" *ngIf="AddReselForm.value['raj_flag']">
+                             <select formControlName="rajshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.rajshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <nb-card *ngIf="AddReselForm.value['rajshare_type']==1">
+                          <nb-card-header>RajNXT Share</nb-card-header>
+                          <nb-card-body>
+                            <div class="form-group row" *ngIf="AddReselForm.value['rajshare_type']=='1'">
+                              <div class="col-sm-6">
+                                <label>ISP Share</label>
+                                <input type="number" formControlName="raj_isp_share" placeholder="Raj ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.raj_isp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.raj_isp_share.invalid&&submit"
+                                  class="form-text error">Raj ISP Share is
+                                  Required!</small>
+                              </div>
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                                (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))
+                                ||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                                <label>Sub-ISP Share</label>
+                                <input type="number" formControlName="raj_subisp_share" placeholder="Raj Sub-ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.raj_subisp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.raj_subisp_share.invalid&&submit"
+                                  class="form-text error">Raj Sub-ISP Share is
+                                  Required!</small>
+                              </div>
+                            </div>
+                            <div class="form-group row" *ngIf="AddReselForm.value['rajshare_type']=='1'">
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                                (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                                ||(AddReselForm.value['Role']=='661')">
+                                <label>Dist Share</label>
+                                <input type="number" formControlName="raj_dist_share" placeholder="Raj Dist Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.raj_dist_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.raj_dist_share.invalid&&submit"
+                                  class="form-text error">Raj Distributor Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6"
+                                *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                                <label>Resller Share</label>
+                                <input type="number" formControlName="raj_resel_share" placeholder="Raj Resller Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.raj_resel_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.raj_resel_share.invalid&&submit"
+                                  class="form-text error">Raj Reseller Share is
+                                  Required!</small>
+                              </div>
+                            </div>
+                          </nb-card-body>
+                        </nb-card>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="sony_flag" (change)="ottchange()">Sony Live</nb-checkbox>
+                          </div>
+                          <div class="col-sm-6" *ngIf="AddReselForm.value['sony_flag']">
+                             <select formControlName="sonyshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sonyshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <nb-card *ngIf="AddReselForm.value['sonyshare_type']==1">
+                          <nb-card-header>Sony Share</nb-card-header>
+                          <nb-card-body>
+                            <div class="form-group row" *ngIf="AddReselForm.value['sonyshare_type']=='1'">
+                              <div class="col-sm-6">
+                                <label>ISP Share</label>
+                                <input type="number" formControlName="sony_isp_share" placeholder="Sony ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sony_isp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.sony_isp_share.invalid&&submit"
+                                  class="form-text error">Sony ISP Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                                (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))
+                                ||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                                <label>Sub-ISP Share</label>
+                                <input type="number" formControlName="sony_subisp_share" placeholder="Sony Sub-ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sony_subisp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.sony_subisp_share.invalid&&submit"
+                                  class="form-text error">Sony Sub-ISP Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                            <div class="form-group row" *ngIf="AddReselForm.value['sonyshare_type']=='1'">
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                                (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                                ||(AddReselForm.value['Role']=='661')">
+                                <label>Dist Share</label>
+                                <input type="number" formControlName="sony_dist_share" placeholder="Sony Dist Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sony_dist_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.sony_dist_share.invalid&&submit"
+                                  class="form-text error">Sony Distributor Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6"
+                                *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                                <label>Reseller Share</label>
+                                <input type="number" formControlName="sony_resel_share" placeholder="Sony Reseller Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.sony_resel_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.sony_resel_share.invalid&&submit"
+                                  class="form-text error">Sony Reseller Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                          </nb-card-body>
+                        </nb-card>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="hunga_flag" (change)="ottchange()">Hungama</nb-checkbox>
+                          </div>
+                          <div class="col-sm-6" *ngIf="AddReselForm.value['hunga_flag']">
+                             <select formControlName="hungashare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.hungashare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <nb-card *ngIf="AddReselForm.value['hungashare_type']==1">
+                          <nb-card-header>Hungama Share</nb-card-header>
+                          <nb-card-body>
+                            <div class="form-group row" *ngIf="AddReselForm.value['hungashare_type']=='1'">
+                              <div class="col-sm-6">
+                                <label>ISP Share</label>
+                                <input type="number" formControlName="hunga_isp_share" placeholder="Hungama ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.hunga_isp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.hunga_isp_share.invalid&&submit"
+                                  class="form-text error">Hungama ISP Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                                (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))
+                                ||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                                <label>Sub-ISP Share</label>
+                                <input type="number" formControlName="hunga_subisp_share"
+                                  placeholder="Hungama Sub-ISP Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.hunga_subisp_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.hunga_subisp_share.invalid&&submit"
+                                  class="form-text error">Hungama Sub-ISP Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                            <div class="form-group row" *ngIf="AddReselForm.value['hungashare_type']=='1'">
+                              <div class="col-sm-6" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                                (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                                ||(AddReselForm.value['Role']=='661')">
+                                <label>Dist Share</label>
+                                <input type="number" formControlName="hunga_dist_share" placeholder="Hungama Dist Share"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.hunga_dist_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.hunga_dist_share.invalid&&submit"
+                                  class="form-text error">Hungama Distributor Share
+                                  is Required!</small>
+                              </div>
+                              <div class="col-sm-6"
+                                *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                                <label>Reseller Share</label>
+                                <input type="number" formControlName="hunga_resel_share" placeholder="Hungama Reseller"
+                                  [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.hunga_resel_share.invalid&&submit}">
+                                <small *ngIf="AddReselForm.controls.hunga_resel_share.invalid&&submit"
+                                  class="form-text error">Hungama Resller Share
+                                  is Required!</small>
+                              </div>
+                            </div>
+                          </nb-card-body>
+                        </nb-card>
+                      </nb-card-body>
+                    </nb-card> -->
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6" *ngIf="(AddReselForm.value['Role']=='444' &&(AddReselForm.value['serv_type']=='4'|| AddReselForm.value['serv_type']=='6'||AddReselForm.value['serv_type']=='7'||AddReselForm.value['serv_type']=='8'))||
+                    ((AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='555'||AddReselForm.value['Role']=='551')&& (AddReselForm.value['serv_type']=='4'||AddReselForm.value['serv_type']=='6'||
+                      AddReselForm.value['serv_type']=='7'||AddReselForm.value['serv_type']=='8'))||((AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')&&(AddReselForm.value['serv_type']=='4'||AddReselForm.value['serv_type']=='6'||
+                      AddReselForm.value['serv_type']=='7'||AddReselForm.value['serv_type']=='8')) ">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">AddOn Share</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-4">
+                            <nb-checkbox formControlName="add_enable">Enable</nb-checkbox>
+                          </div>
+                          <div class="col-sm-4" *ngIf="AddReselForm.value['add_enable']==true">
+                            <!-- <label>Share Type</label> -->
+                            <select formControlName="addshare_type"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.addshare_type.invalid&&submit}">
+                              <option value="" selected>SELECT SHARE TYPE</option>
+                              <option value="1">Share</option>
+                              <option value="2">Bulk</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['addshare_type']=='1'">
+                          <div class="col-sm-3">
+                            <label style="white-space: nowrap;">ISP Share <span style="color:red;">*</span></label>
+                            <input [readonly]="ispsharedefault" type="number" formControlName="ADDisp_share"
+                              placeholder="ISP Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.ADDisp_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.ADDisp_share.invalid&&submit"
+                              class="form-text error">ISP Share is
+                              Required!</small>
+                          </div>
+                          <div class="col-sm-3"
+                            *ngIf="AddReselForm.value['Role']=='551'||AddReselForm.value['Role']=='555'||(AddReselForm.value['Role']=='333'&& AddReselForm.value['reseller_under']!='0')||
+                          (AddReselForm.value['Role']=='444' && (AddReselForm.value['reseller_under']=='1'||AddReselForm.value['reseller_under']=='3'))||(AddReselForm.value['Role']=='666'||AddReselForm.value['Role']=='661')">
+                            <label style="white-space: nowrap;">Sub ISP Share <span style="color:red;">*</span></label>
+                            <input [readonly]="isReadonly" type="number" formControlName="ADDsubisp_share"
+                              placeholder="Sub ISP Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.ADDsubisp_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.ADDsubisp_share.invalid&&submit"
+                              class="form-text error">Sub ISP
+                              Share is Required!</small>
+                          </div>
+                          <div class="col-sm-3" *ngIf="AddReselForm.value['Role']=='551'||(AddReselForm.value['Role']=='444' && AddReselForm.value['reseller_under']=='3')||
+                              (AddReselForm.value['Role']=='333'&&AddReselForm.value['reseller_under']=='4'||AddReselForm.value['reseller_under']=='3')
+                              ||(AddReselForm.value['Role']=='661')">
+                            <label style="white-space: nowrap;">Sub Dist Share<span style="color:red;">*</span></label>
+                            <input type="number" formControlName="ADDsubdis_share" placeholder="Sub Distributor share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.ADDsubdis_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.ADDsubdis_share.invalid&&submit"
+                              class="form-text error">Sub
+                              Distributor Share is Requird! </small>
+                          </div>
+                          <div class="col-sm-3"
+                            *ngIf="AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='444'">
+                            <label style="white-space: nowrap;">Resell Share <span style="color:red;">*</span></label>
+                            <input type="number" formControlName="ADDresel_share" placeholder="Resell Share"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.ADDresel_share.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.ADDresel_share.invalid&&submit"
+                              class="form-text error">Reseller
+                              Share Is Required</small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Assign NAS"
+              *ngIf="AddReselForm.value['reselcreate_type']=='0'&&(AddReselForm.value['Role']=='444'||AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='222') ||
+              AddReselForm.value['Role'] == '331'">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Nas Type <span style="color:red;">*</span></label>
+                    <select formControlName="nas_type"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.nas_type.invalid&&submit}"
+                      (change)="nasvalidation();this.AddReselForm.controls.typ.setValue('')">
+                      <option value="" selected>Select Nas type</option>
+                      <option *ngIf="role.getroleid()>= 775" value="1">New Nas</option>
+                      <option value="2">Existing Nas</option>
+                    </select>
+                    <small *ngIf="AddReselForm.controls.nas_type.invalid&&submit" class="form-text error">Nas Type Is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4" *ngIf="AddReselForm.value['nas_type']=='2'">
+                    <label>Nas <span style="color:red;">*</span></label>
+                    <auto-completen
+                      [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.ass_nas.invalid&&submit}"
+                      optValues="shortname" (changed)="PoolName()" (keyUp)="Nas($event)" placeholder="Select NAS"
+                      formControlName="ass_nas" id="id" [item]="anas">
+                    </auto-completen>
+                    <small *ngIf="AddReselForm.controls.ass_nas.invalid&&submit" class="form-text error">Nas Is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="row" *ngIf="AddReselForm.value['nas_type']=='1'">
+                  <div class="col-md-4">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee; height:40px!important">NAS CREATION
+                      </nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row" *ngIf="AddReselForm.value['nas_type']=='1'">
+                          <div class="col-sm-12">
+                            <label>Nas Name <span style="color:red;">*</span></label>
+                            <input type="text" name="nasname" formControlName="nasname" placeholder="Nas Name "
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.nasname.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.controls.nasname.invalid&&submit" class="form-text error"> Nas
+                              Name is
+                              required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['nas_type']=='1'">
+                          <div class="col-sm-12">
+                            <label>IP Address <span style="color:red;">*</span></label>
+                            <input type="text" name="ip" formControlName="ip" placeholder="IP address "
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.ip.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.hasError('required','ip')&&submit" class="form-text error"> Ip is
+                              required! </small>
+                            <small *ngIf="AddReselForm.hasError('pattern','ip')&&submit" class="form-text error"> Ip is
+                              Invalid!
+                            </small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['nas_type']=='1'">
+                          <div class="col-sm-12">
+                            <label>Description</label>
+                            <input name="descr" formControlName="descr" type="text" class="form-control"
+                              placeholder="Description" maxlength="200">
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['nas_type']=='1'">
+                          <div class="col-sm-12">
+                            <label>Ping Status</label>
+                            <select formControlName="ping_status" (change)="pingchange()"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.ping_status.invalid&&submit}">
+                              <option value="1">Enable</option>
+                              <option value="0">Disable</option>
+                            </select>
+                            <small *ngIf="AddReselForm.controls.ping_status.invalid&&submit"
+                              class="form-text error">Pingstatus is Required</small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['nas_type']==1">
+                          <div class="col-sm-12" *ngIf="AddReselForm.value['ping_status']==1">
+                            <label>Web Port <span style="color:red;">*</span></label>
+                            <input type="text" formControlName="port" placeholder="WEB PORT"
+                              [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.port.invalid&&submit}">
+                            <small *ngIf="AddReselForm.controls.port.invalid&&submit" class="form-text error">Port is
+                              Required</small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                  <div class="col-md-8">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee; height:40px!important">CATEGORY
+                      </nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row" *ngIf="AddReselForm.value['nas_type']=='1'">
+                          <div class="col-sm-6">
+                            <label>Type <span style="color:red;">*</span></label>
+                            <select
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.typ.invalid&&submit}"
+                              name="typ" formControlName="typ">
+                              <option value="">Select type</option>
+                              <option value="0">Mikrotik</option>
+                              <option value="1">StarOS</option>
+                              <option value="2">ChilliSpot</option>
+                              <option value="3">Cisco</option>
+                              <option value="4">pfSense</option>
+                              <option value="255">Other</option>
+                            </select>
+                            <small *ngIf="AddReselForm.controls.typ.invalid&&submit" class="form-text error"> Type is
+                              required!
+                            </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Secret <span style="color:red;">*</span></label>
+                            <input type="password" name="secret" formControlName="secret"
+                              placeholder="Secret (Mikrotik,ChilliSpot,Cisco)"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.secret.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.controls.secret.invalid&&submit" class="form-text error"> Secret
+                              is
+                              required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['typ']=='0'">
+                          <div class="col-sm-4">
+                            <b>Dynamic data rate:</b>
+                          </div>
+                          <div class="col-sm-8">
+                            <table>
+                              <td>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" value="0" formControlName="coamode"
+                                    name="coamode">
+                                  <span class="custom-control-indicator"></span>Disabled</label>
+                              </td>
+                              <td>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" value="1" class="custom-control-input" formControlName="coamode"
+                                    name="coamode">
+                                  <span class="custom-control-indicator"></span>Mikrotik API(< MT v6)</label>
+                              </td>
+                              <td>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" value="2" class="custom-control-input" formControlName="coamode"
+                                    name="coamode">
+                                  <span class="custom-control-indicator"></span>CoA (MT 6+)</label>
+                              </td>
+                            </table>
+                          </div>
+                        </div>
+                        <br>
+                        <div class="form-group row" *ngIf="AddReselForm.value['typ']=='0'">
+                          <div class="col-sm-4">
+                            <b>Api Version:</b>
+                          </div>
+                          <div class="col-sm-8">
+                            <table>
+                              <td>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" value="0" formControlName="api_ver"
+                                    name="api_ver">
+                                  <span class="custom-control-indicator"></span>Pre 6.45.1
+                                </label>
+                              </td>
+                              <td>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" value="1" formControlName="api_ver"
+                                    name="api_ver">
+                                  <span class="custom-control-indicator"></span>6.45.1 or Newer
+                                </label>
+                              </td>
+                            </table>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['typ']=='1'">
+                          <div class="col-sm-6">
+                            <label>StarOS Password <span style="color:red;">*</span></label>
+                            <input type="password" name="password" formControlName="password"
+                              placeholder="Password * (StarOS Only)"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.password.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.controls.password.invalid&&submit" class="form-text error">
+                              Password is
+                              required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['typ']=='3'">
+                          <div class="col-sm-4">
+                            <b>Cisco bandwidth support : </b>
+                          </div>
+                          <div class="col-sm-8">
+                            <table>
+                              <td>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" value="0"
+                                    formControlName="ciscobwmode" name="ciscobwmode">
+                                  <span class="custom-control-indicator"></span>None
+                                </label>
+                              </td>
+                              <td>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" value="1" class="custom-control-input"
+                                    formControlName="ciscobwmode" name="ciscobwmode">
+                                  <span class="custom-control-indicator"></span> Rate limit</label>
+                              </td>
+                              <td>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" value="2" class="custom-control-input"
+                                    formControlName="ciscobwmode" name="ciscobwmode">
+                                  <span class="custom-control-indicator"></span>Policy map
+                                </label>
+                              </td>
+                            </table>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['typ']=='0'">
+                          <div class="col-sm-6">
+                            <label>API Username <span style="color:red;">*</span></label>
+                            <input placeholder="Api Username(Mikrotik)"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.apiusername.invalid&&submit}"
+                              formControlName="apiusername" name="apiusername" type="text"
+                              placeholder="API Username * (Mikrotik)" size="30" maxlength="60">
+                            <small *ngIf="AddReselForm.controls.apiusername.invalid&&submit" class="form-text error">
+                              API
+                              Username is required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>API Password <span style="color:red;">*</span></label>
+                            <input name="apipassword" placeholder="Api Password(Mikrotik)" formControlName="apipassword"
+                              type="password"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.apipassword.invalid&&submit}"
+                              placeholder="API password * (Mikrotik)" size="30" maxlength="60">
+                            <small *ngIf="AddReselForm.controls.apipassword.invalid&&submit" class="form-text error">
+                              API
+                              Password is required! </small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Assign IP Pools"
+              *ngIf="AddReselForm.value['reselcreate_type']=='0'&&(AddReselForm.value['Role']=='444'||AddReselForm.value['Role']=='333'||AddReselForm.value['Role']=='222')">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>IP Type <span style="color:red;">*</span></label>
+                    <select formControlName="ip_type"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.ip_type.invalid&&submit}"
+                      (change)="poolvalidation();">
+                      <option value="" selected>Select Ip type</option>
+                      <option value="0">NO IP</option>
+                      <option value="1" *ngIf="role.getroleid() >= 775">New Ip</option>
+                      <option value="2">Existing ip</option>
+                    </select>
+                    <small *ngIf="AddReselForm.controls.ip_type.invalid&&submit" class="form-text error">IP Type is
+                      Requird!</small>
+                  </div>
+                  <div class="col-sm-4" *ngIf="AddReselForm.value['ip_type']=='2'">
+                    <label>IP Pool <span style="color:red;">*</span></label>
+                    <!-- <select name="ass_ip" formControlName="ass_ip"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.ass_ip.invalid&&submit}">
+                      <option value="" selected>Select IP Pool</option>
+                      <option *ngFor="let item of ip" [ngValue]=item.id>{{item.name}}</option>
+                    </select> -->
+                    <auto-completen
+                      [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.ass_ip.invalid&&submit}"
+                      optValues="name" (keyUp)="PoolName($event)" placeholder="Select PoolName" formControlName="ass_ip"
+                      id="id" [item]="ip">
+                    </auto-completen>
+                    <small *ngIf="AddReselForm.controls.ass_ip.invalid&&submit" class="form-text error">Ip Pool is
+                      required!</small>
+                  </div>
+                </div>
+                <div class="row" *ngIf="AddReselForm.value['ip_type']=='1'">
+                  <div class="col-md-6">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee; height:40px!important">IP POOL CREATION
+                      </nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row" *ngIf="AddReselForm.value['ip_type']=='1'">
+                          <div class="col-sm-12">
+                            <label>Pool Name <span style="color:red;">*</span></label>
+                            <input type="text" name="PoolName" formControlName="PoolName" placeholder="Pool Name"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.PoolName.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.controls.PoolName.invalid&&submit"
+                              class="form-text error">Poolname
+                              is
+                              Required!</small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['ip_type']=='1'">
+                          <div class="col-sm-6">
+                            <label></label>
+                            <label class="custom-control custom-radio">
+                              <input formControlName="iptype" name="iptype" class="custom-control-input" type="radio"
+                                value="0" />
+                              <span class="custom-control-indicator"></span>Docsis
+                            </label>
+                          </div>
+                          <div class="col-sm-6">
+                            <label></label>
+                            <label class="custom-control custom-radio">
+                              <input formControlName="iptype" name="iptype" class="custom-control-input" type="radio"
+                                value="1" />
+                              <span class="custom-control-indicator"></span>Radius
+                            </label>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['ip_type']=='1'">
+                          <div class="col-sm-6">
+                            <label>IP Netmask <span style="color:red;">*</span></label>
+                            <input type="text" name="ip_add" formControlName="ip_add" placeholder="IP Address"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.ip_add.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.controls.invalid&&submit" class="form-text error">Ip Netmask is
+                              Required!</small>
+                          </div>
+                          <div class="col-sm-6" (click)="GenerateIppool();">
+                            <label></label><br>
+                            <button type="button" class="btn  btn-primary">check</button>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                  <div class="col-md-6">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee; height:40px!important">CATEGORY
+                      </nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row" *ngIf="AddReselForm.value['ip_type']=='1'">
+                          <div class="col-sm-6">
+                            <label>First IP</label>
+                            <input type="text" name="FirstIp" formControlName="FirstIp" placeholder="First IP"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.FirstIp.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.controls.FirstIp.invalid&&submit" class="form-text error">FirstIP
+                              is
+                              Required!</small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Last IP</label>
+                            <input type="text" name="LastIp" re formControlName="LastIp" placeholder="Last IP"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.LastIp.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.controls.LastIp.invalid&&submit" class="form-text error">LastIp
+                              is
+                              Required!</small>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['ip_type']=='1'">
+                          <div class="col-sm-6">
+                            <label>Pool Name <span style="color:red;">*</span></label>
+                            <input type="text" name="PoolName" formControlName="PoolName" placeholder="Pool Name"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.PoolName.invalid&&submit}" />
+                            <small *ngIf="AddReselForm.controls.PoolName.invalid&&submit"
+                              class="form-text error">Poolname
+                              is
+                              Required!</small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Next Pool</label>
+                            <select
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.NextPool.invalid&&submit}"
+                              name="NextPool" formControlName="NextPool">
+                              <option value="" selected>None</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="AddReselForm.value['ip_type']=='1'">
+                          <div class="col-sm-6">
+                            <label>Description</label>
+                            <textarea name="Description" formControlName="Description" placeholder="Description"
+                              [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.Description.invalid&&submit}"></textarea>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Agreement" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Agreement Start date <span style="color:red;">*</span></label>
+                    <input type="text" [owlDateTime]="start_date" [owlDateTimeTrigger]="start_date"
+                      formControlName="start_date" placeholder="Select Start date"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.start_date.invalid&&submit}">
+                    <owl-date-time #start_date></owl-date-time>
+                    <small *ngIf="AddReselForm.controls.start_date.invalid&&submit" class="form-text error">Start Date
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Agreement End Date <span style="color:red;">*</span></label>
+                    <input type="text" [owlDateTime]="end_date" [owlDateTimeTrigger]="end_date"
+                      formControlName="end_date" placeholder="Select End Date"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.end_date.invalid&&submit}">
+                    <owl-date-time #end_date></owl-date-time>
+                    <small *ngIf="AddReselForm.controls.end_date.invalid&&submit" class="form-text error">End Date Is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Agreement Status <span style="color:red;">*</span></label>
+                    <select formControlName="agrmnt_status"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.agrmnt_status.invalid&&submit}"
+                      (change)="agreementvalid();agreementchange()">
+                      <option value="" selected>Select Status</option>
+                      <option value="0">Expired</option>
+                      <option value="1">Active</option>
+                      <option value="2">Drop</option>
+                    </select>
+                    <small *ngIf="AddReselForm.controls.agrmnt_status.invalid&&submit" class="form-text error">Status is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddReselForm.value['agrmnt_status']=='2'">
+                  <div class="col-sm-4">
+                    <label>Drop Date <span style="color:red;">*</span></label>
+                    <input type="text" [owlDateTime]="drop_date" [owlDateTimeTrigger]="drop_date"
+                      formControlName="drop_date" placeholder="Select Drop Date"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.drop_date.invalid&&submit}">
+                    <owl-date-time #drop_date></owl-date-time>
+                    <small *ngIf="AddReselForm.controls.drop_date.invalid&&submit" class="form-text error">Drop Date Is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Drop Reason <span style="color:red;">*</span></label>
+                    <textarea formControlName="drop_reason" placeholder="Drop Reason"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.drop_reason.invalid&&submit}"></textarea>
+                    <small *ngIf="AddReselForm.controls.drop_reason.invalid&&submit" class="form-text error">Drop Reason
+                      Is REquired!</small>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Setting" *ngIf='AddReselForm.value["reselcreate_type"]=="0"'>
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>Mobile App Access</label><br>
+                    <nb-checkbox formControlName="sms_app">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-sm-3">
+                    <label>Allow unique Mobile Number</label><br>
+                    <nb-checkbox formControlName="unique_no">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-sm-2">
+                    <label>Allow unique Mail ID</label><br>
+                    <nb-checkbox formControlName="unique_mail">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-sm-2" *ngIf="AddReselForm.value['Role']=='333'">
+                    <label>TopUp Minimum</label><br>
+                    <nb-checkbox formControlName="topup_min" (change)="duevalid()">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-md-2" *ngIf="AddReselForm.value['topup_min']">
+                    <label>Minimum Amount</label>
+                    <input type="text" name="min_amount" formControlName="min_amount"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.min_amount.invalid&&submit}" />
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>SMS Gateway</label><br>
+                    <nb-checkbox formControlName="sms_gateway">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-md-2" *ngIf="AddReselForm.value['sms_gateway']">
+                    <label>Select Gateway </label>
+                    <auto-completen
+                      [addclass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.gateway_type.invalid&&submit}"
+                      optValues="gwname" (keyUp)="SMSgateway($event)" placeholder='Select Gateway'
+                      formControlName="gateway_type" optId="smsgwid" [item]="smsgateway">
+                    </auto-completen>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>Reseller Payment Gateway</label><br>
+                    <nb-checkbox formControlName="pay_gateway">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-md-2" *ngIf="AddReselForm.value['pay_gateway']">
+                    <label>Select Gateway</label>
+                    <select name="pay_gateway_type" formControlName="pay_gateway_type"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.pay_gateway_type.invalid&&submit}">
+                      <option value="0">Select Gateway </option>
+                      <option *ngFor="let item of paymentgateway" [ngValue]="item.bpgid">{{item.gw_name}}</option>
+                    </select>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>Subscriber Payment Gateway</label><br>
+                    <nb-checkbox formControlName="subpay_gateway">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-sm-2" *ngIf="AddReselForm.value['subpay_gateway']">
+                    <label>Select Gateway</label>
+                    <select name="subpay_gateway_type" formControlName="subpay_gateway_type"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.subpay_gateway_type.invalid&&submit}">
+                      <option value="0" selected>Select Gateway</option>
+                      <option *ngFor="let item of paymentgateway" [ngValue]="item.bpgid">{{item.gw_name}}</option>
+                    </select>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>Over Due</label><br>
+                    <nb-checkbox formControlName="over_due" (change)="duevalid()">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-md-2" *ngIf="AddReselForm.value['over_due']">
+                    <label>Maximum Due Limit</label>
+                    <input type="text" name="due_amt" formControlName="due_amt"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddReselForm.controls.due_amt.invalid&&submit}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>Credit Flag</label><br>
+                    <nb-checkbox formControlName="credit_flag" (change)="creditvalid()">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-md-2" *ngIf="AddReselForm.value['credit_flag']">
+                    <label>Credit Limit</label>
+                    <input type="number" formControlName="credit_limit" placeholder="Credit Limit"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.credit_limit.invalid&&submit}">
+                    <small *ngIf="AddReselForm.controls.credit_limit.invalid&&submit" class="form-text error">Credit
+                      Limit is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>Check Due Invoice</label><br>
+                    <nb-checkbox formControlName="due_invoice">Enable</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>Expiry Type : </label>
+                  </div>
+                  <div class="col-sm-4">
+                    <table>
+                      <td>
+                        <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" value="1" formControlName="expiry_type"
+                            name="expiry_type">
+                          <span class="custom-control-indicator"></span>Day to Day
+                        </label>
+                      </td>
+                      <td>
+                        <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" value="2" formControlName="expiry_type"
+                            name="expiry_type">
+                          <span class="custom-control-indicator"></span>last Expiry
+                        </label>
+                      </td>
+                      <td>
+                        <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" value="3" formControlName="expiry_type"
+                            name="expiry_type">
+                          <span class="custom-control-indicator"></span>Month End Expiry
+                        </label>
+                      </td>
+                    </table>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>Expiry Mode : </label>
+                  </div>
+                  <div class="col-sm-4">
+                    <table (change)="exptimesetting()">
+                      <td>
+                        <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" value="0" formControlName="exp_mode"
+                            name="exp_mode">
+                          <span class="custom-control-indicator"></span>Default
+                        </label>
+                      </td>
+                      <td>
+                        <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" value="1" formControlName="exp_mode"
+                            name="exp_mode">
+                          <span class="custom-control-indicator"></span>Midnight
+                        </label>
+                      </td>
+                      <td>
+                        <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" value="2" formControlName="exp_mode"
+                            name="exp_mode">
+                          <span class="custom-control-indicator"></span>Custom Time
+                        </label>
+                      </td>
+                    </table>
+                  </div>
+                  <div class="col-sm-4" *ngIf="AddReselForm.value['exp_mode']==2">
+                    <label>Custom Time <span style="color: red;">*</span></label>
+                    <input type="time" formControlName="exp_time"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.exp_time.invalid&&submit}">
+                    <small *ngIf="AddReselForm.controls.exp_time.invalid&&submit" class="form-text error">Custom Time is
+                      Required!</small>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>E-Receipt</label><br>
+                    <nb-checkbox formControlName="ereceipt">Enable</nb-checkbox>
+                  </div>
+                  <div class="col-sm-2">
+                    <label>E-CAF</label><br>
+                    <nb-checkbox formControlName="ecaf">Enable</nb-checkbox>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                    <label>Prefix</label>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="prefix_enable" (change)="prefixchange()"
+                        formControlName="prefix_enable" />
+                      <label class="custom-control-label" for="prefix_enable">Enable</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Reseller Logo</label>
+                    <input type="file" formControlName="Logo" placeholder="Upload Logo"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.Logo.invalid&&submit}"
+                      (change)="upload($event.target.files)" />
+                    <!-- <small *ngIf="AddReselForm.controls.Logo.invalid&&submit" class="form-text error">Reseller Logo is Required!</small> -->
+                  </div>
+                  <div class="col-sm-4" *ngIf="imageURL">
+                    <label>Logo Preview</label>
+                    <img [src]="imageURL" style="width: 100%;height: 150px">
+                  </div>
+                  <div class="col-sm-2" *ngIf="AddReselForm.value['prefix_enable']">
+                    <label>Prefix</label>
+                    <input type="text" formControlName="prefix" placeholder="Customer Profile ID prefix"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddReselForm.controls.prefix.invalid&&submit}" />
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="value.Role ==331">
+                  <div class="col-sm-4">
+                    <label>Assign Service For Self Registration</label>
+                    <auto-completen
+                    [addclass]="{'form-control' : true,'form-control-danger':ctrl.srsrvid.invalid&&submit}"
+                     optValues="srvname" (keyUp)="getService($event)" placeholder='Select Service Name'
+                      formControlName="srsrvid" optId="srvid" [item]="assign_service">
+                    </auto-completen>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Time (in minutes)</label>
+                    <input type="number" formControlName="srtime" placeholder="Time (in minutes)"
+                    [ngClass]="{'form-control':true,'form-control-danger':ctrl.srtime.invalid&&submit}"/>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Notification Setting" *ngIf="AddReselForm.value['reselcreate_type']=='0'">
+              <ng-template ngbTabContent>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Registration Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="registration_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="registration_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Renew Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="renew_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="renew_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Auto Renew Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="auto_renew_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="auto_renew_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Auto Renew Alert Send</label>
+                  </div>
+                  <div class="col-md-3 input-group input-group-sm">
+                    <select class="form-control" formControlName="auto_renew">
+                      <option value="0">Select Days</option>
+                      <option value="1">1 Day Before</option>
+                      <option value="2">2 Days Before</option>
+                      <option value="3">3 Days Before</option>
+                      <option value="4">4 Days Before</option>
+                      <option value="5">5 Days Before</option>
+                      <option value="6">6 Days Before</option>
+                      <option value="7">7 Days Before</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Invoice Generated Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="invoice_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="invoice_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Bill Paid Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="billpaid_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="billpaid_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Package Change Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="package_change_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="package_change_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Extra Data Limit Credit Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="extra_data_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="extra_data_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Temporary Suspended if not Paid Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="temporary_suspend_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="temporary_suspend_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Amount Credit Add Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="amntcredit_add_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="amntcredit_add_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Amount Balance Add Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="amount_balance_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="amount_balance_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Expiray Alert</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="expiry_alert_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="expiry_alert_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Customer Expiry Alert Send</label>
+                  </div>
+                  <div class="col-md-3 input-group input-group-sm">
+                    <select class="form-control" formControlName="expiry_send">
+                      <option value="0">Select Days</option>
+                      <option value="1">1 Day Before</option>
+                      <option value="2">2 Days Before</option>
+                      <option value="3">3 Days Before</option>
+                      <option value="4">4 Days Before</option>
+                      <option value="5">5 Days Before</option>
+                      <option value="6">6 Days Before</option>
+                      <option value="7">7 Days Before</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Complaint Register Alert To user</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="register_alert_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="register_alert_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Complaint Resolve Alert To User</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="resolve_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="resolve_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Complaint Close Alert To User</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="close_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="close_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Complaint Assigned Alert To Employee </label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="assigned_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="assigned_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Lead Register Alert To User </label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="register_alert_user_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="register_alert_user_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Lead Assign Alert To Employee </label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="assign_alert_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="assign_alert_email">Email</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5">
+                    <label>Deposit Comfirmation Alert To Reseller</label>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="deposit_alert_sms">SMS</nb-checkbox>
+                  </div>
+                  <div class="col-md-1">
+                    <nb-checkbox formControlName="deposit_alert_email">Email</nb-checkbox>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">Create</button>
+            <button type="submit" class="btn btn-md btn-danger " (click)='cancel()'>Back </button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

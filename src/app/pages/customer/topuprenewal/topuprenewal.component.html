@@ -1,0 +1,96 @@
+<div class="modal-header" style="background-color: #ba7fec;">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <form [formGroup]="TopupForm" (ngSubmit)="topup()">
+    <div class="form-group row">
+      <div class="col-sm-6">
+        <div class="form-group row">
+          <div class="col-sm-12">
+            <label>Select Package <span style="color:red;">*</span></label>
+            <auto-completen
+              [addclass]="{'form-control' : true,'form-control-danger':TopupForm.controls.topup_id.invalid&&submit}"
+              (keyUp)="showTopup($event)" (changed)="showPlanDetail();"
+              formControlName="topup_id" optValues="top_name" placeholder='Select Topup Plan' optId="top_id" [item]="pack">
+            </auto-completen>
+            <small *ngIf="TopupForm.controls.topup_id.invalid&&submit" class="form-text error">Plan Required!</small>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-12">
+            <label>Payment status</label>
+            <select (change)="setPayValid()"  formControlName="pay_status" (change)="TopupForm.controls.pay_amt.setValue('');paidamount();"
+              [ngClass]="{'form-control':true,'form-control-danger':TopupForm.controls.pay_status.invalid&&submit}">
+              <option value="" selected>Select Payment Status</option>
+              <option value="2">Paid</option>
+              <option value="1">Unpaid</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="TopupForm.value.pay_status==2">
+          <div class="col-sm-12">
+            <label>Collection Amount</label>
+            <input readonly type="textarea" formControlName="pay_amt"
+              [ngClass]="{'form-control' : true,'form-control-danger':TopupForm.controls.pay_amt.invalid&&submit}" />
+            <small *ngIf="TopupForm.controls.pay_amt.invalid&&submit" class="form-text error">Amount Is
+              Required!</small>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="TopupForm.value['pay_status']=='2'">
+          <div class="col-sm-12">
+            <label>Paid Date </label>
+            <input type="datetime-local" formControlName="pay_date" placeholder="Paid Date"
+              [ngClass]="{'form-control' : true,'form-control-danger':TopupForm.controls.pay_date.invalid&&submit}" />
+            <small *ngIf="TopupForm.controls.pay_date.invalid&&submit" class="form-text error"> Date is
+              required! </small>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <div class="col-sm-12">
+            <label>Comments</label>
+            <textarea formControlName="comment" placeholder="Comments"
+              [ngClass]="{'form-control':true,'form-control-danger':TopupForm.controls.comment.invalid&&submit}"></textarea>
+              <small *ngIf="TopupForm.controls.comment.invalid&&submit" class="form-text error"> Remarks
+                required! </small>
+          </div>
+        </div> 
+
+    
+      </div>
+       
+      <div class="col-sm-6" *ngIf="TopupForm.value['topup_id']">
+        <table class="table table-bordered table-striped" >
+          <tr>
+            <th>Plan Summary</th>
+          </tr>
+           
+          <tr >
+            <td>Package Amount</td>
+            <th>{{packitem? (packitem.price | currency : 'INR' : 'symbol'):0 }}</th>
+          </tr>
+           
+          <tr >
+            <td>Limit</td>
+            <th>{{packitem? (packitem['limit'] + ' ' + ( packitem['limit_size'] == 1 ? 'MB': packitem['limit_size'] == 2 ? 'GB' :packitem['limit_size'] ==3? 'TB' : 'PB') ): ''}}</th>
+          </tr>
+         
+        </table>
+        </div>  
+      
+
+            
+         
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-sm btn-success">Topup</button>
+    </div>
+  </form>
+</div>

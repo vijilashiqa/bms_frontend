@@ -1,0 +1,158 @@
+<div class="col-md-12">
+   <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+   </ngx-loading>
+   <nb-card>
+      <nb-card-header>App Tools</nb-card-header>
+      <nb-card-body>
+         <toaster-container [toasterconfig]="config"></toaster-container>
+         <form [formGroup]="ToolForm" class="form-horizontal">
+            <div class="row">
+               <div class="col-md-6">
+                  <nb-card>
+                     <nb-card-header  style="background-color :  #01a7ee;color: white;">Tools</nb-card-header>
+                     <nb-card-body>
+                        <table class="table table-bordered table-hover table-striped">
+                           <tr>
+                              <th style="padding-top: 16px;">Radius Service</th>
+                              <td style=" padding: 1px;" class=" last" data-title="'Action'">
+                                 <div class="dropdown ghost-dropdown" ngbDropdown>
+                                    <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;"
+                                       class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+                                    </button>
+                                    <ul style="width: 24vh;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                                       <li class="dropdown-item" style="padding-left: 7px;" title="Status"
+                                          (click)="toolsubmit(5)"><i style="font-size: 20px;"
+                                             class="fa fa-eye"></i>&nbsp;Status&nbsp;&nbsp;</li>
+                                       <li class="dropdown-item" style="padding-left: 7px;" title="GrepRadius" (click)="toolsubmit(17)"><i
+                                             style="font-size: 20px;" class="fa fa-search"></i>&nbsp;Grep Radius&nbsp;&nbsp;</li>
+                                       <li class="dropdown-item" style="padding-left: 7px;" title="Start"
+                                          (click)="toolsubmit(7)"><i style="font-size: 20px;"
+                                             class="fas fa-play "></i>&nbsp;Start</li>
+                                       <li class="dropdown-item" style="padding-left: 7px;" title="Stop" (click)="toolsubmit(6)">
+                                          <i style="font-size: 20px;" class="fa fa-power-off "></i>&nbsp;Stop</li>
+                                       <li class="dropdown-item" style="padding-left: 7px;" title="Restart"
+                                          (click)="toolsubmit(8)"><i style="font-size: 20px;"
+                                             class="fa fa-sync"></i>&nbsp;Restart</li>
+                                       <li class="dropdown-item" style="padding-left: 7px;" title="Reload"
+                                          (click)="toolsubmit(15)"><i style="font-size: 20px;"
+                                             class="fa fa-redo"></i>&nbsp;Reload&nbsp;&nbsp;</li>
+                                       <li class="dropdown-item" style="padding-left: 7px;" title="Cond-Start"
+                                          (click)="toolsubmit(16)"><i style="font-size: 20px;"
+                                             class="fa fa-retweet"></i>&nbsp;Cond-Restart&nbsp;&nbsp;</li>
+                                       <li class="dropdown-item" style="padding-left: 7px;" title="Cond-Start"
+                                          (click)="toolsubmit(18)"><i style="font-size: 20px;"
+                                             class="fa fa-building"></i>&nbsp;Rebuildclient.config&nbsp;&nbsp;</li>
+                                    </ul>
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th style="padding-top: 16px;">DataBase Service</th>
+                              <td style=" padding: 1px;" class=" last" data-title="'Action'">
+                                 <div class="dropdown ghost-dropdown" ngbDropdown>
+                                    <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;"
+                                       class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+                                    </button>
+                                    <ul style="width: 15vh;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                                       <li class="dropdown-item" title="Status" (click)="toolsubmit(4)"><i
+                                          style="font-size: 20px;" class="fa fa-eye"></i>&nbsp;Status&nbsp;&nbsp;</li>
+                                       <li class="dropdown-item" title="Start" (click)="toolsubmit(2)"><i
+                                             style="font-size: 20px;" class="fas fa-play "></i>&nbsp;Start</li>
+                                       <li class="dropdown-item" title="Stop" (click)="toolsubmit(3)"><i style="font-size: 20px;"
+                                             class="fa fa-power-off "></i>&nbsp;Stop</li>
+                                       <li class="dropdown-item" title="Restart" (click)="toolsubmit(1)"><i
+                                             style="font-size: 20px;" class="fa fa-sync"></i>&nbsp;Restart</li>
+                                    </ul>
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th style="padding-top: 16px;">Disconnect Service</th>
+                              <td style=" padding: 1px;" class=" last" data-title="'Action'">
+                                 <div class="dropdown ghost-dropdown" ngbDropdown>
+                                    <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;"
+                                       class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+                                    </button>
+                                    <ul style="width: 15vh;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                                       <li class="dropdown-item" title="Status" (click)="toolsubmit(12)"><i
+                                          style="font-size: 20px;" class="fa fa-eye"></i>&nbsp;Status&nbsp;&nbsp;</li>
+                                       <li class="dropdown-item" title="Start" (click)="toolsubmit(9)"><i
+                                             style="font-size: 20px;" class="fas fa-play "></i>&nbsp;Start</li>
+                                       <li class="dropdown-item" title="Stop" (click)="toolsubmit(10)"><i
+                                             style="font-size: 20px;" class="fa fa-power-off "></i>&nbsp;Stop</li>
+                                       <li class="dropdown-item" title="Restart" (click)="toolsubmit(11)"><i
+                                             style="font-size: 20px;" class="fa fa-sync"></i>&nbsp;Restart</li>
+                                    </ul>
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th style="padding-top: 16px;">BMS Service</th>
+                              <td style=" padding: 1px;" class=" last" data-title="'Action'">
+                                 <div class="dropdown ghost-dropdown" ngbDropdown>
+                                    <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;"
+                                       class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+                                    </button>
+                                    <ul style="width: 15vh;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                                       <li class="dropdown-item" title="Status" (click)="toolsubmit(14)"><i
+                                          style="font-size: 20px;" class="fa fa-eye"></i>&nbsp;Status&nbsp;&nbsp;</li>
+                                       <li class="dropdown-item" title="Restart" (click)="toolsubmit(13)"><i
+                                             style="font-size: 20px;" class="fa fa-sync"></i>&nbsp;Restart</li>
+                                    </ul>
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th style="padding-top: 16px;">Connection Tracking</th>
+                              <td style=" padding: 1px;" class=" last" data-title="'Action'">
+                                 <div class="dropdown ghost-dropdown" ngbDropdown>
+                                    <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;"
+                                       class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+                                    </button>
+                                    <ul style="width: 15vh;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                                       <li class="dropdown-item" title="Status" (click)="toolsubmit(21)"><i
+                                          style="font-size: 20px;" class="fa fa-eye"></i>&nbsp;Status&nbsp;&nbsp;</li>
+                                       <li class="dropdown-item" title="Start" (click)="toolsubmit(22)"><i
+                                             style="font-size: 20px;" class="fas fa-play "></i>&nbsp;Start</li>
+                                       <li class="dropdown-item" title="Stop" (click)="toolsubmit(23)"><i style="font-size: 20px;"
+                                             class="fa fa-power-off "></i>&nbsp;Stop</li>
+                                       <li class="dropdown-item" title="Restart" (click)="toolsubmit(24)"><i
+                                             style="font-size: 20px;" class="fa fa-sync"></i>&nbsp;Restart</li>
+                                    </ul>
+                                 </div>
+                              </td>
+                           </tr>
+                        </table>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                     </nb-card-body>
+                  </nb-card>
+               </div>
+               <div class="col-md-6">
+                  <nb-card style="height: 435px;">
+                     <nb-card-header  style="background-color :  #01a7ee;color: white;">Radius Info
+                        <i style="float: right;cursor: pointer;" class="fas fa-sync" (click)="RadiusInfo()"></i>
+                     </nb-card-header>
+                     <nb-card-body>
+                        <div style="text-transform: none !important;white-space: break-spaces;word-spacing: 3px;">
+                           {{radiusmsg}}
+                        </div>
+                     </nb-card-body>
+                  </nb-card>
+               </div>
+            </div>
+         </form>
+      </nb-card-body>
+   </nb-card>
+</div>

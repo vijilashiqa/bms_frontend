@@ -1,0 +1,224 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header> List Online Payment Report
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <hr style="border: 0px;">
+    <div class="modal-body">
+      <div class="form-group row">
+        <div class="col-sm-2" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showProfileReseller();changeclear(1);" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Select User Type</label>
+          <select name="usertype" class="form-control" [(ngModel)]="usertype" (change)="showUser();changeclear(5)" placeholder='Select User Type'>
+            <option value="" selected>Select User type</option>
+            <option value="0">Reseller</option>
+            <option value="1">Subscriber</option>
+          </select>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775) || (role.getroleid() > 444) ">
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" addclass="form-control"
+            (changed)="showResellerName();changeclear(2);" optValues="menu_name" placeholder='Select Reseller Type'
+            optId="role" [item]="profile">
+          </auto-completen>
+          <small style="color: blueviolet;">Select Profile</small>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775) || (role.getroleid() > 444) ">
+          <label>Reseller Name</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company" (changed)="changeclear(3);showUser()"
+            placeholder='Select Reseller' (keyUp)="showResellerName($event)" id="res_name" [item]="res1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="usertype==1">
+          <label>Subscriber Profile ID</label>
+          <auto-completen [(ngModel)]="cust_name" (keyUp)="showUser($event)" addclass="form-control"
+            optValues="profileid" placeholder='Select Subs AccountID' optId="uid" [item]="custname">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Order ID</label>
+          <auto-completen [(ngModel)]="order_id" addclass="form-control" optValues="order_id"
+            (changed)="changeclear(4);" placeholder='Select OrderId' (keyUp)="showOrderId($event)" optId="opid"
+            [item]="order">
+          </auto-completen>
+        </div>
+
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <label>Transaction ID</label>
+          <auto-completen [(ngModel)]="txnid" addclass="form-control" optValues="txnid"
+            placeholder='Select Transaction ID' (keyUp)="showTransId($event)" optId="opid" [item]="trans">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Start Date</label>
+          <input type="date" pattern="Start Date" [(ngModel)]="cdate" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>End Date</label>
+          <input type="date" placeholder="End Date" [(ngModel)]="end_date" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>status</label>
+          <select name="opstatus" class="form-control" [(ngModel)]="opstatus">
+            <option value="" selected>Select Status</option>
+            <option value="0">Success</option>
+            <option value="1">Initialized</option>
+            <option value="4">Canceled(Failure)</option>
+            <option value="5">Pending</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+      </div>
+    </div>
+    <!-- <table class="table table-bordered table-striped">
+      <thead class="success">
+        <th style="text-align:left;color:white"><b>Total records : {{count}}</b></th>
+      </thead>
+      <tbody>
+         <tr>
+          <td style="text-align:left;font-weight:800;"> TOTAL DEPOSIT AMOUNT :</td>
+         </tr>
+        <tr>
+            <td style="text-align: left;font-size: x-large;font-weight: 600;">{{ totalOnlinePay || 0 | currency: 'INR': 'symbol' }}</td>
+
+        </tr>
+      </tbody>
+    </table> -->
+    <label>
+      <h5>Total Count: {{count}}</h5>
+    </label>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="pagination">
+          <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+            <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+              (click)="getlist(page)">{{page}}</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+              (click)="page=pager.totalPages;getlist();">Last</a>
+          </ul>
+          <div>
+            <button
+              style="height: calc(2rem + 10px); width: 75px; padding: 0rem;  border-radius: 7px;margin-right: 1vh;"
+              class="btn btn-xs btn-outline-primary" (click)="checkPay()"><b>Check Status</b></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th *ngIf="!role.getmenurole(816)">Action</th>
+          <th *ngIf="role.getroleid()>=775">ID</th>
+          <th *ngIf="role.getroleid()>777">ISP Name</th>
+          <th *ngIf="role.getroleid()>444">User Type</th>
+          <th *ngIf="role.getroleid()>444">ProfileID</th>
+          <th>Name</th>
+          <th>Pay Mode</th>
+          <th>OrderID</th>
+          <th>Transaction ID</th>
+          <th>Before Balance Amt</th>
+          <th>Deposited Amount</th>
+          <th>Amount Initiated</th>
+          <th>Payment For</th>
+          <th>Status</th>
+          <th>DoneBY</th>
+          <th>Created Date</th>
+          <th>Modified Date</th>
+          <th>Aggregate Response</th>
+          <th>Aggregate Status</th>
+        </tr>
+        <tr *ngFor="let item of pagedItems">
+          <td *ngIf="!role.getmenurole(816)" style="padding: 1px;" class=" last" data-title="'Action'">
+            <div class="dropdown ghost-dropdown" ngbDropdown>
+              <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin: 3px;"
+                class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                <li *ngIf="!role.getmenurole(816)" class="dropdown-item" title="check"
+                  (click)="statuscheck(item.opid,item.gw_id)">
+                  <i style="font-size: 20px;" class="fa fa-sync"></i>&nbsp;Check
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td *ngIf="role.getroleid()>=775">{{item.opid}}</td>
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td *ngIf="role.getroleid()>444">{{item.role==333 ? 'Deposit Reseller':item.role==555 ? 'Sub
+            ISPDeposit':item.role==551 ? 'Sub Distributor Deposit':'Subscriber'}}</td>
+          <td *ngIf="role.getroleid()>444">{{item.profileid}}</td>
+          <td>{{item.user_name}}</td>
+          <td style="text-align: center;">{{item.pay_mode}}</td>
+          <td>{{item.order_id}}</td>
+          <td>{{item.txnid}}</td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.before_balance}}</i></td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.dep_amt}}</i></td>
+          <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.amt}}</i></td>
+          <td>{{item.pay_for==1 ? 'Reseller Topup':item.pay_for==2 ?'Subscriber
+            Renewal':item.pay_for==3?'SubscriberTopup':
+            item.pay_for==4 ? 'ResellerIP Amount':'Subscriber Schedule'}}</td>
+          <td>{{item.opstatus==0 ? 'Success':item.opstatus==1 ? 'Initiate':'Cancel'}}</td>
+          <td>{{item.doneby}}</td>
+          <td>{{item.cdate | date:'d MMM y h:mm:ss a'}}</td>
+          <td>{{item.mdate | date:'d MMM y h:mm:ss a'}}</td>
+          <!-- <td *ngIf="item.agg_response">
+            <i class="fa fa-envelope" placement="bottom" popoverClass="style:background: aliceblue;font-size: 150%;"
+              ngbPopover="{{item.agg_response?item.agg_response:'--'}}">
+            </i>
+          </td> -->
+          <td *ngIf="item.agg_response">
+            <button type="button" class="btn btn-primary btn-sm btn-floating " placement="bottom"
+              ngbPopover="{{item.agg_response?item.agg_response:'--'}}" popoverTitle="Popover on right">
+              Response
+            </button>
+          </td>
+          <td *ngIf="!item.agg_response">
+            --
+          </td>
+          <td>{{item.agg_pay_status==0 ? 'Success':item.agg_pay_status==-1 ? 'Cancel/Failed':'--'}}</td>
+
+        </tr>
+        <tr>
+          <td colspan="14" *ngIf="pagedItems==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

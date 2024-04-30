@@ -1,0 +1,35 @@
+<ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+   </ngx-loading>
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body" style="overflow: scroll;">
+  <div class="form-group row">
+    <div class="col-sm-12">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+            <th>Status</th>
+            <th>Order ID</th>
+            <th>Transaction ID</th>
+            <th>Response</th>
+          <tr >
+            <td>{{status_descp}}</td>
+            <td>{{orderid}}</td>
+            <td>{{trascn_num}}</td>
+            <td>{{resp_code == 0 ? 'Success' : resp_code == 4 ? 'Failure' : resp_code == 5 ? 'Pending' : resp_code ==2 ? 'Cancel': 'Initiate'}}</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;" colspan="4" *ngIf="(item?.error_msg != 0 || item?.error_msg!=4 || item?.error_msg!=5)">{{msg}}</td>
+          </tr>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"  class="btn  btn-primary" style="margin:auto;"
+      (click)="closeModal()">OK</button>
+  </div>
+</div>

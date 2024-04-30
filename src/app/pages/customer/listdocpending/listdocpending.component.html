@@ -1,0 +1,192 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header> List Subscriber Docs Pending
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-2" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showProfileReseller();showUser();changeclear(1)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" (changed)="showUser();changeclear(2)" addclass="form-control"
+            optValues="groupname" (kryUp)="showGroupName($event)" placeholder='Select Group' optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775)|| (role.getroleid() > 444)">
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" (changed)="showReseller();changeclear(3)" addclass="form-control"
+            optValues="menu_name" placeholder='Select Profile' optId="role" [item]="profile">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775)|| (role.getroleid() > 444)">
+          <label>Reseller Name</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company" (changed)="showUser();cust_name=''"
+            placeholder='Select Reseller' (keyUp)="showReseller($event)" id="res_name" [item]="resell">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Subscriber Name</label>
+          <auto-completen [(ngModel)]="cust_name" (keyUp)="showUser($event)" addclass="form-control"
+            optValues="profileid" placeholder='Select Subscriber Name' optId="uid" [item]="custname">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <label>
+      <h5>Total Count: {{count}}</h5>
+    </label>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <!-- <th >Action</th> -->
+          <th *ngIf="role.getroleid()>777">ISP Name</th>
+          <th *ngIf="role.getroleid()>=775">Circle</th>
+          <th>Reseller Name</th>
+          <th>Business Name</th>
+          <th>Subscriber ProfileID</th>
+          <th>Subscriber Name</th>
+          <th>Mobile</th>
+          <th>CAF</th>
+          <th>Address </th>
+          <th>ID </th>
+          <th>Customer Pic</th>
+        </tr>
+        <tr *ngFor="let item of pagedItems">
+          <!-- <td > <a [routerLink]="['/pages/reseller/edit-branch']"
+              [queryParams]="{id:item.b_id}" style="cursor: pointer;color: black;"> <i class="nb-edit"></i> Edit</a>
+          </td> -->
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td *ngIf="role.getroleid()>=775">{{item.groupname}}</td>
+          <td>{{item.reseller_name}}</td>
+          <td>{{item.company}}</td>
+          <td style="cursor:pointer;text-transform: none !important;" (click)="view_user(item.uid)"><b>{{item.cust_profile_id}}</b></td>
+          <td>{{item.cust_name}}</td>
+          <td>{{item.mobile}}</td>
+          <td><a [ngStyle]="{'color' :(item.caf_photo_status==1||item.caf_photo_status==2) ? 'green' :'red' }"
+            [ngClass]="{'ion-close-round':(item.caf_photo_status!=1&&item.caf_photo_status!=2)? true:false,'ion-checkmark-round': item.caf_photo_status==1 ? true:false,
+            'fa fa-check-double':item.caf_photo_status==2 ? true:false}"> </a>
+          </td>
+
+           <td><a [ngStyle]="{'color' :(item.address_photo_status==1||item.address_photo_status==2) ? 'green' :'red' }"
+            [ngClass]="{'ion-close-round':(item.address_photo_status!=1&&item.address_photo_status!=2)? true:false,'ion-checkmark-round': item.address_photo_status==1 ? true:false,
+            'fa fa-check-double':item.address_photo_status==2 ? true:false}"> </a>
+            <!-- <a [ngClass]="{'right fas fa-upload' : (item.address_photo_status == 0 || item.address_photo_status == 3)? true :false}"></a> -->
+            <div class="dropdown ghost-dropdown" ngbDropdown *ngIf="(item.address_photo_status == 0 || item.address_photo_status == 3)">
+              <button
+                 style="width: 70px;font-size: 10px;margin:3px;height:27px;background-color: #0380fc;color: white; font-weight: bold;"
+                 class="btn btn-primary btn-icon" type="button"
+                 ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75px;margin:3px;z-index: 1;line-height: 30px;"
+                 class="dropdown-menu" ngbDropdownMenu>
+                 <li (click)='uploadProof(item.uid,item.cust_profile_id,2,1)'
+                    style="cursor: pointer;">
+                    &nbsp;
+                    <i style="color: #00ff81;" class="fa fa-upload"></i>&nbsp;Upload
+                 </li>
+                 <li (click)='snapProof(item.uid,item.cust_profile_id,3)'
+                    style="cursor: pointer;">&nbsp;
+                    <i style="color:royalblue;" class="fa fa-camera"></i>&nbsp;Camera
+                 </li>
+              </ul>
+           </div>
+          </td>
+
+           <td><a [ngStyle]="{'color' :(item.id_photo_status==1||item.id_photo_status==2) ? 'green' :'red' }"
+            [ngClass]="{'ion-close-round':(item.id_photo_status!=1&&item.id_photo_status!=2)? true:false,'ion-checkmark-round': item.id_photo_status==1 ? true:false,
+            'fa fa-check-double':item.id_photo_status==2 ? true:false}"> </a>
+            <!-- <a [ngClass]="{'right fas fa-upload' : (item.id_photo_status == 0 || item.id_photo_status == 3)? true :false}"></a> -->
+            <div class="dropdown ghost-dropdown" ngbDropdown *ngIf="(item.id_photo_status == 0 || item.id_photo_status == 3)">
+              <button
+                 style="width: 70px;font-size: 10px;margin:3px;height:27px;background-color: #0380fc;color: white; font-weight: bold;"
+                 class="btn btn-primary btn-icon" type="button"
+                 ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75px;margin:3px;z-index: 1;line-height: 30px;"
+                 class="dropdown-menu" ngbDropdownMenu>
+                 <li (click)='uploadProof(item.uid,item.cust_profile_id,2,2)'
+                    style="cursor: pointer;">
+                    &nbsp;
+                    <i style="color: #00ff81;" class="fa fa-upload"></i>&nbsp;Upload
+                 </li>
+                 <li (click)='snapProof(item.uid,item.cust_profile_id,2)'
+                    style="cursor: pointer;">&nbsp;
+                    <i style="color:royalblue;" class="fa fa-camera"></i>&nbsp;Camera
+                 </li>
+              </ul>
+           </div>
+          </td>
+
+           <td><a [ngStyle]="{'color' :(item.user_photo_status==1||item.user_photo_status==2) ? 'green' :'red' }"
+            [ngClass]="{'ion-close-round':(item.user_photo_status!=1&&item.user_photo_status!=2)? true:false,'ion-checkmark-round': item.user_photo_status==1 ? true:false,
+            'fa fa-check-double':item.user_photo_status==2 ? true:false}"> </a>
+            <div class="dropdown ghost-dropdown" ngbDropdown *ngIf="(item.user_photo_status == 0 || item.user_photo_status == 3)">
+              <button
+                 style="width: 70px;font-size: 10px;margin:3px;height:27px;background-color: #0380fc;color: white; font-weight: bold;"
+                 class="btn btn-primary btn-icon" type="button"
+                 ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75px;margin:3px;z-index: 1;line-height: 30px;"
+                 class="dropdown-menu" ngbDropdownMenu>
+                 <li (click)='uploadProof(item.uid,item.cust_profile_id,4)'
+                    style="cursor: pointer;">
+                    &nbsp;
+                    <i style="color: #00ff81;" class="fa fa-upload"></i>&nbsp;Upload
+                 </li>
+                 <li (click)='snapProof(item.uid,item.cust_profile_id,1)' style="cursor: pointer;">
+                    &nbsp;
+                    <i style="color:royalblue;" class="fa fa-camera"></i>&nbsp;Camera
+                 </li>
+              </ul>
+           </div>
+          </td>
+         </tr>
+        <tr>
+          <td colspan="5" *ngIf="pagedItems==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

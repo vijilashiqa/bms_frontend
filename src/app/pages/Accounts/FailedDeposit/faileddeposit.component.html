@@ -1,0 +1,58 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="activeModal.close(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="Failedform" class="form-horizontal" (ngSubmit)="addNas();">
+  <div class="modal-body">
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <label>Amount</label>
+        <input type="text" name="amount" formControlName="amount" class="form-control" readonly />
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <label>Order ID</label>
+        <input type="text" name="order_id" formControlName="order_id" class="form-control" readonly />
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <label>UTR</label>
+        <input type="text" name="utr" formControlName="utr"
+          [ngClass]="{'form-control' : true,'form-control-danger':Failedform.controls.utr.invalid&&submit}" />
+        <small *ngIf="Failedform.hasError('required','desc')&&submit" class="form-text error">UTR is Required!</small>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <label>Description</label>
+        <input type="text" name="desc" formControlName="desc"
+          [ngClass]="{'form-control' : true,'form-control-danger':Failedform.controls.desc.invalid&&submit}" />
+        <small *ngIf="Failedform.hasError('required','desc')&&submit" class="form-text error">Description is
+          required!</small>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <label>Pay Mode </label>
+        <select name="paymode" formControlName="paymode" placeholder="STB Type"
+          [ngClass]="{'form-control' : true,'form-control-danger':Failedform.controls.paymode.invalid&&submit}">
+          <option value="" selected>Select Paymode</option>
+          <option value="DC">DC</option>
+          <option value="UPI">UPI</option>
+          <option value="NB">NB</option>
+          <option value="CC">CC</option>
+        </select>
+        <small *ngIf="Failedform.hasError('required','paymode')&&submit" class="form-text error">Select Required
+          Paymode</small>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-md btn-success">Submit</button>
+    <button type="button" class="btn btn-md btn-danger ">Reset</button>
+  </div>
+</form>

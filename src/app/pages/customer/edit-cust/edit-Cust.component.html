@@ -1,0 +1,668 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>Edit Subscriber</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <ngx-loading [show]="loading"
+        [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+      </ngx-loading>
+      <form [formGroup]="EditSubsForm" class="form-horizontal" (ngSubmit)="editSubscriber();">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-4" *ngIf="role.getroleid()>777">
+              <label>ISP Name <span style="color:red;">*</span></label>
+              <select formControlName="bus_id"
+                [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.bus_id.invalid&&submit}"
+                (change)="GroupName();servicetype()">
+                <option value="" selected>Select Business Name</option>
+                <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+              </select>
+              <small *ngIf="EditSubsForm.controls.bus_id.invalid&&submit" class="form-text error">Business
+                name
+                is Required!</small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+              <label>Circle <span style="color:red;">*</span></label>
+              <select name="groupid" formControlName="groupid"
+                [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.groupid.invalid&&submit}"
+                (change)="showReseller()">
+                <option value="" selected>Select Circle</option>
+                <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+              </select>
+              <small *ngIf="EditSubsForm.hasError('required','groupid')&&submit" class="form-text error">Circle is
+                required! </small>
+            </div>
+            <div class="col-sm-4" *ngIf="role.getroleid()>=775 || role.getroleid()> 444">
+              <label>Reseller Name <span style="color:red;">*</span></label>
+              <auto-completen
+                [addclass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.reseller.invalid&&submit}"
+                optValues="company" formControlName="reseller"
+                (changed)="Service();modelshow();PoolName();reselbranch()" placeholder='Select Reseller' id="mid"
+                [item]="resell">
+              </auto-completen>
+              <small *ngIf="EditSubsForm.hasError('required','reseller')&&submit" class="form-text error">Reseller
+                is required! </small>
+            </div>
+          </div>
+          <!-- <div class="form-group row" *ngIf="role.getroleid()>=775">
+            <div class="col-sm-4">
+              <label>Service Type <span style="color:red;">*</span></label>
+              <select formControlName="serv_type"
+                [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.serv_type.invalid&&submit}">
+                <option value="" selected>Select Service Type</option>
+                <option *ngFor="let item of servtype" [ngValue]="item.srv_id">{{item.service_name}}</option>
+              </select>
+              <small *ngIf="EditSubsForm.controls.serv_type.invalid&&submit" class="form-text error">Service Type
+                is Required!</small>
+            </div>
+          </div> -->
+          <ngb-tabset>
+            <ngb-tab title="Customer Info">
+              <ng-template ngbTabContent><br>
+                <div class="row">
+                  <div class="col-md-6">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">SUBSCRIBER IDENTIFICATION</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>Reseller Branch <span style="color:red;">*</span></label>
+                            <select
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.loc.invalid&&submit}"
+                              formControlName="loc">
+                              <option value="" selected>Select Reseller Branch </option>
+                              <option *ngFor="let item of branches" [ngValue]="item.b_id">{{item.branch}}</option>
+                            </select>
+                            <small *ngIf="EditSubsForm.hasError('required','loc')&&submit"
+                              class="form-text error">Location is
+                              required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>CAF No <span *ngIf="EditSubsForm.value['demo_accnt']!=3"
+                                style="color:red;">*</span></label>
+                            <input type="text" formControlName="CAF" placeholder="CAF No"
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.CAF.invalid&&submit}" />
+                            <small *ngIf="EditSubsForm.hasError('required','CAF')&&submit" class="form-text error">CAF
+                              number is
+                              required! </small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Customer Profile ID</label>
+                            <input type="text" formControlName="ID" readonly placeholder="User ID"
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.ID.invalid&&submit}" />
+                            <small *ngIf="EditSubsForm.hasError('required','ID')&&submit" class="form-text error"> User
+                              ID is
+                              required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>Full Name <span style="color:red;">*</span></label>
+                            <input type="text" formControlName="First" placeholder="Full Name "
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.First.invalid&&submit}" />
+                            <small *ngIf="EditSubsForm.controls.First.invalid&&submit" class="form-text error">
+                              Fullname is required! </small>
+                          </div>
+                          <!-- <div class="col-sm-6">
+                            <label>Last Name <span style="color:red;">*</span></label>
+                            <input type="text" formControlName="Last" placeholder="Last Name"
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.Last.invalid&&submit}" />
+                            <small *ngIf="EditSubsForm.hasError('required','Last')&&submit" class="form-text error">
+                              Lastname is
+                              required! </small>
+                          </div> -->
+                          <div class="col-sm-6">
+                            <label>Mobile No <span style="color:red;">*</span></label>
+                            <input
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.mobnum.invalid&&submit}"
+                              formControlName="mobnum" type="number" placeholder="Mobile No * " size="30"
+                              maxlength="60">
+                            <small *ngIf="EditSubsForm.controls.mobnum.invalid&&submit" class="form-text error"> Mobile
+                              Number
+                              is required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>Phone No</label>
+                            <input
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.phonenum.invalid&&submit}"
+                              formControlName="phonenum" type="number" placeholder="Phone No  " size="30"
+                              maxlength="60">
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Email <span style="color:red;">*</span></label>
+                            <input type="text" formControlName="email" placeholder="Email "
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.email.invalid&&submit}" />
+                            <small *ngIf="EditSubsForm.controls.email.invalid&&submit" class="form-text error"> Email is
+                              required! </small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                  <div class="col-md-6">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">SUBSCRIBER ADDRESS</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>State <span style="color:red;">*</span></label>
+                            <auto-completen
+                              [addclass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.state.invalid&&submit}"
+                              optValues="name" (changed)="cityshow()" placeholder="Select state" formControlName="state"
+                              id="state" [item]="states">
+                            </auto-completen>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>City <span style="color:red;">*</span></label>
+                            <auto-completen
+                              [addclass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.city.invalid&&submit}"
+                              optValues="name" (keyUp)="cityshow($event)" placeholder="Select city"
+                              formControlName="city" id="city" [item]="dist">
+                            </auto-completen>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>Location / Latitude </label>
+                            <input type="text" formControlName="latitude" placeholder="Latitude "
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.latitude.invalid&&submit}" />
+                            <!-- <small *ngIf="EditSubsForm.controls.latitude.invalid&&submit" class="form-text error"> Location is
+                        required! </small> -->
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Location / Longitude </label>
+                            <input type="text" formControlName="longitude" placeholder="longitude "
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.longitude.invalid&&submit}" />
+                            <!-- <small *ngIf="EditSubsForm.controls.longitude.invalid&&submit" class="form-text error">Location is
+                        required! </small> -->
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>Locality <span style="color:red;">*</span></label>
+                            <select formControlName="locality"
+                              [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.locality.invalid&&submit}">
+                              <option value="" selected>Select Locality</option>
+                              <option value="0">Rural</option>
+                              <option value="1">Urban</option>
+                            </select>
+                            <small *ngIf="EditSubsForm.controls.locality.invalid&&submit"
+                              class="form-text error">Locality is Required!</small>
+                          </div>
+                          <div class="col-sm-6">
+                            <label>Pincode </label>
+                            <input type="text" formControlName="pincode" placeholder="Pincode "
+                            [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.pincode.invalid&&submit}" />
+                         </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="demo-checkboxes col-sm-12 ">
+                            <nb-checkbox formControlName="checkaddr">Billing & Installation Address are Same
+                            </nb-checkbox>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>Installation Address <span style="color:red;">*</span></label>
+                            <textarea formControlName="Installation" placeholder="Installation Address "
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.Installation.invalid&&submit}"> </textarea>
+                            <small *ngIf="EditSubsForm.controls.Installation.invalid&&submit"
+                              class="form-text error">Installation Address is required! </small>
+                          </div>
+
+                          <div class="col-sm-6">
+                            <label>Billing Address <span style="color:red;">*</span></label>
+                            <textarea
+                              value="{{EditSubsForm.value['checkaddr'] ? EditSubsForm.controls['Billing'].setValue(EditSubsForm.value['Installation']):''}}"
+                              formControlName="Billing" placeholder="Billing Address"
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.Billing.invalid&&submit}"></textarea>
+                            <small *ngIf="EditSubsForm.controls.Billing.invalid&&submit" class="form-text error">Address
+                              is
+                              required! </small>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                </div>
+                <nb-card>
+                  <nb-card-header style="background-color :  #01a7ee">SUBSCRIBER CATEGORY</nb-card-header>
+                  <nb-card-body>
+                    <!-- <div class="form-group row">
+                      <div class="col-sm-4" *ngIf='EditSubsForm.value["addr_proof"]'>
+                        <label>Upload Address Proof</label>
+                        <input type="file" formControlName="addr_up_proof" placeholder="Upload Proof"
+                          [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.addr_up_proof.invalid&&submit}"
+                          (change)="upload1($event.target.files)" />
+                        <small *ngIf="EditSubsForm.hasError('required','addr_up_proof')&&submit"
+                          class="form-text error">Address Proof
+                          should be uploaded!</small>
+                      </div>
+                      <div class="col-sm-4" *ngIf="imageurl">
+                        <label>Proof Preview</label>
+                        <img [src]="imageurl" style="width: 100%;height: 150px">
+                      </div>
+                    </div> -->
+                    <div class="form-group row">
+                      <div class="col-sm-4">
+                        <label>Subscriber Type <span style="color:red;">*</span></label>
+                        <select (change)="substypechange();substypevalid()"
+                          [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.subs_type.invalid&&submit}"
+                          formControlName="subs_type">
+                          <option value="" selected>Select Subscriber Type</option>
+                          <option value="0">SME</option>
+                          <option value="1">Broadband</option>
+                          <option value="2">Corporate</option>
+                          <option value="3">Education/Institute</option>
+                        </select>
+                        <small *ngIf="EditSubsForm.controls.subs_type.invalid&&submit"
+                          class="form-text error">Subscriber
+                          type is required! </small>
+                      </div>
+                      <div class="col-sm-4" *ngIf='EditSubsForm.value["Proof"]'>
+                        <label>Proof ID <span style="color:red;">*</span></label>
+                        <input type="text" formControlName="ProofID" placeholder="ProofID "
+                          [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.ProofID.invalid&&submit}" />
+                        <small *ngIf="EditSubsForm.controls.ProofID.invalid&&submit" class="form-text error">Proof is
+                          required! </small>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4">
+                        <label>{{EditSubsForm.value["subs_type"]==1 ?
+                          'Company':EditSubsForm.value["subs_type"]==3 ? 'Institue':'Company'}}
+                          Name <span *ngIf='EditSubsForm.value["subs_type"]!="1"' style="color:red;">*</span></label>
+                        <input type="text" formControlName="Company" placeholder="Name"
+                          [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.Company.invalid&&submit}" />
+                        <small *ngIf="EditSubsForm.hasError('required','Company')&&submit"
+                          class="form-text error">Company
+                          Name is required! </small>
+                      </div>
+                      <div class="col-sm-4" *ngIf='EditSubsForm.value["subs_type"]!=""'>
+                        <label>GST No</label>
+                        <input type="text" formControlName="GST" placeholder="GST No"
+                          [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.GST.invalid&&submit}" />
+                        <small *ngIf="EditSubsForm.hasError('required','GST')&&submit" class="form-text error"> GST is
+                          required! </small>
+                      </div>
+                      <div class="col-sm-4" *ngIf='EditSubsForm.value["subs_type"]!="1"'>
+                        <label>Contract ID <span style="color:red;">*</span></label>
+                        <input type="text" formControlName="cont_id" placeholder="Contract ID"
+                          [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.cont_id.invalid&&submit}">
+                        <small *ngIf="EditSubsForm.controls.cont_id.invalid&&submit" class="form-text error">Contract ID
+                          is Required!</small>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4" *ngIf='EditSubsForm.value["subs_type"]!="1"'>
+                        <label>Contract From <span style="color:red;">*</span></label>
+                        <!-- <input type="text" [nbDatepicker]="cont_from_date" formControlName="cont_from_date"
+                          placeholder="Contract Valid From"
+                          [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.cont_from_date.invalid&&submit}" />
+                        <nb-datepicker #cont_from_date></nb-datepicker> -->
+                        <input type="date"  placeholder="Contract Valid From" formControlName="cont_from_date"
+                        [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.cont_from_date.invalid&&submit}" 
+                         class="form-control">
+                        <small *ngIf="EditSubsForm.controls.cont_from_date.invalid&&submit"
+                          class="form-text error">Contract From Date Is Required!</small>
+                      </div>
+                      <div class="col-sm-4" *ngIf='EditSubsForm.value["subs_type"]!="1"'>
+                        <label>Contract Valid To <span style="color:red;">*</span></label>
+                        <!-- <input type="text" [nbDatepicker]="cont_to_date" formControlName="cont_to_date"
+                          placeholder="Contract Valid To"
+                          [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.cont_to_date.invalid&&submit}" />
+                        <nb-datepicker #cont_to_date></nb-datepicker> -->
+                        <input type="date"  placeholder="Contract Valid To" formControlName="cont_to_date"
+                        [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.cont_to_date.invalid&&submit}" 
+                         class="form-control">
+
+                        <small *ngIf="EditSubsForm.controls.cont_to_date.invalid&&submit"
+                          class="form-text error">Contract To Date is Required!</small>
+                      </div>
+                      <!-- <div class="col-sm-4" *ngIf='EditSubsForm.value["Proof"]'>
+                        <label>Upload Proof</label>
+                        <input type="file" formControlName="upproof" placeholder="Upload Proof"
+                          [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.upproof.invalid&&submit}"
+                          (change)="upload($event.target.files)" />
+                        <small *ngIf="EditSubsForm.hasError('required','upproof')&&submit" class="form-text error">Proof
+                          should be uploaded</small>
+                      </div> -->
+                    </div>
+                    <!-- <div class="form-group row">
+                      <div class="col-sm-4" *ngIf="imageURL">
+                        <label>Proof Preview</label>
+                        <img [src]="imageURL" style="width: 100%;height: 150px">
+                      </div>
+                    </div> -->
+                    <div class="form-group row">
+                      <div class="col-sm-4" *ngIf=" editdatas? editdatas['status'] <= 1:''">
+                        <label>Status <span style="color:red;">*</span></label>
+                        <select
+                          [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.status.invalid&&submit}"
+                          formControlName="status">
+                          <option value="" selected>Select Subscriber Status</option>
+                          <option value="0">Disconnected</option>
+                          <option value="1">Active</option>
+                          <!-- <option value="2">Suspend</option> -->
+                          <!-- <option *ngIf="role.getroleid()>=775" value="3">Hold</option> -->
+                        </select>
+                        <small *ngIf="EditSubsForm.controls.status.invalid&&submit" class="form-text error">Status Is
+                          Required!</small>
+                      </div>
+                      <div class="col-sm-4">
+                        <label>Description</label>
+                        <input name="descr" class="form-control" formControlName="descr" type="text"
+                          placeholder="Description" maxlength="200">
+                      </div>
+                      <div class="col-sm-4">
+                        <label>Subscriber Account <span style="color:red;">*</span></label>
+                        <select formControlName="demo_accnt" (change)="cafvalid()"
+                          [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.demo_accnt.invalid&&submit}">
+                          <option value="" selected>Select Account</option>
+                          <option value="1">Prepaid</option>
+                          <option value="2">Postpaid</option>
+                          <option *ngIf="role.getroleid()>=775" value="3">Demo</option>
+                        </select>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                </nb-card>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Assign Packages">
+              <ng-template ngbTabContent><br>
+                <div class="row">
+                  <div class="col-md-6">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">Service Info</nb-card-header>
+                      <nb-card-body>
+                        <div *ngIf="!role.getmenurole(1054)" class="row ">
+                          <div class="input-group">
+                            <div class="col-sm-4">
+                              Show Service:
+                            </div>
+                            <div class="col-sm-8">
+                              <table>
+                                <td>
+                                  <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" value="1"
+                                      formControlName="pack_mode" name="pack_mode">
+                                    <span class="custom-control-indicator"></span>Old
+                                  </label>
+                                </td>
+                                <td>
+                                  <label class="custom-control custom-radio">
+                                    <input type="radio" value="3" class="custom-control-input"
+                                      formControlName="pack_mode" name="pack_mode">
+                                    <span class="custom-control-indicator"></span>New</label>
+                                </td>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-4">
+                            <label>Package Name</label>
+                            <auto-completen disabled="true"
+                              [addclass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.package.invalid&&submit}"
+                              optValues="srvname" placeholder='Select Service Name' (keyUp)="Service($event)"
+                              formControlName="package" optId="srvid" [item]="pack">
+                            </auto-completen>
+                          </div>
+                          <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+                            <label>Validity</label>
+                            <input type="text" [disabled]="!editable" [owlDateTime]="Expiry"
+                              [owlDateTimeTrigger]="Expiry" formControlName="Expiry" placeholder="Expiry Date "
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.Expiry.invalid&&submit}" />
+                            <owl-date-time [disabled]="!editable" #Expiry></owl-date-time>
+                            <!-- <small *ngIf="EditSubsForm.controls.Expiry.invalid&&submit" class="form-text error">Validity is required! </small> -->
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6" *ngIf="role.getroleid()>=775">
+                            <label>Simultaneous Use <span style="color:red;">*</span></label>
+                            <input class="form-control" formControlName="sim_use" type="text"
+                              placeholder="Simultaneous Use"
+                              [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.sim_use.invalid&&submit}"
+                              maxlength="60">
+                          </div>
+                          <div class="col-sm-6">
+                            <label>ONU Mac</label>
+                            <input type="text" placeholder="ONU Mac" formControlName="onu_mac"
+                              [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.onu_mac.invalid&&submit}">
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="acnt_type==0">
+                          <div class="col-sm-6">
+                            <nb-checkbox formControlName="mac_addr" (change)="mac()">Allow This MAC</nb-checkbox>
+                          </div>
+                          <div class="col-sm-6" *ngIf="EditSubsForm.value['mac_addr']">
+                            <label for="amac">Mac Address <span style="color:red;">*</span></label>
+                            <input class="form-control" name="amac" id="amac" formControlName="amac" type="text"
+                              placeholder="MAC Format: XX:XX:XX:XX:XX:XX" maxlength="60">
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                  <div class="col-md-6">
+                    <nb-card>
+                      <nb-card-header style="background-color :  #01a7ee">IP Info</nb-card-header>
+                      <nb-card-body>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>Ip Mode <span style="color:red;">*</span></label>
+                            <select
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.ipmode.invalid&&submit}"
+                              formControlName="ipmode" (change)="mode()">
+                              <option value="" selected>Select Ip Mode </option>
+                              <option value="0">NAS Pool or DHCP</option>
+                              <option value="1">IP Pool</option>
+                              <option value="2">Static IP</option>
+                            </select>
+                            <small *ngIf="EditSubsForm.controls.ipmode.invalid&&submit" class="form-text error">IP Mode
+                              is Required!</small>
+                          </div>
+                          <div class="col-sm-6" *ngIf='EditSubsForm.value["ipmode"]=="1"'>
+                            <label>IP Pool <span style="color:red;">*</span></label>
+                            <select
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.ippool.invalid&&submit}"
+                              formControlName="ippool">
+                              <option value="" selected>Select IP Pool </option>
+                              <option *ngFor="let item of ip" [ngValue]=item.id>{{item.name}}</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6" *ngIf='EditSubsForm.value["ipmode"]=="2"'>
+                            <label>Static IP Type <span style="color:red;">*</span></label>
+                            <select formControlName="statip_type" (change)="staticip();staticmode()"
+                              [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.statip_type.invalid&&submit}">
+                              <option value="" selected>Select StaticIP Type</option>
+                              <option value="0">Local IP</option>
+                              <option value="1">public IP</option>
+                            </select>
+                            <small *ngIf="EditSubsForm.controls.statip_type.invalid&&submit"
+                              class="form-text error">StaticIP Type is Required!</small>
+                          </div>
+                          <div class="col-sm-6"
+                            *ngIf='EditSubsForm.value["ipmode"]=="2"&&EditSubsForm.value["statip_type"]=="1"'>
+                            <label>Public IP</label>
+                            <auto-completen
+                              [addclass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.public_ip.invalid&&submit}"
+                              optValues="ipaddr" (keyup)="staticip($event.target.value)" placeholder="Select IP"
+                              formControlName="public_ip" optId="piplid" [item]="statipdata">
+                            </auto-completen>
+                            <small *ngIf="EditSubsForm.controls.public_ip.invalid&&submit"
+                              class="form-text error">PublicIP is
+                              required! </small>
+                          </div>
+                          <div class="col-sm-6"
+                            *ngIf='EditSubsForm.value["ipmode"]=="2"&&EditSubsForm.value["statip_type"]=="0"'>
+                            <label>Static IP <span style="color:red;">*</span></label>
+                            <input type="text" formControlName="staticip" placeholder="Static IP"
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.staticip.invalid&&submit}" />
+                            <small *ngIf="EditSubsForm.controls.staticip.invalid&&submit"
+                              class="form-text error">StaticIP is
+                              required! </small>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <label>Connection Type <span style="color:red;">*</span></label>
+                            <select
+                              [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.conntype.invalid&&submit}"
+                              formControlName="conntype">
+                              <option value="" selected>Select Connection Type </option>
+                              <option value="0">Wired(RPY)</option>
+                              <option value="1">Wireless</option>
+                              <option value="2">Fibre</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="resel_renewal"
+                                formControlName="resel_renewal" />
+                              <label class="custom-control-label" for="resel_renewal">Reseller Auto Renewal</label>
+                            </div>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="cust_renewal"
+                                formControlName="cust_renewal" />
+                              <label class="custom-control-label" for="cust_renewal">Subscriber Auto Renewal</label>
+                            </div>
+                          </div>
+                        </div>
+                      </nb-card-body>
+                    </nb-card>
+                  </div>
+                </div>
+                <!-- <div class="col-sm-4">
+                      <label>Account Type</label>
+                      <select
+                        [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.acctype.invalid&&submit}"
+                        formControlName="acctype" (change)="type()">
+                        <option value="" selected>Select your Account type</option>
+                        <option value="0">Regular</option>
+                        <option value="1">MAC User</option>
+                      </select>
+                    </div> -->
+                <!-- <div class="form-group row">
+                    <div class="col-sm-4" *ngIf='EditSubsForm.value["acctype"]!=""&&EditSubsForm.value["acctype"]!="1"'>
+                      <label>MAC Id <span style="color:red;">*</span></label>
+                      <input type="text" formControlName="mac_id" placeholder="Mac Id From"
+                        [ngClass]="{'form-control' : true,'form-control-danger':EditSubsForm.controls.mac_id.invalid&&submit}" />
+                      <small *ngIf="EditSubsForm.hasError('required','mac_id')&&submit" class="form-text error"> Mac id is
+                        required! </small>
+                    </div> -->
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Advanced">
+              <ng-template ngbTabContent><br>
+                <div class="form-group">
+                  <div class="col-sm-4">
+                    <label>Custom Radius Attributes</label>
+                    <input type="textarea" class="form-control" formControlName="attributes">
+                  </div>
+                </div>
+              </ng-template>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-md btn-success">Update</button>
+                <button type="submit" class="btn btn-md btn-danger " (click)='cancel()'>Back </button>
+              </div>
+            </ngb-tab>
+            <ngb-tab title="Material Details">
+              <ng-template ngbTabContent><br>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Material from <span style="color:red;">*</span></label>
+                    <select formControlName="mat_from"
+                      [ngClass]="{'form-control':true,'form-control-danger':EditSubsForm.controls.mat_from.invalid&&submit}">
+                      <option value="" selected>Select Material from</option>
+                      <option value="1">Reseller Material</option>
+                      <option value="2">Subscriber Material</option>
+                    </select>
+                    <small *ngIf="EditSubsForm.controls.mat_from.invalid&&submit" class="form-text error">Material From
+                      is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row" formArrayName="materialDetails" *ngIf="EditSubsForm.value['mat_from']=='1'">
+                  <div class="col-sm-12">
+                    <div *ngFor="let user of materialDetails.controls; index as idx;let last = last;">
+                      <div class="form-group row" [formGroupName]="idx">
+                        <div class="row">
+                          <div class="form-group" class="col-sm-3">
+                            <label>Model name</label>
+                            <select
+                              [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['model'].invalid&&submit}"
+                              formControlName="model" (keyup)="onkeyupQty($event, idx)">
+                              <option value="">Select Model</option>
+                              <option *ngFor='let item of mod' [ngValue]=item.model_id>
+                                {{item.model_name}}</option>
+                            </select>
+                            <small *ngIf="user.hasError('required','model')&&submit" class="form-text error"> Model is
+                              Required! </small>
+                          </div>
+                          <div class="form-group" class="col-sm-3">
+                            <label>Quantity <span style="color:red;">*</span></label>
+                            <input type="number"
+                              [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['qty'].invalid&&submit}"
+                              formControlName="qty" (keyup)="onkeyupQty($event, idx)">
+                            <small *ngIf="user.hasError('required','qty')&&submit" class="form-text error"> Quantity
+                              is Required! </small>
+                          </div>
+                          <div class="form-group" class="col-sm-3">
+                            <label>Unit Price <span style="color:red;">*</span></label>
+                            <input type="number"
+                              [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['price'].invalid&&submit}"
+                              formControlName="price" (keyup)="onkeyupQty($event, idx)">
+                            <small *ngIf="user.hasError('required','price')&&submit" class="form-text error"> Price is
+                              Required! </small>
+                          </div>
+                          <div class="form-group" class="col-sm-3">
+                            <label>Total</label>
+                            <input type="number" class="form-control" formControlName="total">
+                          </div>
+                        </div>
+                        <div *ngIf="last||idx !=0" class="form-group" class="col-sm-1">
+                          <div class="dropdown ghost-dropdown" ngbDropdown>
+                            <button style="width: 75px;font-size: 10px;" class="btn btn-primary btn-icon" type="button"
+                              ngbDropdownToggle>Action
+                            </button>
+                            <ul class="dropdown-menu" ngbDropdownMenu>
+                              <li (click)="deleteMatField(idx)" class="dropdown-item" *ngIf="idx !=0">
+                                <i title="Edit Complaint" class="ion-android-delete"></i>&nbsp;Delete
+                              </li>
+                              <li (click)="addMaterial()" class="dropdown-item" *ngIf="last"><i title="Edit Complaint"
+                                  class="ion-ios-plus-outline"></i>&nbsp;ADD
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-md btn-success">Update</button>
+                  <button type="submit" class="btn btn-md btn-danger " (click)='cancel()'>Back </button>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+        </div>
+        <!-- <div class="modal-footer">
+          <button type="submit" class="btn btn-md btn-success">Update</button>
+          <button type="submit" class="btn btn-md btn-danger " (click)='cancel()'>Back </button>
+        </div> -->
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

@@ -1,0 +1,84 @@
+<nb-card>
+  <nb-card-header>List Circle
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]="config"></toaster-container>
+    <button *ngIf="!role.getmenurole(202)" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/group/add-group']">Add</button>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>Business Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();group_name=''" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" addclass="form-control" optValues="groupname"
+            placeholder='Select Circle' (keyUp)="showGroupName($event)" optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <toaster-container [toasterconfig]></toaster-container>
+    <label class="left">
+      <h5>Total Count : {{total}}</h5>
+    </label>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+    <table class="table table-hover table-striped">
+      <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+        <th *ngIf="!role.getmenurole(203)">Action</th>
+        <th *ngIf="role.getroleid()>777">Business Name</th>
+        <th *ngIf="role.getroleid()>=775">Circle Name </th>
+        <th>Description</th>
+      </tr>
+      <tr *ngFor="let item of pagedItems">
+        <td *ngIf="!role.getmenurole(203)"> <a [routerLink]="['/pages/group/edit-group']"
+            [queryParams]='{id: item.groupid} 'class="lightedit" style="cursor: pointer;color:#50505a;text-decoration:none;border: 2px solid #01a7ee;padding: 3px 8px 3px 5px;
+            border-radius: 10px;font-size:11px;"><i class="nb-edit"></i> Edit</a>
+        </td>
+        <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+        <td *ngIf="role.getroleid()>=775">{{item.groupname}}</td>
+        <td>{{item.descr}}</td>
+      </tr>
+      <tr>
+        <td colspan="4" *ngIf="pagedItems==''">NO DATA FOUND</td>
+      </tr>
+    </table>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

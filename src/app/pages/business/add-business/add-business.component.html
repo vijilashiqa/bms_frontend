@@ -1,0 +1,678 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>Add ISP</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form [formGroup]="AddBusForm" class="form-horizontal" (ngSubmit)="addBusiness();">
+        <div class="row">
+          <div class="col-md-6">
+            <nb-card>
+              <nb-card-header style="background-color :  #01a7ee">FUNDAMENTALS</nb-card-header>
+              <nb-card-body>
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label>ISP Name <span style="color:red;">*</span> </label>
+                    <input type="text" name="bus_id" formControlName="bus_id" placeholder="Business Name"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.bus_id.invalid&&submit}" />
+                    <small *ngIf="AddBusForm.controls.bus_id.invalid&&submit" class="form-text error">Business Name is
+                      required! </small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>First Name <span style="color:red;">*</span> </label>
+                    <input type="text" formControlName="fname" placeholder="First Name"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.fname.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.fname.invalid&&submit" class="form-text error">First Name is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Last Name <span style="color:red;">*</span></label>
+                    <input type="text" name="laname" formControlName="laname" placeholder="Last Name"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.laname.invalid&&submit}" />
+                    <small *ngIf="AddBusForm.controls.laname.invalid&&submit" class="form-text error">Last Name is
+                      required! </small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Gender <span style="color:red;">*</span></label>
+                    <select formControlName="gender"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.gender.invalid&&submit}">
+                      <option value="" selected>Select Gender</option>
+                      <option value="1">Female</option>
+                      <option value="2">Male</option>
+                      <option value="3">Others</option>
+                    </select>
+                    <small *ngIf="AddBusForm.controls.gender.invalid&&submit" class="form-text error">Gender Is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Service Type <span style="color:red;">*</span></label>
+                    <select formControlName="serv_type" (change)="ottplatform()"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.serv_type.invalid&&submit}">
+                      <option value="" selected>Select Service Type</option>
+                      <option *ngFor="let item of servtype" [ngValue]="item.srv_id">{{item.service_name}}</option>
+                    </select>
+                    <small *ngIf="AddBusForm.controls.serv_type.invalid&&submit" class="form-text error">Service Type is
+                      Required!</small>
+                  </div>
+                </div>
+                <!-- <div class="form-group row" *ngIf="AddBusForm.value['serv_type']==3||AddBusForm.value['serv_type']==5||AddBusForm.value['serv_type']==7||AddBusForm.value['serv_type']==8">
+                  <div class="col-sm-6">
+                    <label>OTT Platform</label>
+                    <auto-completen MultiSelect=true (change)="ottflag()"
+                      [addclass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.ott_name.invalid&&submit}"
+                      optValues="ott_platform" placeholder="Select Platform" formControlName="ott_name"
+                      optId="ott_id"[item]="ottdata">
+                    </auto-completen>
+                  </div>
+                </div> -->
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="Branch" formControlName="status" />
+                      <label class="custom-control-label" for="Branch">Active Status</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>UserName</label>
+                    <input type="text" formControlName="user_name" placeholder="UserName"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.user_name.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.user_name.invalid&&submit" class="form-text error">UserName is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label>Password <span style="color:red;">*</span></label>
+                    <input type="password" formControlName="passwrd" placeholder="Password"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.passwrd.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.passwrd.invalid&&submit" class="form-text error">Password is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label>Confrimation Password <span style="color:red;">*</span></label>
+                    <input type="password" formControlName="conpass" placeholder="Confrimation Password"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.value['passwrd']!=AddBusForm.value['conpass']}">
+                    <small *ngIf="AddBusForm.value['passwrd']!=AddBusForm.value['conpass']"
+                      class="form-text error">Password Does Not Match!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>ISP Logo </label>
+                    <input type="file" formControlName="isp_logo" placeholder="ISP Logo"
+                      (change)="upload($event.target.files)"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.isp_logo.invalid&&submit}">
+                  </div>
+                  <div class="col-sm-6" *ngIf="imageURL">
+                    <label>Logo Preview</label>
+                    <img [src]="imageURL" style="width: 100%;height: 150px">
+                  </div>
+                </div>
+              </nb-card-body>
+            </nb-card>
+            <nb-card>
+              <nb-card-header style="background-color :  #01a7ee">TOPUP SHARE</nb-card-header>
+              <nb-card-body>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>ISP SHARE % <span style="color:red;">*</span></label>
+                    <input type="text" placeholder="Isp Share" formControlName="tisp_share"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.tisp_share.invalid&&submit}">
+                      <small *ngIf="AddBusForm.hasError('required','tisp_share')&&submit" class="form-text error">ISP
+                        SHARE % is
+                        required! </small>
+                      <small *ngIf="AddBusForm.hasError('limitNotMatch','tisp_share')&&submit" class="form-text error">Total
+                        share not equal to 100! </small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>SUBISP SHARE % <span style="color:red;">*</span></label>
+                    <input type="text" placeholder="SubIsp Share" formControlName="tsub_isp_share"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.tsub_isp_share.invalid&&submit}">
+                      <small *ngIf="AddBusForm.hasError('required','tsub_isp_share')&&submit" class="form-text error">SUB ISP
+                        SHARE % is
+                        required! </small>
+                      <small *ngIf="AddBusForm.hasError('limitNotMatch','tsub_isp_share')&&submit" class="form-text error">Total
+                        share not equal to 100! </small>
+                  </div>
+                   
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>SUBDIST SHARE % <span style="color:red;">*</span></label>
+                    <input type="text" placeholder="SubSistributor Share" formControlName="tsub_dist_share"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.tsub_dist_share.invalid&&submit}">
+                      <small *ngIf="AddBusForm.hasError('required','tsub_dist_share')&&submit" class="form-text error">SUB Distributor
+                        SHARE % is
+                        required! </small>
+                      <small *ngIf="AddBusForm.hasError('limitNotMatch','tsub_dist_share')&&submit" class="form-text error">Total
+                        share not equal to 100! </small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>RESELLER SHARE % <span style="color:red;">*</span></label>
+                    <input type="text" placeholder="Reseller Share" formControlName="tresel_share"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.tresel_share.invalid&&submit}">
+                      <small *ngIf="AddBusForm.hasError('required','tresel_share')&&submit" class="form-text error">RESELLER
+                        SHARE % is
+                        required! </small>
+                      <small *ngIf="AddBusForm.hasError('limitNotMatch','tresel_share')&&submit" class="form-text error">Total
+                        share not equal to 100! </small>
+                      </div>
+                   
+                </div>
+              </nb-card-body>
+            </nb-card>
+          </div>
+          <div class="col-md-6">
+            <nb-card>
+              <nb-card-header style="background-color :  #01a7ee">COMMUNICATION</nb-card-header>
+              <nb-card-body>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Email <span style="color:red;">*</span></label>
+                    <input type="text" name="email" formControlName="email" placeholder="Email"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.email.invalid&&submit}" />
+                    <small *ngIf="AddBusForm.controls.email.invalid&&submit" class="form-text error">Email is
+                      required! </small>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Mobile Number <span style="color:red;">*</span></label>
+                    <input type="number" name="mob_num" formControlName="mob_num" placeholder="Mobile Number"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.mob_num.invalid&&submit}" />
+                    <small *ngIf="AddBusForm.controls.mob_num.invalid&&submit" class="form-text error">Mobile Number
+                      is required! </small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Telephone Number</label>
+                    <input type="number" name="phone_num" formControlName="phone_num" placeholder="Telephone Number"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.phone_num.invalid&&submit}" />
+                  </div>
+                  <div class="col-sm-6">
+                    <label>CustomerCare Number</label>
+                    <input type="number" name="custcare_num" formControlName="custcare_num"
+                      placeholder="CustomerCare Number"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.custcare_num.invalid&&submit}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>State <span style="color:red;">*</span></label>
+                    <auto-completen
+                      [addclass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.state.invalid&&submit}"
+                      optValues="name" (changed)="cityshow()" placeholder="Select state" formControlName="state"
+                      id="state" [item]="states">
+                    </auto-completen>
+                    <small *ngIf="AddBusForm.controls.state.invalid&&submit" class="form-text error">Please Select
+                      State!</small>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>City <span style="color:red;">*</span></label>
+                    <auto-completen
+                      [addclass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.city.invalid&&submit}"
+                      optValues="name" (keyUp)="cityshow($event)" placeholder="Select city" formControlName="city"
+                      id="city" [item]="dist">
+                    </auto-completen>
+                    <small *ngIf="AddBusForm.controls.city.invalid&&submit" class="form-text error">Please Select
+                      City!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Address <span style="color:red;">*</span></label>
+                    <textarea name="bus_addr" formControlName="bus_addr" placeholder="Business Address"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddBusForm.controls.bus_addr.invalid&&submit}"></textarea>
+                    <small *ngIf="AddBusForm.controls.bus_addr.invalid&&submit" class="form-text error">Business
+                      Location is required! </small>
+                  </div>
+                </div>
+              </nb-card-body>
+            </nb-card>
+            <nb-card class="scroller">
+              <nb-card-header style="background-color :  #01a7ee">GST</nb-card-header>
+              <nb-card-body>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Pan Number</label>
+                    <input type="text" placeholder="Pan Number" formControlName="pan_no"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.pan_no.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.pan_no.invalid&&sumit" class="form-text error">Pan Number is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>HSN Number</label>
+                    <input type="number" formControlName="hsn_no"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.hsn_no.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.hsn_no.invalid&&submit">HSN Number is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Service Tax Number</label>
+                    <input type="text" formControlName="srvtax_no"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.srvtax_no.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.srvtax_no.invalid&&submit">ServiceTax Number is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>Internet IGST </label>
+                    <input type="number" formControlName="igst" placeholder="IGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.igst.invalid&&submit" class="form-text error">Internet IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Internet CGST </label>
+                    <input type="number" formControlName="cgst" placeholder="CGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.cgst.invalid&&submit" class="form-text error">Internet CGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Internet SGST </label>
+                    <input type="number" formControlName="sgst" placeholder="SGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.sgst.invalid&&submit" class="form-text error">Internet SGST is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row"
+                  *ngIf="AddBusForm.value['serv_type']=='2'|| AddBusForm.value['serv_type']=='5'||AddBusForm.value['serv_type']=='6'||AddBusForm.value['serv_type']=='8'">
+                  <div class="col-sm-4">
+                    <label>Voice IGST </label>
+                    <input type="number" formControlName="vo_igst" placeholder="IGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.vo_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.vo_igst.invalid&&submit" class="form-text error">Voice IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Voice CGST </label>
+                    <input type="number" formControlName="vo_cgst" placeholder="CGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.vo_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.vo_cgst.invalid&&submit" class="form-text error">Voice CGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Voice SGST </label>
+                    <input type="number" formControlName="vo_sgst" placeholder="SGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.vo_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.vo_sgst.invalid&&submit" class="form-text error">Voice SGST is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row"
+                  *ngIf="AddBusForm.value['serv_type']=='3'|| AddBusForm.value['serv_type']=='5'||AddBusForm.value['serv_type']=='7'||AddBusForm.value['serv_type']=='8' ">
+                  <div class="col-sm-4">
+                    <label>OTT IGST </label>
+                    <input type="number" formControlName="ott_igst" placeholder="IGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.ott_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.ott_igst.invalid&&submit" class="form-text error">OTT IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>OTT CGST </label>
+                    <input type="number" formControlName="ott_cgst" placeholder="CGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.ott_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.ott_cgst.invalid&&submit" class="form-text error">OTT CGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>OTT SGST </label>
+                    <input type="number" formControlName="ott_sgst" placeholder="SGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.ott_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.ott_sgst.invalid&&submit" class="form-text error">OTT SGST is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row"
+                  *ngIf="AddBusForm.value['serv_type']=='4'||AddBusForm.value['serv_type']=='6'||AddBusForm.value['serv_type']=='7'||AddBusForm.value['serv_type']=='8'">
+                  <div class="col-sm-4">
+                    <label>Addon IGST </label>
+                    <input type="number" formControlName="add_igst" placeholder="IGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.add_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.add_igst.invalid&&submit" class="form-text error">Addon IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Addon CGST </label>
+                    <input type="number" formControlName="add_cgst" placeholder="CGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.add_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.add_cgst.invalid&&submit" class="form-text error">Addon CGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Addon SGST </label>
+                    <input type="number" formControlName="add_sgst" placeholder="SGST Percentage"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.add_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.add_sgst.invalid&&submit" class="form-text error">Addon SGST is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4">
+                    <label>GST No</label>
+                    <input type="text" formControlName="gst_no" placeholder="GST Number"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.gst_no.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.gst_no.invalid&&submit" class="form-text error">GST Number is
+                      REquired!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Subscriber Limit <span style="color:red;">*</span></label>
+                    <input type="text" formControlName="subs_limit" placeholder="0 (unlimited subscribers)"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.subs_limit.invalid&&submit}">
+                    <small *ngIf="AddBusForm.value['subs_limit']=='0'" class="form-text">No Limit</small>
+                    <small *ngIf="AddBusForm.controls.subs_limit.invalid&&submit" class="form-text error">Subscriber
+                      Limit is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Hard Bucket <span style="color:red;">*</span></label>
+                    <select (change)="buckvalid()" formControlName="hot_bucket"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.hot_bucket.invalid&&submit}">
+                      <option value="" selected>Select Hard Bucket status</option>
+                      <option value="1">Enable</option>
+                      <option value="2">Disable</option>
+                    </select>
+                    <small *ngIf="AddBusForm.controls.hot_bucket.invalid&&submit" class="form-text error">Hot Bucket
+                      Status Is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4" *ngIf="AddBusForm.value['hot_bucket']=='1'">
+                    <label>Hard Bucket Days <span style="color:red;">*</span></label>
+                    <input type="number" formControlName="hot_buckdays" placeholder="Days (MIN-60 MAX-365)"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.hot_buckdays.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.hot_buckdays.invalid&&submit" class="form-text error">Days is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>GST ID <span style="color:red;">*</span></label>
+                    <input type="text" formControlName="gst_id" placeholder="GST ID"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.gst_id.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.gst_id.invalid&&submit" class="form-text error">GST ID is
+                      Required!</small>
+                    <small *ngIf="AddBusForm.hasError('pattern','gst_id')&&submit" class="form-text error">GST ID should
+                      Have 6 Charactes!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3">
+                    <nb-checkbox formControlName="disney_flag" (change)="ottvalid()">Hotstar+</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddBusForm.value['disney_flag']">
+                  <div class="col-sm-4">
+                    <label>Hotstar IGST</label>
+                    <input type="number" formControlName="disney_igst" placeholder="Hotstar IGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.disney_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.disney_igst.invalid&&submit" class="form-text error">Hotstar IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Hotstar CGST</label>
+                    <input type="number" formControlName="disney_cgst" placeholder="Hotstar CGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.disney_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.disney_cgst.invalid&&submit" class="form-text error">Hotstar IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Hotstar SGST</label>
+                    <input type="number" formControlName="disney_sgst" placeholder="Hotstar SGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.disney_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.disney_sgst.invalid&&submit" class="form-text error">Hotstar IGST
+                      is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3">
+                    <nb-checkbox formControlName="amazon_flag" (change)="ottvalid()">Amazon Prime</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddBusForm.value['amazon_flag']">
+                  <div class="col-sm-4">
+                    <label>Amazon IGST</label>
+                    <input type="number" formControlName="amazon_igst" placeholder="Amazon IGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.amazon_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.amazon_igst.invalid&&submit" class="form-text error">Amazon IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Amazon CGST</label>
+                    <input type="number" formControlName="amazon_cgst" placeholder="Amazon CGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.amazon_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.amazon_cgst.invalid&&submit" class="form-text error">Amazon IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Amazon SGST</label>
+                    <input type="number" formControlName="amazon_sgst" placeholder="Amazon SGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.amazon_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.amazon_sgst.invalid&&submit" class="form-text error">Amazon IGST
+                      is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3">
+                    <nb-checkbox formControlName="netflix_flag" (change)="ottvalid()">Netflix</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddBusForm.value['netflix_flag']">
+                  <div class="col-sm-4">
+                    <label>Netflix IGST</label>
+                    <input type="number" formControlName="netflix_igst" placeholder="Netflix IGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.netflix_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.netflix_igst.invalid&&submit" class="form-text error">Netflix IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Netflix CGST</label>
+                    <input type="number" formControlName="netflix_cgst" placeholder="Netflix CGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.netflix_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.netflix_cgst.invalid&&submit" class="form-text error">Netflix IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Netflix SGST</label>
+                    <input type="number" formControlName="netflix_sgst" placeholder="Netflix SGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.netflix_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.netflix_sgst.invalid&&submit" class="form-text error">Netflix IGST
+                      is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3">
+                    <nb-checkbox formControlName="sun_flag" (change)="ottvalid()">Sun NXT</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddBusForm.value['sun_flag']">
+                  <div class="col-sm-4">
+                    <label>Sun NXT IGST</label>
+                    <input type="number" formControlName="sun_igst" placeholder="Sun NXT IGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.sun_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.sun_igst.invalid&&submit" class="form-text error">Sun NXT IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Sun NXT CGST</label>
+                    <input type="number" formControlName="sun_cgst" placeholder="Sun NXT CGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.sun_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.sun_cgst.invalid&&submit" class="form-text error">Sun NXT IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Sun NXT SGST</label>
+                    <input type="number" formControlName="sun_sgst" placeholder="Sun NXT SGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.sun_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.sun_sgst.invalid&&submit" class="form-text error">Sun NXT IGST is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3">
+                    <nb-checkbox formControlName="zee_flag" (change)="ottvalid()">Zee5</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddBusForm.value['zee_flag']">
+                  <div class="col-sm-4">
+                    <label>ZEE5 IGST</label>
+                    <input type="number" formControlName="zee_igst" placeholder="ZEE5 IGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.zee_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.zee_igst.invalid&&submit" class="form-text error">ZEE5 IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>ZEE5 CGST</label>
+                    <input type="number" formControlName="zee_cgst" placeholder="ZEE5 CGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.zee_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.zee_cgst.invalid&&submit" class="form-text error">ZEE5 IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>ZEE5 SGST</label>
+                    <input type="number" formControlName="zee_sgst" placeholder="ZEE5 SGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.zee_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.zee_sgst.invalid&&submit" class="form-text error">ZEE5 IGST is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3">
+                    <nb-checkbox formControlName="raj_flag" (change)="ottvalid()">Raj NXT</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddBusForm.value['raj_flag']">
+                  <div class="col-sm-4">
+                    <label>Raj NXT IGST</label>
+                    <input type="number" formControlName="raj_igst" placeholder="Raj NXT IGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.raj_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.raj_igst.invalid&&submit" class="form-text error">Raj NXT IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Raj NXT CGST</label>
+                    <input type="number" formControlName="raj_cgst" placeholder="Raj NXT CGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.raj_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.raj_cgst.invalid&&submit" class="form-text error">Raj NXT IGST is
+                      Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Raj NXT SGST</label>
+                    <input type="number" formControlName="raj_sgst" placeholder="Raj NXT SGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.raj_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.raj_sgst.invalid&&submit" class="form-text error">Raj NXT IGST is
+                      Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3">
+                    <nb-checkbox formControlName="sony_flag" (change)="ottvalid()">Sony Live</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddBusForm.value['sony_flag']">
+                  <div class="col-sm-4">
+                    <label>Sony LIV IGST</label>
+                    <input type="number" formControlName="sony_igst" placeholder="Sony LIV IGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.sony_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.sony_igst.invalid&&submit" class="form-text error">Sony LIV IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Sony LIV CGST</label>
+                    <input type="number" formControlName="sony_cgst" placeholder="Sony LIV CGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.sony_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.sony_cgst.invalid&&submit" class="form-text error">Sony LIV IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Sony LIV SGST</label>
+                    <input type="number" formControlName="sony_sgst" placeholder="Sony LIV SGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.sony_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.sony_sgst.invalid&&submit" class="form-text error">Sony LIV IGST
+                      is Required!</small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3">
+                    <nb-checkbox formControlName="hunga_flag" (change)="ottvalid()">Hungama</nb-checkbox>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="AddBusForm.value['hunga_flag']">
+                  <div class="col-sm-4">
+                    <label>Hungama IGST</label>
+                    <input type="number" formControlName="hunga_igst" placeholder="Hungama IGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.hunga_igst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.hunga_igst.invalid&&submit" class="form-text error">Hungama IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Hungama CGST</label>
+                    <input type="number" formControlName="hunga_cgst" placeholder="Hungama CGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.hunga_cgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.hunga_cgst.invalid&&submit" class="form-text error">Hungama IGST
+                      is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                    <label>Hungama SGST</label>
+                    <input type="number" formControlName="hunga_sgst" placeholder="Hungama SGST"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.hunga_sgst.invalid&&submit}">
+                    <small *ngIf="AddBusForm.controls.hunga_sgst.invalid&&submit" class="form-text error">Hungama IGST
+                      is Required!</small>
+                  </div>
+                </div>
+              </nb-card-body>
+            </nb-card>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-6">
+            <nb-card>
+              <nb-card-header style="background-color :  #01a7ee">Notification Alert</nb-card-header>
+              <nb-card-body>
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <label>Expiry Alert</label>
+                    <input type="number" formControlName="exp_alert" placeholder="Alert Days"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.exp_alert.invalid&&submit}">
+                    <!-- <small style="color: red;text-align: right;float: right; ">Day(S)
+                      </small> -->
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Download Alert</label>
+                    <input type="number" formControlName="dl_alert" placeholder="Download Alert%"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.dl_alert.invalid&&submit}">
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Upload Alert</label>
+                    <input type="number" formControlName="ul_alert" placeholder="Upload Alert%"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.ul_alert.invalid&&submit}">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Total Traffic Alert</label>
+                    <input type="number" formControlName="tot_alert" placeholder="Total Traffic Alert%"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.tot_alert.invalid&&submit}">
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Online Time Alert</label>
+                    <input type="number" formControlName="ontime_alert" placeholder="Online Time Alert%"
+                      [ngClass]="{'form-control':true,'form-control-danger':AddBusForm.controls.ontime_alert.invalid&&submit}">
+                  </div>
+                </div>
+              </nb-card-body>
+            </nb-card>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-md btn-success">Add</button>
+          <button class="btn btn-md btn-danger" [routerLink]="['/pages/business/list-business']">Back</button>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

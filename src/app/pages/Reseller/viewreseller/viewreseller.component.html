@@ -1,0 +1,737 @@
+<div class="col-md-12">
+   <nb-card>
+      <ngx-loading [show]="loading"
+         [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+      </ngx-loading>
+      <toaster-container [toasterconfig]="config"> </toaster-container>
+      <nb-card-header *ngIf="role.getroleid()>=775">View Reseller
+         <a type="button" class="btn btn-primary btn-sm btn-floating "
+            style="float: right;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px;cursor: pointer; ;padding-right: 3px;color:white;"
+            (click)="refresh()"><i class="fas fa-sync"></i> Refresh</a>
+      </nb-card-header>
+      <nb-card-header *ngIf="role.getroleid()<775">Reseller Info
+         <a type="button" class="btn btn-primary btn-sm btn-floating "
+            style="float: right;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px;cursor: pointer; ;padding-right: 3px;color:white;"
+            (click)="refresh()"><i class="fas fa-sync"></i> Refresh</a>
+      </nb-card-header>
+
+      <nb-card-body>
+         <div class="row" style="padding-left: 10px;">
+            <div style="padding: 2px;" *ngIf="role.getroleid()>=775">
+               <button class="btn btn-tn btn-outline-primary" (click)="Add_username(datas)">Change Username</button>
+            </div>
+            <div style="padding: 2px;" *ngIf="role.getroleid()> 444">
+               <button class="btn btn-tn btn-outline-primary" (click)="Add_password(datas)">Change Password</button>
+            </div>
+            <div style="padding: 2px;" *ngIf="role.getroleid()>=775">
+               <button class="btn btn-tn btn-outline-primary" (click)="Edit_res(datas)">Edit</button>
+            </div>
+            <div style="padding: 2px;" *ngIf="role.getroleid()>=775">
+               <button class="btn btn-tn btn-outline-primary" (click)="nasedit(datas)">Edit-NAS</button>
+            </div>
+         </div>
+         <hr>
+         <ngb-tabset>
+            <ngb-tab title="Basic Info">
+               <ng-template ngbTabContent>
+                  <hr style="border:0px">
+                  <div class="row">
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Basic Info</nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>ISP Name</th>
+                                    <td>{{data.busname}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Circle</th>
+                                    <td>{{data.groupname}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Reseller Type</th>
+                                    <td>
+                                       {{data.role==666 ? 'Sub ISP Bulk':data.role==555 ? 'Sub ISP
+                                       Deposit':data.role==444 ? 'Bulk Reseller':data.role==333 ? 'Deposit
+                                       Reseller':data.role==222 ? 'Hotel':data.role==661 ? 'Sub Distributor Bulk':
+                                       data.role == 331 ? 'Card Reseller' :'Sub Distributor Deposit'}}
+                                    </td>
+                                 </tr>
+                                 <tr *ngIf="data.role=='333'||data.role=='444'||data.role=='551'">
+                                    <th>Reseller Under</th>
+                                    <td>
+                                       {{data.sub_isp_or_dist==1 ? 'Sub ISP Bulk':data.sub_isp_or_dist==2 ? 'Sub ISP
+                                       Deposit':data.sub_isp_or_dist==3 ? 'Sub Distributor Bulk' :
+                                       data.sub_isp_or_dist==4 ? 'Sub Distributor Deposit':'None'}}
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Reseller Name</th>
+                                    <td>{{data.resellername}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Backend-ID</th>
+                                    <td style="font-size: medium;"><b>{{data.id}}</b></td>
+                                 </tr>
+                                 <tr>
+                                    <th>Reseller LoginID</th>
+                                    <td style="text-transform: none !important;font-size: medium">
+                                       <b>{{data.managername}}</b></td>
+                                 </tr>
+                                 <tr>
+                                    <th>Mobile No</th>
+                                    <td>{{data.mobile}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Email</th>
+                                    <td style="text-transform: none !important">{{data.email}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>SMS Id</th>
+                                    <td>{{data.SMS}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>State</th>
+                                    <td>{{data.state_name}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>City</th>
+                                    <td>{{data.city_name}}
+                                    </td>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Agreement Info
+                           </nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>Agreement Start Date</th>
+                                    <td>{{data.start_date| date : 'd MMM y h:mm:ss a'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Agreeement End Date</th>
+                                    <td>{{data.end_date| date : 'd MMM y h:mm:ss a'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Status</th>
+                                    <td> <a [ngStyle]="{'color' :data.agg_status==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.agg_status!=1? true:false,'ion-checkmark-round': data.agg_status==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Drop Date</th>
+                                    <td>{{data.drop_date|| 'N/A'}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Drop Reason</th>
+                                    <td>{{data.drop_reason|| 'N/A'}}</td>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Business Info
+                           </nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>Business Name</th>
+                                    <td>{{data.company}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>GST Number</th>
+                                    <td>{{data.gst_no}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.role==333||data.role==444">
+                                    <th>IP Pool</th>
+                                    <td>{{data.name==null ? "No IP Pool" : data.name}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.role==333||data.role==444">
+                                    <th>Nas</th>
+                                    <td>{{data.shortname}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.role==333||data.role==444">
+                                    <th>Nas IP</th>
+                                    <td>{{data.nasname}}</td>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Branch Info
+                           </nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>Branch Name</th>
+                                    <th>Branch Address</th>
+                                 </tr>
+                                 <tr *ngFor="let item of branchdata">
+                                    <td>{{item.branch}}</td>
+                                    <td>{{item.branch_addr}}</td>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-12">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Share Info</nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>Service Type</th>
+                                    <td>{{data.service_type==1 ? 'Internet' : data.service_type==2 ? 'Internet & Voice':
+                                       data.service_type==3 ? 'Internet & OTT':data.service_type==4 ? 'Internet & AddOn'
+                                       :data.service_type==5 ? 'Internet & Voice & OTT':data.service_type==6 ? 'Internet
+                                       & Voice & AddOn':data.service_type==7 ? 'Internet & OTT & AddOn':'All Services'}}
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Sharing Type</th>
+                                    <td>{{data.sharing_type==1 ? 'Common Sharing':'Package wise Sharing'}}</td>
+                                 </tr>
+                                 <tr
+                                    *ngIf="data.service_type==2||data.service_type==5||data.service_type==6||data.service_type==8">
+                                    <th>Voice Status</th>
+                                    <td><a [ngStyle]="{'color' :data.Vstatus==2 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.Vstatus!=2? true:false,'ion-checkmark-round': data.Vstatus==2 ? true:false  }"></a>
+                                    </td>
+                                 </tr>
+                                 <tr
+                                    *ngIf="data.service_type==8||data.service_type==3||data.service_type==5||data.service_type==7">
+                                    <th>OTT Status</th>
+                                    <td><a [ngStyle]="{'color' :data.Ostatus==2 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.Ostatus!=2? true:false,'ion-checkmark-round': data.Ostatus==2 ? true:false  }"></a>
+                                    </td>
+                                 </tr>
+                                 <tr
+                                    *ngIf="data.service_type==4||data.service_type==6||data.service_type==7||data.service_type==8">
+                                    <th>AddOn Status</th>
+                                    <td><a [ngStyle]="{'color' :data.AONstatus==2 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.AONstatus!=2? true:false,'ion-checkmark-round': data.AONstatus==2 ? true:false  }"></a>
+                                    </td>
+                                 </tr>
+                              </table>
+                              <div class="row">
+                                 <div class="col-md-6">
+                                    <nb-card>
+                                       <nb-card-header style="background-color: aquamarine;">Internet Share
+                                       </nb-card-header>
+                                       <nb-card-body>
+                                          <table class="table table-hover table-striped">
+                                             <tr>
+                                                <th>ISP share</th>
+                                                <td>{{data.isp_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>Sub ISP Share</th>
+                                                <td>{{data.sub_isp_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>Sub Distributor Share</th>
+                                                <td>{{data.sub_dist_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>Reseller Share</th>
+                                                <td>{{data.reseller_share}}</td>
+                                             </tr>
+                                          </table>
+                                       </nb-card-body>
+                                    </nb-card>
+                                 </div>
+                                 <div class="col-md-6"
+                                    *ngIf="(data.service_type==2||data.service_type==5||data.service_type==6||data.service_type==8)&& data.Vshare==1">
+                                    <nb-card>
+                                       <nb-card-header style="background-color: aquamarine;">Voice Share
+                                       </nb-card-header>
+                                       <nb-card-body>
+                                          <table class="table table-hover table-striped">
+                                             <tr>
+                                                <th>Voice ISP share</th>
+                                                <td>{{data.Visp_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>Voice Sub ISP Share</th>
+                                                <td>{{data.Vsub_isp_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>Voice Sub Distributor Share</th>
+                                                <td>{{data.Vsub_dist_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>Voice Reseller Share</th>
+                                                <td>{{data.Vreseller_share}}</td>
+                                             </tr>
+                                          </table>
+                                       </nb-card-body>
+                                    </nb-card>
+                                 </div>
+                              </div>
+                              <div class="row">
+                                 <div class="col-md-6"
+                                    *ngIf="(data.service_type==8||data.service_type==3||data.service_type==5||data.service_type==7)&& data.Oshare==1">
+                                    <nb-card>
+                                       <nb-card-header style="background-color: aquamarine;">OTT Share</nb-card-header>
+                                       <nb-card-body>
+                                          <table class="table table-hover table-striped">
+                                             <tr>
+                                                <th>OTT ISP share</th>
+                                                <td>{{data.Oisp_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>OTT Sub ISP Share</th>
+                                                <td>{{data.Osub_isp_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>OTT Sub Distributor Share</th>
+                                                <td>{{data.Osub_dist_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>OTT Reseller Share</th>
+                                                <td>{{data.Oreseller_share}}</td>
+                                             </tr>
+                                          </table>
+                                       </nb-card-body>
+                                    </nb-card>
+                                 </div>
+                                 <div class="col-md-6"
+                                    *ngIf="(data.service_type==4||data.service_type==6||data.service_type==7||data.service_type==8)&& data.AONshare==1">
+                                    <nb-card>
+                                       <nb-card-header style="background-color: aquamarine;">ADDON Share
+                                       </nb-card-header>
+                                       <nb-card-body>
+                                          <table class="table table-hover table-striped">
+                                             <tr>
+                                                <th>ISP share</th>
+                                                <td>{{data.AONisp_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>Sub ISP Share</th>
+                                                <td>{{data.AONsub_isp_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>Sub Distributor Share</th>
+                                                <td>{{data.AONsub_dist_share}}</td>
+                                             </tr>
+                                             <tr>
+                                                <th>Reseller Share</th>
+                                                <td>{{data.AONreseller_share}}</td>
+                                             </tr>
+                                          </table>
+                                       </nb-card-body>
+                                    </nb-card>
+                                 </div>
+                              </div>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                  </div>
+               </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Settings & Nottification info">
+               <ng-template ngbTabContent>
+                  <hr style="border:0px">
+                  <div class="row">
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Settings Info
+                           </nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <th>Mobile App Access</th>
+                                    <td> <a [ngStyle]="{'color' :data.MobileAppAccess==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.MobileAppAccess!=1? true:false,'ion-checkmark-round': data.MobileAppAccess==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Allow Unique mobile Number</th>
+                                    <td> <a [ngStyle]="{'color' :data.uniq_mbl_num==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.uniq_mbl_num!=1? true:false,'ion-checkmark-round': data.uniq_mbl_num==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Allow Unique mailid</th>
+                                    <td> <a [ngStyle]="{'color' :data.uniq_mail_id==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.uniq_mail_id!=1? true:false,'ion-checkmark-round': data.uniq_mail_id==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr *ngIf="data.role==333">
+                                    <th>TopUp Minimum</th>
+                                    <td> <a [ngStyle]="{'color' :data.topup_minimum==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.topup_minimum!=1? true:false,'ion-checkmark-round': data.topup_minimum==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr *ngIf="data.topup_minimum==1">
+                                    <th>Minimum Amount</th>
+                                    <td>{{data.minimum_amt}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>SMS Gateway</th>
+                                    <td> <a [ngStyle]="{'color' :data.sms_gateway==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.sms_gateway!=1? true:false,'ion-checkmark-round': data.sms_gateway==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr *ngIf="data.sms_gateway==1">
+                                    <th>SMS Gateway Through</th>
+                                    <td>{{data.sms_gtwy_th==4?'ISP':data.sms_gtwy_th==5?'Reseller':'Deactive'}}
+                                    </td>
+                                 </tr>
+                                 <tr *ngIf="data.sms_gtwy_th!=0">
+                                    <th>Gateway</th>
+                                    <td></td>
+                                 </tr>
+                                 <tr *ngIf="data.sms_gtwy_th!=0">
+                                    <th>SMS Sender ID</th>
+                                    <td>{{data.sender_id}}</td>
+                                 </tr>
+                                 <tr>
+                                    <th>Subscriber Payment Gateway</th>
+                                    <td> <a [ngStyle]="{'color' :data.pay_gtwy==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.pay_gtwy!=1? true:false,'ion-checkmark-round': data.pay_gtwy==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr *ngIf="data.pay_gtwy==1">
+                                    <th>Payment Gateway</th>
+                                    <td>{{data.pay_gtwy_id==4?'ISP':data.pay_gtwy_id==5?'Reseller':'Deactive'}}
+                                    </td>
+                                 </tr>
+                                 <tr *ngIf="data.pay_gtwy==1">
+                                    <th>Payment Gateway Through</th>
+                                    <td>{{data.pay_gtwy_type}}</td>
+                                 </tr>
+                                 <tr *ngIf="data.pay_gtwy_id!=0">
+                                    <th>Amount Shared To</th>
+                                    <td>{{data.amt_shared==1?'Dashboard':data.amt_shared==2?'Bank':'Deactive'}}
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Over Due</th>
+                                    <td> <a [ngStyle]="{'color' :data.overdue==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.overdue!=1? true:false,'ion-checkmark-round': data.overdue==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr *ngIf="data.overdue==1">
+                                    <th>Maximum Due Limit</th>
+                                    <td>{{data.max_due_amt}}</td>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">
+                              Notification
+                           </nb-card-header>
+                           <nb-card-body>
+                              <table class="table table-hover table-striped">
+                                 <tr>
+                                    <td style="color:blue"><b>Alerts</b></td>
+                                    <td style="color:blue"><b>SMS</b></td>
+                                    <td style="color:blue"><b>EMAIL</b></td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Registration Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_reg_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_reg_sms!=1? true:false,'ion-checkmark-round': data.cust_reg_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_reg_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_reg_email!=1? true:false,'ion-checkmark-round': data.cust_reg_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Renew Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_pck_renewal_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_pck_renewal_sms!=1? true:false,'ion-checkmark-round': data.cust_pck_renewal_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_pck_renewal_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_pck_renewal_email!=1? true:false,'ion-checkmark-round': data.cust_pck_renewal_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Auto Renew Alert</th>
+
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.autoRenew_alrt_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.autoRenew_alrt_sms!=1? true:false,'ion-checkmark-round': data.autoRenew_alrt_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.autoRenew_alrt_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.autoRenew_alrt_email!=1? true:false,'ion-checkmark-round': data.autoRenew_alrt_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Auto Renew Alert Send</th>
+                                    <td colspan="2">
+                                       {{data.auto_renew==1?'1Day before':data.auto_renew==2?'2Day
+                                       before':data.auto_renew==3?'3Day before':data.auto_renew==4?'4Day
+                                       before':data.auto_renew==5?'5Day before':data.auto_renew==6?'6Day
+                                       before':data.auto_renew==7?'7Day before':'No Alert'}}
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Invoice Generated Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_invoice_alrt_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_invoice_alrt_sms!=1? true:false,'ion-checkmark-round': data.cust_invoice_alrt_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_invoice_alrt_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_invoice_alrt_email!=1? true:false,'ion-checkmark-round': data.cust_invoice_alrt_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Bill Paid Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_billpay_alrt_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_billpay_alrt_sms!=1? true:false,'ion-checkmark-round': data.cust_billpay_alrt_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_billpay_alrt_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_billpay_alrt_email!=1? true:false,'ion-checkmark-round': data.cust_billpay_alrt_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Package Change Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.package_change_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.package_change_sms!=1? true:false,'ion-checkmark-round': data.package_change_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.package_change_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.package_change_email!=1? true:false,'ion-checkmark-round': data.package_change_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Extra data Limit Credit Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.extra_data_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.extra_data_sms!=1? true:false,'ion-checkmark-round': data.extra_data_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.extra_data_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.extra_data_email!=1? true:false,'ion-checkmark-round': data.extra_data_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Temporary Suspended if not Paid Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_tempSusp_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_tempSusp_sms!=1? true:false,'ion-checkmark-round': data.cust_tempSusp_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.cust_tempSusp_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.cust_tempSusp_email!=1? true:false,'ion-checkmark-round': data.cust_tempSusp_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Amount Credit Add Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.amntcredit_add_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.amntcredit_add_sms!=1? true:false,'ion-checkmark-round': data.amntcredit_add_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.amntcredit_add_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.amntcredit_add_email!=1? true:false,'ion-checkmark-round': data.amntcredit_add_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Amount Balance Add Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.amount_balance_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.amount_balance_sms!=1? true:false,'ion-checkmark-round': data.amount_balance_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.amount_balance_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.amount_balance_email!=1? true:false,'ion-checkmark-round': data.amount_balance_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Expiray Alert</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.expiry_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.expiry_sms!=1? true:false,'ion-checkmark-round': data.expiry_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.expiry_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.expiry_email!=1? true:false,'ion-checkmark-round': data.expiry_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Customer Expiry Alert Send</th>
+                                    <td colspan="2">
+                                       {{data.expiry_send==1?'1Day before':data.expiry_send==2?'2Day
+                                       before':data.expiry_send==3?'3Day before':data.expiry_send==4?'4Day
+                                       before':data.expiry_send==5?'5Day before':data.expiry_send==6?'6Day
+                                       before':data.expiry_send==7?'7Day before':'No Alert'}}
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Complaint Register Alert To user</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_reg_alrt_toUser_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_reg_alrt_toUser_sms!=1? true:false,'ion-checkmark-round': data.comp_reg_alrt_toUser_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_reg_alrt_toUser_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_reg_alrt_toUser_email!=1? true:false,'ion-checkmark-round': data.comp_reg_alrt_toUser_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Complaint Resolve Alert To User</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_resol_toUser_Cust_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_resol_toUser_Cust_sms!=1? true:false,'ion-checkmark-round': data.comp_resol_toUser_Cust_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_resol_toUser_Cust_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_resol_toUser_Cust_email!=1? true:false,'ion-checkmark-round': data.comp_resol_toUser_Cust_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Complaint Close Alert To User</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_clse_toUser_Cust_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_clse_toUser_Cust_sms!=1? true:false,'ion-checkmark-round': data.comp_clse_toUser_Cust_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_clse_toUser_Cust_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_clse_toUser_Cust_email!=1? true:false,'ion-checkmark-round': data.comp_clse_toUser_Cust_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Complaint Assigned Alert To Employee</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_asignToEmp_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_asignToEmp_sms!=1? true:false,'ion-checkmark-round': data.comp_asignToEmp_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_asignToEmp_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_asignToEmp_email!=1? true:false,'ion-checkmark-round': data.comp_asignToEmp_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Lead Register Alert To User</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_reg_alrt_toCust_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_reg_alrt_toCust_sms!=1? true:false,'ion-checkmark-round': data.comp_reg_alrt_toCust_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.comp_reg_alrt_toCust_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.comp_reg_alrt_toCust_email!=1? true:false,'ion-checkmark-round': data.comp_reg_alrt_toCust_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Lead Assign Alert To Employee</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.lead_asign_toEmp_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.lead_asign_toEmp_sms!=1? true:false,'ion-checkmark-round': data.lead_asign_toEmp_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.lead_asign_toEmp_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.lead_asign_toEmp_email!=1? true:false,'ion-checkmark-round': data.lead_asign_toEmp_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                                 <tr>
+                                    <th>Deposit Comfirmation Alert To Reseller</th>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.deposit_alert_sms==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.deposit_alert_sms!=1? true:false,'ion-checkmark-round': data.deposit_alert_sms==1 ? true:false  }">
+                                       </a> </td>
+                                    <td style="text-align: center;"> <a
+                                          [ngStyle]="{'color' :data.deposit_alert_email==1 ? 'green' : 'red' }"
+                                          [ngClass]="{'ion-close-round':data.deposit_alert_email!=1? true:false,'ion-checkmark-round': data.deposit_alert_email==1 ? true:false  }">
+                                       </a> </td>
+                                 </tr>
+                              </table>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                  </div>
+               </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Service & Sub-Plan">
+               <ng-template ngbTabContent>
+                  <hr style="border: 0px;">
+                  <div class="row">
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Services</nb-card-header>
+                           <nb-card-body>
+                              <div class="table-wrapper">
+                                 <table class="table table-hover table-striped">
+                                    <tr>
+                                       <th>Service Name</th>
+                                       <th>DL Limit</th>
+                                       <th>UL Limit</th>
+                                    </tr>
+                                    <tr *ngFor="let item of srvdata">
+                                       <td (click)="view_subplan(item.reseller_id,item.srvid)" style="cursor: pointer;">
+                                          {{item.srvname}}</td>
+                                       <td>{{item.dlimit}}</td>
+                                       <td>{{item.ulimit}}</td>
+                                    </tr>
+                                 </table>
+                              </div>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                     <div class="col-lg-6">
+                        <nb-card>
+                           <nb-card-header style="background-color :  #01a7ee;color: white;">Sub-Plan</nb-card-header>
+                           <nb-card-body>
+                              <div class="table-wrapper">
+                                 <table class="table table-hover talble-stripped">
+                                    <tr>
+                                       <th>Service Type</th>
+                                       <th>Service Name</th>
+                                       <th>Subplan Name</th>
+                                       <th>Taxt Type</th>
+                                       <th>Price</th>
+                                    </tr>
+                                    <tr *ngFor="let item of subplandata">
+                                       <td>{{item.service_name}}</td>
+                                       <td>{{item.srvname}}</td>
+                                       <td>{{item.sub_plan}}</td>
+                                       <td>{{item.tax_type==1 ? 'Inclusive':'Exclusive'}}</td>
+                                       <td>{{item.amount}}</td>
+                                    </tr>
+                                    <tr>
+                                       <td colspan="4" style="text-align: center;" *ngIf="subplandata==''">NO DATA FOUND
+                                       </td>
+                                    </tr>
+                                 </table>
+                              </div>
+                           </nb-card-body>
+                        </nb-card>
+                     </div>
+                  </div>
+               </ng-template>
+            </ngb-tab>
+         </ngb-tabset>
+         <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-danger" (click)='cancel()'>Back</button>
+         </div>
+      </nb-card-body>
+   </nb-card>
+</div>

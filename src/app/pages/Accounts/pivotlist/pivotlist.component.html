@@ -1,0 +1,116 @@
+<nb-card>
+  <nb-card-header>Deposit Pivot LIst<a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; padding-right: 3px;color:white;" (click)="search=!search;"><i class="fa fa-search" ></i></a></nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <button  class="btn btn-sm btn-success"
+      [routerLink]="['/pages/accounts/adddeposit']">Add </button>
+    <hr style="border: 0px;">
+    <div class="row">
+      <div class="col-md-12">
+        <label class="left">
+          <!-- <h5>Total Amount: {{getInvoiceTotal()}}</h5> -->
+        </label>
+        <!-- <i (click)="Download();" class="green right fa fa-file-excel" aria-hidden="true"></i> -->
+      </div>
+    </div>
+    <hr style="border: 0px;">
+    <!-- <nb-card *ngIf="search"> -->
+    <!-- <nb-card-body> -->
+    <div class="form-group row">
+      <div class="col-sm-3" >
+        <label>Headend</label>
+        <select  name="headend" [(ngModel)]="headend" class="form-control">
+          <option value="">Select Headend</option>
+          <!-- <option *ngFor="let item of head" [value]=item.headend_pk>{{item.headend_name}}</option> -->
+        </select>
+      </div>
+      <div class="col-sm-3" >
+        <label>Operator Type</label>
+        <select  name="op_type" [(ngModel)]="op_type"
+          class="form-control">
+          <option value="" selected>Select Operator Type</option>
+          <option value="1">LCO</option>
+          <option value="2">Distributor</option>
+          <option value="3">SubDistributor</option>
+        </select>
+      </div>
+      <div class="col-sm-3">
+      <!--   <auto-complete (keyup)="getoperator($event.target.value)" name='operator_name' (item_id)='operator_name=$event'
+          placeholder='Select Operator' label='Operator Name' [item]=opt></auto-complete> -->
+      </div>
+      <div class="col-sm-3" >
+        <label>Status</label>
+        <select name="status" [(ngModel)]="status" class="form-control">
+          <option value="" selected="">Select Status</option>
+          <option value="0">Cancelled</option>
+          <option value="1">Success</option>
+          <!-- <option value="2">Failed</option> -->
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-4">
+        <label>From Date</label>
+        <input type="text" [(ngModel)]="from_date" [owlDateTime]="from_date_layout"
+          [owlDateTimeTrigger]="from_date_layout" name="from_date" placeholder="Select Date " class="form-control"
+          for />
+        <owl-date-time [pickerType]="'calendar'" #from_date_layout></owl-date-time>
+      </div>
+      <div class="col-sm-4">
+        <label>To Date</label>
+        <input type="text" [(ngModel)]="to_date" [owlDateTime]="to_date_layout" [owlDateTimeTrigger]="to_date_layout"
+          name="to_date" placeholder="Select Date " class="form-control" />
+        <owl-date-time [pickerType]="'calendar'" #to_date_layout></owl-date-time>
+      </div>
+    </div>
+    <button type="button" class="btn btn-md btn-success" style="margin: auto; display: block;"
+      >Search</button>
+    <table class="table">
+      <tr>
+        <th>Headend</th>
+        <th>User Type</th>
+        <th>User ID</th>
+        <th>User Name</th>
+        <th>From Date</th>
+        <th>To Date</th>
+        <th>Amount</th>
+      </tr>
+      <!-- <tr *ngFor='let item of pagedItems'>
+        <td>{{item.headend_name}}</td>
+        <td>
+          {{item.user_type == 0 ? 'Admin':item.user_type == 1 ? 'LCO':item.user_type == 2 ? 'Distributer':item.user_type == 3 ? 'SubDistributor': 'Broadcaster'}}
+        </td>
+        <td>{{item.id}}</td>
+        <td>{{item.user_name}}</td>
+        <td>{{item.from_date | date : 'd MMM y'}}</td>
+        <td>{{item.to_date | date : 'd MMM y'}}</td>
+        <td>Rs,{{item.amt}}</td>
+
+      </tr> -->
+      <tr>
+        <td  colspan="6" style="text-align: center;">No Records Found</td>
+
+      </tr>
+
+
+    </table>
+  <!--   <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getdepositlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getdepositlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getdepositlist(page);">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=page+1;getdepositlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getdepositlist();">Last</a>
+      </ul>
+    </div> -->
+    <!-- <div class="pagination-limit">
+      <select (change)='page=1;initiallist();' name="limit" [(ngModel)]='limit' class="form-control" >
+        <option *ngFor="let item of pageservice.limit" [ngValue]=item>{{item}}</option>
+      </select>
+      </div> -->
+  </nb-card-body>
+</nb-card>

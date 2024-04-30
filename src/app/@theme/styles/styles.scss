@@ -1,0 +1,297 @@
+// themes - our custom or/and out of the box themes
+@import 'themes';
+// date-time picker
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+// framework component themes (styles tied to theme variables)
+@import '~@nebular/theme/styles/globals';
+@import '~@nebular/auth/styles/all';
+@import '~@nebular/bootstrap/styles/globals';
+// ...
+
+// global app font size
+@import './font-size';
+
+// loading progress bar theme
+@import './pace.theme';
+
+// install the framework and custom global styles
+@include nb-install() {
+
+  // framework global styles
+  @include nb-theme-global();
+  @include nb-auth-global();
+  @include nb-bootstrap-global();
+
+  // loading progress bar
+  @include ngx-pace-theme();
+};
+.dropdown, .dropup {
+    position: relative;
+    margin-left: 10px;
+ }
+
+body {
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    text-transform: uppercase;
+}
+
+ 
+
+.form-control::-webkit-inner-spin-button, 
+.form-control::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+
+.ngb-tabs > ul.li.active > a,
+.ngb-tabs > ul.li.active > a:hover,
+.ngb-tabs > ul.li.active > a:focus {
+  color: #555555;
+  cursor: default;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-bottom-color: transparent;
+} 
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: inherit;
+    background-color: inherit;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+     
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    white-space: nowrap;
+    padding-top: 10px;
+    padding-left:5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+auto-complete{
+  width:100% !important;
+}
+
+.ng-dropdown-panel {
+    left:-2px;
+    width: 101% !important;
+    top: 43px;
+    border:2px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border:inherit;
+    background-color: inherit;
+}
+.ng-dropdown-panel :hover .cls {
+   color: blue ;
+
+}
+.ng-select .ng-select-container {
+    color: inherit !important;
+}
+.fa{
+  font-size: 20px !important;
+}
+.pagination a {
+    color: inherit;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+a {
+  cursor: pointer;
+}
+
+.green {
+  color: green;
+  cursor: pointer;
+}
+
+.right {
+  float: right;
+  text-align:right;
+}
+
+.pagination a.active {
+    background-color:  #ddd;
+    color: black;
+    border: 1px solid  #ddd;
+    cursor: no-drop;
+}
+
+.table td {
+  white-space: nowrap;
+}
+.table th {
+  white-space: nowrap;
+}
+
+.pagination a.disabled {
+    cursor: no-drop;
+}
+
+.pagination a:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.pagination a:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+  .nb-theme-default label {
+    display: inline-block;
+    margin-bottom: .5rem;
+    margin-top: .5rem;
+    }
+
+  .nb-theme-default input.custom-control-input[type='checkbox']:checked ~ .custom-control-label::after {
+    background-image: none;
+    margin: 6px 0 0;
+  }
+
+  .nb-theme-corporate label {
+      display: inline-block;
+      margin-bottom: .5rem;
+      margin-top: .5rem;
+    }
+
+  .nb-theme-corporate input.custom-control-input[type='checkbox']:checked ~ .custom-control-label::after {
+    background-image: none;
+    margin: 6px 0 0;
+  }
+  
+  .flipcard-body[_ngcontent-c20] .front-container[_ngcontent-c20] .flip-button[_ngcontent-c20], .flipcard-body[_ngcontent-c20] .back-container[_ngcontent-c20] .flip-button[_ngcontent-c20] {
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+    transition: opacity 0s 0.15s;
+    top: 0;
+    color:black;
+    font-weight: 900;
+    font-size: x-large;
+}
+
+.nb-theme-corporate nb-layout ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    
+}
+
+.nb-theme-corporate nb-layout ::-webkit-scrollbar-thumb {
+    background: #86949391;
+    cursor: pointer;
+    border-radius: 2.5px;
+
+}
+
+// .nb-theme-corporate nb-card-header {
+//   padding:10px;
+// }
+
+// .nb-theme-default nb-card-header {
+//   padding:10px;
+// }
+  
+
+nb-theme-default nb-layout ::-webkit-scrollbar-thumb {
+    width: 8px;
+    height: 8px;
+     
+}
+
+.nb-theme-default nb-layout ::-webkit-scrollbar-thumb{
+    background:#40dc7e;
+    cursor: pointer;
+    border-radius: 2.5px;
+    
+}
+
+
+.nb-theme-default nb-card ::-webkit-scrollbar {
+ width: 8px;
+    height: 8px;
+}
+
+.btn.btn-success {
+  background-color:#01a7ee!important;
+  font-weight:700!important
+}
+
+.btn.btn-success:hover {
+  background-color:#00d2e5!important;
+  font-weight:700!important
+}
+
+
+.btn.btn-success:focus {
+  background-color:#00d2e5!important;
+  font-weight:700!important
+}
+
+.btn.btn-success:active {
+  background-color:#01a7ee!important;
+  font-weight:700!important
+}
+.btn.btn-danger:focus{
+  background-color: #db092b!important;
+    font-weight:700!important
+
+}
+
+
+.btn.btn-danger:hover {
+  background-color: #db092b!important;
+    font-weight:700!important
+
+}
+
+.btn.btn-danger:active {
+  background-color:#db092b!important;
+  font-weight:700!important
+}
+
+a.lightedit:hover{
+  background-color: #01a7ee;
+  color: white!important;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+  color:white !important;;
+  background-color: #474795!important;
+
+}
+.nav-link{
+  color: #474795!important;
+  font-weight: 600;
+
+}
+
+
+// .nb-theme-corporate select.form-control:not([size]):not([multiple]) {
+//    font-size: 14px;
+// }
+ 
+
+select.form-control:not([size]):not([multiple]) {
+  font-size: 14px;
+}
+
+
+
+// select.form-control {
+//   font-size: 14px;
+// }

@@ -1,0 +1,135 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>{{id ? 'Edit':'Add'}} SMS Gateway </nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]></toaster-container>
+      <form [formGroup]="AddSmsgatewayForm" class="form-horizontal" (ngSubmit)="addSmsgateway();">
+        <div class="row" class="form-group row">
+          <div class="col-md-6">
+            <nb-card status="info">
+              <nb-card-header style="background-color :  #01a7ee;">Gateway Category</nb-card-header>
+              <nb-card-body>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>ISP Name <span style="color:red;">*</span> </label>
+                    <auto-completen
+                      [addclass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.bus_id.invalid&&submit}"
+                      (changed)="resellername();" formControlName="bus_id" optValues="busname"
+                      placeholder='Select Business' id="id" [item]="busname">
+                    </auto-completen>
+                    <small *ngIf="AddSmsgatewayForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is
+                      Required</small>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Website<span style="color:red;">*</span></label>
+                    <input type="text" name="website" formControlName="website" placeholder="Type Website"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.website.invalid&&submit}" />
+                    <small *ngIf="AddSmsgatewayForm.hasError('required','website')&&submit" class="form-text error">User
+                      Website is required! </small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Gateway Type <span style="color:red;">*</span></label>
+                    <select name="gateway" formControlName="gateway_type" (change)="resellername();"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.gateway_type.invalid&&submit}">
+                      <option value="" selected>Select Gateway Type</option>
+                      <option value="1">ISP</option>
+                      <option value="2">Sub ISP Bulk</option>
+                      <option value="3">Sub ISP deposit</option>
+                      <option value="4">Sub Distributor Bulk</option>
+                      <option value="5">Sub Distributor Deposit</option>
+                      <option value="6">Bulk Reseller</option>
+                      <option value="7">Deposit Reseller</option>
+                    </select>
+                    <small *ngIf="AddSmsgatewayForm.hasError('required','gateway_type')&&submit"
+                      class="form-text error">Gateway is
+                      required! </small>
+                  </div>
+                  <div class="col-sm-6"
+                    *ngIf="AddSmsgatewayForm.value['gateway_type'] != 1">
+                    <label>Reseller Name <span style="color:red;">*</span></label>
+                    <auto-completen
+                      [addclass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.res_name.invalid&&submit}"
+                      optValues="company" formControlName="res_name" placeholder='Select Reseller' id="res_name"
+                      [item]="reseldata">
+                    </auto-completen>
+                    <small *ngIf="AddSmsgatewayForm.controls.res_name.invalid&&submit" class="form-text error">Reseller
+                      Name is Required!</small>
+                  </div>
+                </div>
+              </nb-card-body>
+            </nb-card>
+          </div>
+          <div class="col-md-6">
+            <nb-card status="info">
+              <nb-card-header style="background-color :  #01a7ee;">IDENTIFICATION</nb-card-header>
+              <nb-card-body>
+                <div class="form-group row">
+                  <div class="col-sm-6" [hidden]='id'>
+                    <label>Gateway Login Id <span style="color:red;">*</span></label>
+                    <input type="text" name="UserName" formControlName="UserName" placeholder="User Login Id"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.UserName.invalid&&submit}" />
+                    <small *ngIf="AddSmsgatewayForm.hasError('required','UserName')&&submit"
+                      class="form-text error">User
+                      login id is required! </small>
+                  </div>
+                  <div class="col-sm-6" *ngIf='id'>
+                    <label>Gateway Login Id <span style="color:red;">*</span></label>
+                    <input readonly type="text" name="UserName" formControlName="UserName" placeholder="User Login Id"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.UserName.invalid&&submit}" />
+                    <small *ngIf="AddSmsgatewayForm.hasError('required','UserName')&&submit"
+                      class="form-text error">User
+                      login id is required! </small>
+                  </div>
+                  <div class="col-sm-6" [hidden]='id'>
+                    <label>Password <span style="color:red;">*</span></label>
+                    <input type="password" name="Password" formControlName="Password" placeholder="Password"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.Password.invalid&&submit}" />
+                    <small *ngIf="AddSmsgatewayForm.hasError('required','Password')&&submit"
+                      class="form-text error">Password
+                      is required! </small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Sender ID</label>
+                    <input type="text" name="sender_id" formControlName="sender_id" placeholder="Type Sender"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.sender_id.invalid&&submit}" />
+                    <small *ngIf="AddSmsgatewayForm.hasError('required','sender_id')&&submit"
+                      class="form-text error">User
+                      Sender ID is required! </small>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Gateway Name<span style="color:red;">*</span></label>
+                    <input type="text" name="gateway_name" formControlName="gateway_name"
+                      placeholder="Type Gateway Name"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.gateway_name.invalid&&submit}" />
+                    <small *ngIf="AddSmsgatewayForm.hasError('required','gateway_name')&&submit"
+                      class="form-text error">User
+                      Gateway Name is required! </small>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <label>Gateway Provider</label>
+                    <input type="text" name="gateway_by" formControlName="gateway_by"
+                      placeholder="Type Gateway Provider"
+                      [ngClass]="{'form-control' : true,'form-control-danger':AddSmsgatewayForm.controls.gateway_by.invalid&&submit}" />
+                    <small *ngIf="AddSmsgatewayForm.hasError('required','gateway_by')&&submit"
+                      class="form-text error">User
+                      Gateway Provider is required! </small>
+                  </div>
+                </div>
+              </nb-card-body>
+            </nb-card>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-md btn-success">{{id ? 'Update': 'Create'}}</button>
+          <button class="btn btn-md btn-danger" [routerLink]="['/pages/administration/list-smsgateway']">Back</button>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

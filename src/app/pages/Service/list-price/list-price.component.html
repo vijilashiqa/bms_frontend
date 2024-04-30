@@ -1,0 +1,137 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header> List Price<a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;"
+      (click)="search=!search;"><i class="fa fa-search"></i></a>
+      <a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+        (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <button *ngIf="!role.getmenurole(319)" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/service/add-price']">Add</button>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showResellerName();showService();changeclear(1)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen (changed)="showResellerName();showService();changeclear(2)" [(ngModel)]="group_name" addclass="form-control"
+            optValues="groupname" placeholder='Select Group' optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="(role.getroleid()>=775) || (role.getroleid() > 444)">
+          <label>Reseller Name</label>
+          <auto-completen (changed)="showService();changeclear(3)" [(ngModel)]="res_name" addclass="form-control" optValues="company"
+            placeholder='Select Reseller' (keyUp)="showResellerName($event)" id="res_name" [item]="res1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Service Name</label>
+          <auto-completen [(ngModel)]="name" (changed)="showsubplan();subpaln=''" addclass="form-control" optValues="srvname"
+            placeholder='Select Service name' (keyUp)="showService($event)" optId="srvid" [item]="nam1">
+          </auto-completen>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label>SubPlan Name</label>
+          <auto-completen [(ngModel)]="subpaln" addclass="form-control" optValues="sub_plan"
+            placeholder='Select Subplan name' (keyUp)="showsubplan($event)" id="subpaln" [item]="subname">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <label>
+          <h5>Total Count: {{count}}</h5>
+        </label>
+        <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+        <button type="button" (click)="updateShare()"  class="btn btn-md btn-success "
+        style="float: right;cursor: pointer;background-color: royalblue;border-radius: unset;padding: 1px;margin:2px">
+        <i class="fas fa-download"></i>Share</button>
+      </div>
+    </div>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+      <select [(ngModel)]="limit" (change)="initiallist()" class="form-control"
+        style="height: calc(2rem + 10px);max-width: 10vh;min-width: 74px;border-radius: 5px;">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="75">75</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th *ngIf="!role.getmenurole(320)">Action</th>
+          <th *ngIf="role.getroleid()>=775">ID</th>
+          <th *ngIf="role.getroleid()>777">ISP Name</th>
+          <th *ngIf="role.getroleid()>=775">Circle Name</th>
+          <th *ngIf="role.getroleid()>444">Reseller Name</th>
+          <th>Service Name</th>
+          <th>Service Type</th>
+          <th>Sub Plan Name</th>
+          <th>Tax Type</th>
+          <th>Price</th>
+          <th>Time Unit Type</th>
+          <th>Additional Days</th>
+          <th>Status</th>
+        </tr>
+        <tr *ngFor="let item of datas">
+          <td *ngIf="!role.getmenurole(320)"><a (click)="Edit_User(item.id);" class="lightedit" style="cursor: pointer;border: 2px solid #01a7ee;padding: 3px 8px 3px 5px;
+            border-radius: 10px;font-size:11px;"><i class="nb-edit"> </i> Edit </a></td>
+          <td *ngIf="role.getroleid()>=775">{{item.id}}</td>
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td *ngIf="role.getroleid()>=775">{{item.groupname}}</td>
+          <td *ngIf="role.getroleid()>444">{{item.managername}}</td>
+          <td>{{item.srvname}}</td>
+          <td>{{item.service_name}}</td>
+          <td style="text-align: center;">{{item.sub_plan}}</td>
+          <td>{{item.tax_type==1 ? 'Inclusive':'Exclusive'}}</td>
+          <td class="fas fa-rupee-sign"> {{item.amount}}</td>
+          <td style="text-align: center;">{{item.type==1 ? item.time_unit==1 ?item.time_unit +" "+ "Month":
+            item.time_unit+" "+ "Months" :item.time_unit==1 ? item.time_unit+" " + "Day": item.time_unit+" "+"Days" }}</td>
+          <td>{{item.additional_days}}</td>
+          <td style="text-align: center;"><a [ngStyle]="{'color' :item.status==1 ? 'green' : 'red' }"
+              [ngClass]="{'ion-close-round':item.status!=1? true:false,'ion-checkmark-round': item.status==1 ? true:false  }">
+            </a></td>
+        </tr>
+        <tr>
+          <td colspan="10" *ngIf="datas==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,72 @@
+.rupee{
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.table-wrapper{
+    overflow-y: scroll;
+    height: 990px;
+  }
+  
+  .table-wrapper th{
+      position: sticky;
+      top: -1px;
+  }
+  
+  .table-wrapper{
+    background: white;
+  }
+  
+  table{
+    border-collapse: collapse;
+    width: 100%;
+  
+  }
+  
+  th{
+      background:#2a72be;
+  }
+  
+  td,th{
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .table td {
+    white-space: nowrap;
+  }
+  .table th {
+    white-space: break-spaces;
+      z-index:998;
+  }
+
+  
+  // New style
+  .table {
+    margin-bottom: 0;
+}
+.table-bordered {
+  border: 1px solid #f2f2f2;
+}
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #212529;
+}
+.table-bordered th, .table-bordered td {
+  border: 1px solid #cac5c5;
+}
+.table td, .table th {
+  vertical-align: middle;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.bg-secondary th {
+  padding: 7px 10px;
+}
+
+#myTable td {
+  padding: 10px 12px;
+  font-weight: 500 ;
+}

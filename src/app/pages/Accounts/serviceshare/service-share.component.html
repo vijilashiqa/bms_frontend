@@ -1,0 +1,104 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<div class="table-wrapper">
+   <table class="table table-hover table-striped">
+      <tr>
+         <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2"><br>Service Type</th>
+         <th style="border: 3px solid #aeb8b9!important;color: white;border-collapse: separate;" rowspan="2"*ngIf="service_type==3||service_type==5||service_type==7||service_type==8">OTT PlanCode</th>
+         <th style="border: 3px solid #aeb8b9;color: white;" colspan="4">Share</th>
+         <th style="border: 3px solid #aeb8b9;color: white;" colspan="6">Amount</th>
+</tr>
+<tr>
+         <th style="border: 3px solid #aeb8b9;color: white;">Isp </th>
+         <th style="border: 3px solid #aeb8b9;color: white;">Sub ISP </th>
+
+         <th style="border: 3px solid #aeb8b9;color: white;">Sub Dist </th>
+         <th style="border: 3px solid #aeb8b9;color: white;">Reseller </th>
+         <th style="border: 3px solid #aeb8b9;color: white;">ISP </th>
+         <th style="border: 3px solid #aeb8b9;color: white;">Sub ISP </th>
+         <th style="border: 3px solid #aeb8b9;color: white;">Sub Dist </th>
+
+         <th style="border: 3px solid #aeb8b9;color: white;">Reseller </th>
+         <th style="border: 3px solid #aeb8b9;color: white;">Invoice </th>
+         <th style="border: 3px solid #aeb8b9;color: white;">Tax </th>
+      </tr>
+      <ng-container *ngFor="let item of sharedata">
+         <tr>
+            <td>Internet</td>
+            <td *ngIf="service_type==3||service_type==5||service_type==7||service_type==8">--</td>
+
+            <td>{{item.isp_per}}<b>%</b></td>
+            <td>{{item.sub_isp_per}}<b>%</b></td>
+            <td>{{item.sub_dist_per}}<b>%</b></td>
+            <td>{{item.reseller_per}}<b>%</b></td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.isp_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.sub_isp_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.sub_dist_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.resel_amt}}</td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.inv_amount}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.inv_tax_amount}}</i></td>
+         </tr>
+         <tr
+            *ngIf="service_type==2||service_type==5||service_type==6||service_type==8">
+            <td>Voice</td>
+            <td *ngIf="service_type==3||service_type==5||service_type==7||service_type==8">--</td>
+
+            <td>{{item.Visp_share}}<b>%</b></td>
+            <td>{{item.Vsub_isp_share}}<b>%</b></td>
+            <td>{{item.Vsub_dist_share}}<b>%</b></td>
+            <td>{{item.Vreseller_share}}<b>%</b></td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.Visp_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.Vsub_isp_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.Vsub_dist_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.Vreseller_amt}}</td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.Vamt}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.Vtaxamt}}</i></td>
+          </tr>
+         <tr
+            *ngIf="service_type==3||service_type==5||service_type==7||service_type==8">
+            <td>OTT</td>
+            <!-- <td>{{item.ott_platform == 1 ? 'Hotstar':item.ott_platform == 2 ? 'Amazon':item.ott_platform == 3 ? 'Netflix'
+               :item.ott_platform == 4 ? 'Sun NXT':item.ott_platform == 5 ? 'ZEE5':item.ott_platform == 6 ? 'Raj NXT':
+               item.ott_platform == 7 ? 'Sony LIV' : item.ott_platform == 8 ? 'Hungama':'--'}}</td> -->
+            <td>{{ item.ottplancode == '' ? '--' : item.ottplancode}}</td>
+
+            <td>{{item.ott_isp_share == null ? 0: item.ott_isp_share}}<b>%</b></td>
+            <td>{{item.ott_sub_isp_share == null ? 0: item.ott_sub_isp_share}}<b>%</b></td>
+            <td>{{item.ott_sub_dist_share == null ? 0: item.ott_sub_dist_share}}<b>%</b></td>
+            <td>{{item.ott_reseller_share == null ? 0: item.ott_reseller_share}}<b>%</b></td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.ott_isp_amt == null ? 0: item.ott_isp_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.ott_sub_isp_amt == null ? 0: item.ott_sub_isp_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.ott_sub_dist_amt == null ? 0: item.ott_sub_dist_amt}}</td>
+
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.ott_reseller_amt == null ? 0: item.ott_reseller_amt}}</td>
+            <!-- <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.ott_amt == null ? 0: item.ott_amt}}</i></td> -->
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.ottamount == null ? 0: item.ottamount}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.ott_taxamt == null ? 0: item.ott_taxamt}}</i></td>
+         </tr>
+         <tr
+            *ngIf="service_type==4||service_type==6||service_type==7||service_type==8">
+            <td>AddOn</td>
+            <td *ngIf="service_type==3||service_type==5||service_type==7||service_type==8">--</td>
+
+            <td>{{item.AONisp_share}}<b>%</b></td>
+            <td>{{item.AONsub_isp_share}}<b>%</b></td>
+            <td>{{item.AONsub_dist_share}}<b>%</b></td>
+            <td>{{item.AONreseller_share}}<b>%</b></td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.AONisp_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.AONsub_isp_amt}}</td>
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.AONsub_dist_amt}}</td>
+
+            <td><i class="fas fa-rupee-sign">&nbsp;</i>{{item.AONreseller_amt}}</td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.AONamt}}</i></td>
+            <td style="text-align: center;"><i class="fas fa-rupee-sign">&nbsp;{{item.AONtaxamt}}</i></td>
+         </tr>
+      </ng-container>
+   </table>
+</div>
+<div class="modal-footer">
+   <button type="button" class="btn btn-md btn-success " style="margin:auto;" (click)="closeModal()">OK</button>
+</div>

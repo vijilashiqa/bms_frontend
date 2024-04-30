@@ -1,0 +1,62 @@
+<div class="col-md-12">
+  <nb-card>
+  <nb-card-header>Allow Nas</nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]="config"></toaster-container>
+    <form [formGroup]="AddNasForm" (ngSubmit)="addNas()">
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-sm-4">
+            <label>Circle</label>
+            <select name="group" formControlName="group" [ngClass]="{'form-control' : true,'form-control-danger':AddNasForm.controls.group.invalid&&submit}"
+            (change)="nas()">
+              <option value="" selected>Select Circle</option>
+              <option *ngFor="let item of grup" [ngValue]=item.group_id>{{item.groupname}}</option>
+            </select>
+            <small *ngIf="AddNasForm.controls.group.invalid&&submit" class="form-text error">Circle is required! </small>
+          </div>
+          <div class="col-sm-4">
+            <label>Primary Nas</label>
+            <select formControlName="pri_nas" [ngClass]="{'form-control':true,'form-control-danger':AddNasForm.controls.pri_nas.invalid&&submit}" (change)="listservice()">
+              <option value="" selected>Select Primary Nas</option>
+              <option *ngFor="let item of alnas" [ngValue]="item.id">{{item.shortname}}</option>
+            </select>
+            <small *ngIf="AddNasForm.controls.pri_nas.invalid&&submit" class="form-text error">Primary Nas is Required! </small>
+          </div>
+          <div class="col-sm-4">
+            <label>Secondary Nas</label>
+            <select formControlName="sec_nas" [ngClass]="{'form-control':true,'form-control-danger':AddNasForm.controls.sec_nas.invalid&&submit}">
+              <option value="" selected>Select secondary Nas</option>
+              <option *ngFor="let item of alnas" [ngValue]="item.id">{{item.shortname}}</option>
+            </select>
+            <!-- <small *ngIf="AddNasForm.value['pri_nas']==AddNasForm.value['sec_nas']" class="form-text error">Secondary Nas is required! </small> -->
+          </div>
+        </div>
+        <div class="form-group row">
+          <table class="table table-striped">
+            <tr>
+              <th class="text-center">
+                <input type="checkbox" name="all" (change)="checkAll($event.target.checked)"/>All
+              </th>
+              <th>Service Name</th>
+              <th>Reseller name</th>
+            </tr>
+            <tr *ngFor="let item of serv">
+              <td class="text-center">
+                <input type="checkbox" name="sizecb[]" value="{{item.srvid}}" [ngModelOptions]="{standalone: true}" [(ngModel)]="item.state"/>
+              </td>
+              <td>{{item.srvname}}</td>
+              <td>{{item.user_login_id}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-md btn-success" >
+          Add</button>
+          <button class="btn btn-md btn-danger "[routerLink]="['/pages/service/list-alwnas']">Back</button>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>
+</div>  

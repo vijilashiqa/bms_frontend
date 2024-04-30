@@ -1,0 +1,110 @@
+<nb-card>
+  <nb-card-header>
+    List Topup
+    <a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;"
+      (click)="search=!search;"><i class="fa fa-search"></i></a>
+      <a type="button" class="btn btn-primary btn-sm btn-floating " style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+        (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]></toaster-container>
+    <button *ngIf="!role.getmenurole(1044)" class="btn btn-sm btn-success"
+      [routerLink]="['/pages/service/addtopup']">Add</button>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-2" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showResellerName();showtopup();changeclear(1)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" (changed)="showResellerName();showtopup(); changeclear(2)"
+             addclass="form-control" optValues="groupname" placeholder='Select Circle' optId="groupid"
+             [item]="group1">
+          </auto-completen>
+       </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775) || (role.getroleid()>444)">
+          <label>Reseller</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company" placeholder='Select Reseller'
+            (changed)="showtopup();toup_name=''" (keyUp)="showResellerName($event)" id="id" [item]="res1">
+          </auto-completen> 
+        </div>
+        <div class="col-sm-2">
+          <label>Topup Name</label>
+          <auto-completen [(ngModel)]="toup_name" addclass="form-control" optValues="top_name"
+             placeholder='Select TopupName' (keyUp)="showtopup($event)" optId="top_id" [item]="topupdata">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <toaster-container [toasterconfig]></toaster-container>
+    <div class="row">
+      <div class="col-md-12">
+        <label class="left">
+          <h5>Total Count : {{count}}</h5>
+        </label>
+        <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+    <div class=table-wrapper>
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th *ngIf="!role.getmenurole(1045)">Action</th>
+          <th *ngIf="role.getroleid()>777">ISP Name</th>
+          <th *ngIf="role.getroleid()>=775">Circle</th>
+          <th *ngIf="role.getroleid()<=666 && role.getroleid()>444">Reseller Business Name</th>
+          <th *ngIf="role.getroleid()>=775">Reseller Count</th>
+          <th>Topup Name</th>
+          <th>Total Limit</th>
+          <!-- <th>Tax Type</th> -->
+          <th>Price</th>
+          <th>Status</th>
+        </tr>
+        <tr style="text-align: center;" *ngFor="let item of pagedItems">
+          <td *ngIf="!role.getmenurole(1045)"><a (click)="Edit_topup(item.top_id);" class="lightedit" style="cursor: pointer;border: 2px solid #01a7ee;padding: 3px 8px 3px 5px;
+            border-radius: 10px;font-size:11px;"> <i class="nb-edit"> </i> Edit </a></td>
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td *ngIf="role.getroleid()>=775">{{item.groupname}}</td>
+          <td *ngIf="role.getroleid()<=666 && role.getroleid()>444">{{item.company}}</td>
+          <td *ngIf="role.getroleid()>=775" style="font-size: medium;font-weight: 900;cursor: pointer;"><a (click)="reselcount(item.top_id)">{{item.tot}}</a></td>
+          <td>{{item.top_name}}</td>
+          <td>{{item.limit+" "+(item.limit_size==1 ? 'MB':item.limit_size==2 ? 'GB':'TB')}}</td>
+          <!-- <td></td> -->
+          <td style="padding-left: 20px;text-align: center;" class="fas fa-rupee-sign">{{item.price}}</td>
+          <td style="text-align: center;"><a [ngStyle]="{'color' :item.status==1 ? 'green' : 'red' }"
+              [ngClass]="{'ion-close-round':item.status!=1? true:false,'ion-checkmark-round': item.status==1 ? true:false  }">
+            </a></td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,184 @@
+<nb-card>
+  <nb-card-header> List Scheduled Subscribers
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-2" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="profile();showUser();changeclear(1);" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775) || (role.getroleid() > 444)">
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" addclass="form-control" optValues="menu_name"
+            (changed)="showResellerName();changeclear(2);" placeholder='Select Reseller Type' optId="role" [item]="pro">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775) || (role.getroleid() > 444)">
+          <label>Reseller</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company"
+            placeholder='Select Reseller' (changed)="showUser();changeclear(3);" id="mid" [item]="res1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Subscriber ID</label>
+          <auto-completen [(ngModel)]="cust_name" (keyUp)="showUser($event)" addclass="form-control"
+            optValues="profileid" placeholder='Select Subs AccountID' optId="uid" [item]="custname">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Schedule Status</label>
+          <select name="status" [(ngModel)]="status" class="form-control">
+            <option value="" selected>Select Status</option>
+            <option value="1">Scheduled</option>
+            <option value="2">Completed</option>
+            <option value="3">Canceled</option>
+            <option value="5">Initialized</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <label>Start Date</label>
+          <input type="date" pattern="Start Date" [(ngModel)]="start_date" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>End Date</label>
+          <input type="date" placeholder="End Date" [(ngModel)]="end_date" class="form-control">
+        </div>
+      </div>
+
+
+      <button type="button" class="btn btn-md btn-success middle" (click)='page=1;initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <label>
+      <h5>Total Count: {{count}}</h5>
+    </label>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="pagination">
+          <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+            <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+              (click)="getlist(page)">{{page}}</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+              (click)="page=pager.totalPages;getlist();">Last</a>
+          </ul>
+          <select [(ngModel)]="limit" (change)="initiallist()" class="form-control"
+            style="height: calc(2rem + 10px);max-width: 10vh;min-width: 74px;border-radius: 5px;">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="75">75</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th>Action</th>
+          <th *ngIf="role.getroleid()>777">ID</th>
+          <th *ngIf="role.getroleid()>777">ISP Name</th>
+          <th *ngIf="role.getroleid()>444">Reseller Name</th>
+          <th>AccountID</th>
+          <th>Subscriber Name</th>
+          <th>Service Name</th>
+          <th>Sub Plan</th>
+          <th>Invoice Amount</th>
+          <th>Tax Amount</th>
+          <th>Service Type</th>
+          <th>Scheduled By</th>
+          <th>Scheduled Date</th>
+          <th>Schedule Completed</th>
+          <th>Reason</th>
+          <th>Status</th>
+        </tr>
+        <tr *ngFor="let item of pagedItems">
+          <td *ngIf="!role.getmenurole(712) &&(item.schedule_status==1 || item.schedule_status==5)" style="padding: 1px;" class=" last"
+            data-title="'Action'">
+            <div class="dropdown ghost-dropdown" ngbDropdown>
+              <button style="width: 70px;font-size: 10px;margin: 3px;" class="btn btn-primary btn-icon" type="button"
+                ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                <li *ngIf="!role.getmenurole(712) && item.c_role != 111" class="dropdown-item" title="Cancel"
+                  (click)="cancel(item.rsid)"><i style="color: red;" class="ion-close-round"></i>&nbsp;Cancel</li>
+                <li *ngIf="!role.getmenurole(714) && (item.schedule_status == 1)" class="dropdown-item"
+                  title="Change Schedule" (click)="change_sched(item.rsid)"><i
+                    class="fa fa-exchange-alt"></i>&nbsp;ChangeTime</li>
+                    <li *ngIf="item.schedule_status == 5" class="dropdown-item"
+                    title="Refresf" (click)="refreshSchedule(item.rsid)"><i
+                      class="fa fa-refresh"></i>&nbsp;Refresh</li>
+              </ul>
+            </div>
+          </td>
+          <td *ngIf="item.schedule_status!=1 && item.schedule_status!=5">
+            <a [ngStyle]="{'color' :item.schedule_status!=3 ? 'green' : 'red' }"
+              [ngClass]="{'ion-close-round':item.schedule_status==3? true:false,'ion-checkmark-round': item.schedule_status!=3 ? true:false  }"></a>
+          </td>
+          <td *ngIf="role.getmenurole(712) &&(item.schedule_status==1)"> <i
+              class='fas fa-spinner fa-pulse fa-spin fa-1x' style="color: #01a7ee;font-size: 1.5em;"></i> </td>
+          <td *ngIf="role.getroleid()>777">{{item.rsid}}</td>
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td *ngIf="role.getroleid()>444">{{item.company}}</td>
+          <td (click)="view_cust(item.cust_id,11)" style="cursor: pointer;text-transform: none !important;">
+            <b>{{item.cust_profile_id}}</b>
+          </td>
+          <td>{{item.cust_name}}</td>
+          <td>{{item.srvname}}</td>
+          <td>{{item.sub_plan}}</td>
+          <td style="font-weight:900">{{item.inv_amt | currency:'INR':'symbol'}}</td>
+          <td style="font-weight:900">{{item.inv_tax | currency:'INR':'symbol' }}</td>
+          <td>{{item.service_type ==1 ? 'Internet': item.service_type ==2 ? 'Internet & Voice': item.service_type ==3 ?
+            'Internet & OTT': item.service_type ==4? 'Internet & AddOn': item.service_type ==5? 'Internet & voice &
+            OTT':
+            item.service_type ==6 ? 'Internet & Voice & Addon':
+            item.service_type==7? 'Internet & Ott & Addon': item.service_type ==8? 'All services': ''}}
+          </td>
+
+          <td *ngIf="item.schedule_status!=3 && item.c_role != 111">{{item.creator}}</td>
+          <td *ngIf="item.schedule_status!=3 && item.c_role  == 111">{{item.cust_profile_id}}</td>
+
+          <td *ngIf="item.schedule_status==3">{{item.modified}}</td>
+          <td *ngIf="item.schedule_status!=3">{{item.schedule_date | date:'d MMM y h:mm:ss a'}}</td>
+          <td *ngIf="item.schedule_status==3">{{item.lm_date | date:'d MMM y h:mm:ss a'}}</td>
+          <td>{{item.schedule_completed_on ? (item.schedule_completed_on | date:'d MMM y h:mm:ss a') : '--'}}</td>
+          <td>{{item.comment1 || item.cancel_reason || '--'}}</td>
+          <td>{{item.schedule_status==1 ? 'On Process':item.schedule_status==2 ? 'Schedule Completed':item.schedule_status==3 ? 'Cancel'
+            :item.schedule_status ==4 ? 'Already Done': item.schedule_status ==5? 'Initialized' : '--'}}</td>
+        </tr>
+        <tr>
+          <td colspan="6" *ngIf="pagedItems==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

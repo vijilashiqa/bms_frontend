@@ -1,0 +1,102 @@
+<nb-card>
+  <nb-card-header>AddOn Service List</nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]="config"></toaster-container>
+    <nb-tabset>
+      <nb-tab tabTitle="Special Accounting">
+        <br><br>
+        <button class="btn btn-sm btn-success" (click)="Add_nas();">Add</button>
+        <label   > <h5>Total Count: {{total}}</h5></label>
+        <hr style="border: 0px;">
+        <table class="table table-hover table-striped">
+          <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+            <th>Action</th>
+            <th>Service Name</th>
+            <th>Starting Time</th>
+            <th>Ending Time</th>
+            <th>Time Ratio</th>
+            <th>Download Ratio</th>
+            <th>Upload Ratio</th>
+            <th>Connection Allowed</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thur</th>
+            <th>Fri</th>
+            <th>SAt</th>
+            <th>Sun</th>
+          </tr>
+          <tr *ngFor="let item of data">
+            <td><a (click)="Edit_nas(item)" style="cursor: pointer;"><i class="nb-edit"></i>edit</a></td>
+            <td>{{item.srvname}}</td>
+            <td>{{item.starttime}}</td>
+            <td>{{item.endtime}}</td>
+            <td>{{item.timeratio}}</td>
+            <td>{{item.dlratio}}</td>
+            <td>{{item.ulratio}}</td>
+            <td>{{item.connallowed}}</td>
+            <td><a [ngClass]="{'ion-close-round':item.mon!=1? true:false,'ion-checkmark-round':item.mon==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.tue!=1? true:false,'ion-checkmark-round':item.tue==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.wed!=1? true:false,'ion-checkmark-round':item.wed==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.thu!=1? true:false,'ion-checkmark-round':item.thu==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.fri!=1? true:false,'ion-checkmark-round':item.fri==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.sat!=1? true:false,'ion-checkmark-round':item.sat==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.sun!=1? true:false,'ion-checkmark-round':item.sun==1 ? true:false  }"> </a></td>
+          </tr>
+        </table>
+      </nb-tab>
+      <nb-tab tabTitle="Dynamic Data Rate">
+        <br><br>
+        <button class="btn btn-sm btn-success" (click)="Add_dynamic();">Add</button>
+        <label   > <h5>Total Count: {{total1}}</h5></label>
+        <hr style="border: 0px;">
+        <table class="table table-hover table-striped">
+          <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+            <th>Action</th>
+            <th>Service Name</th>
+            <th>Starting Time</th>
+            <th>Ending Time</th>
+            <th>Download Rate</th>
+            <th>Upload Rate</th>
+            <th>DL Burst Limit</th>
+            <th>UL Burst Limit</th>
+            <th>DL Brust Threshold</th>
+            <th>UL Brust Threshold</th>
+            <th>DL Brust Time</th>
+            <th>UL Brust Time</th>
+            <th>Priority</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thur</th>
+            <th>Fri</th>
+            <th>SAt</th>
+            <th>Sun</th>
+          </tr>
+          <tr *ngFor="let item of dyn">
+            <td><a (click)="Edit_dynamic(item)" style="cursor: pointer;"><i class="nb-edit"></i>edit</a></td>
+            <td>{{item.srvname}}</td>
+            <td>{{item.starttime}}</td>
+            <td>{{item.endtime}}</td>
+            <td>{{item.dl==0 ? 'Unlimited':item.dl}}</td>
+            <td>{{item.ul==0 ? 'Unlimited':item.ul}}</td>
+            <td>{{item.dlburstlimit}}</td>
+            <td>{{item.ulburstlimit}}</td>
+            <td>{{item.dlburstthreshold}}</td>
+            <td>{{item.ulburstthreshold}}</td>
+            <td>{{item.dlbursttime}}</td>
+            <td>{{item.ulbursttime}}</td>
+            <td>{{item.priority}}</td>
+            <td><a [ngClass]="{'ion-close-round':item.mon!=1? true:false,'ion-checkmark-round':item.mon==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.tue!=1? true:false,'ion-checkmark-round':item.tue==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.wed!=1? true:false,'ion-checkmark-round':item.wed==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.thu!=1? true:false,'ion-checkmark-round':item.thu==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.fri!=1? true:false,'ion-checkmark-round':item.fri==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.sat!=1? true:false,'ion-checkmark-round':item.sat==1 ? true:false  }"> </a></td>
+            <td><a [ngClass]="{'ion-close-round':item.sun!=1? true:false,'ion-checkmark-round':item.sun==1 ? true:false  }"> </a></td>
+          </tr>
+        </table>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+</nb-card>

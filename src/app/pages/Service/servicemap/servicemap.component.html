@@ -1,0 +1,142 @@
+<div class="col-md-12">
+  <nb-card>
+    <nb-card-header>Service Mapping</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form [formGroup]="AddServiceMapForm" class="form-horizontal" (ngSubmit)="addServiceMap();">  
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-sm-4" *ngIf="role.getroleid()>777">
+            <label>ISP Name <span style="color:red;">*</span></label>
+            <select formControlName="bus_id"
+              [ngClass]="{'form-control':true,'form-control-danger':AddServiceMapForm.controls.invalid&&submit}"
+              (change)="GroupName();service();AddServiceMapForm.controls.package.setValue('')">
+              <option value="" selected>Select ISP Name</option>
+              <option *ngFor="let item of busname" [ngValue]=item.id>{{item.busname}}</option>
+            </select>
+            <small *ngIf="AddServiceMapForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is
+              Required!</small>
+          </div>
+          <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+            <label>Circle </label>
+            <select formControlName="groupid" (change)="service();AddServiceMapForm.controls.package.setValue('')"
+              [ngClass]="{'form-control':true,'form-control-danger':AddServiceMapForm.controls.groupid.invalid&&submit}">
+              <option value="" selected="">Select Circle</option>
+              <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+            </select>
+          </div>
+          <div class="col-sm-4">
+            <label>Service Name <span style="color:red;">*</span></label>
+            <auto-completen
+               [addclass]="{'form-control' : true,'form-control-danger':AddServiceMapForm.controls.package.invalid&&submit}" (keyUp)="service($event)"
+               (changed)="AddServiceMapForm.controls.serassign_type.setValue('')" optValues="srvname" placeholder='Select Service Name' formControlName="package"
+               optId="srvid" [item]="pack">
+            </auto-completen>
+         </div>
+        </div>
+         <ngb-tabset>
+          <ngb-tab title="Nas & Reseller" *ngIf="(AddServiceMapForm.value['package']!=''&& AddServiceMapForm.value['package']!= null)">
+            <ng-template ngbTabContent>
+              <div class="form-group row">
+                <div class="col-sm-4" *ngIf="role.getroleid()>444">
+                  <label>Service Assign type <span style="color:red;">*</span></label>
+                  <select formControlName="serassign_type"
+                    [ngClass]="{'form-control':true,'form-control-danger':AddServiceMapForm.controls.serassign_type.invalid&&submit}"
+                    (change)="showManService();showServiceNas(); ">
+                    <option value="" selected>Select Service Assign type</option>
+                    <option value="1">Nas wise</option>
+                    <option value="2">Reseller wise</option>
+                  </select>
+                  <small *ngIf="AddServiceMapForm.controls.serassign_type.invalid&&submit"
+                    class="form-text error">Service Assign type is Required!</small>
+                </div>
+              </div>
+              <div class="form-group row" >
+                <div class="col-sm-6" *ngIf="AddServiceMapForm.value['serassign_type']=='1'" style="overflow: scroll;height: 568vh8vh;">
+                  <table class="table table-header table-bordered table-striped">
+                    <thead>
+                      <th colspan="5">
+                        <input placeholder="Search Nas Here" class="form-control" [ngModelOptions]="{standalone:true}"
+                          [(ngModel)]="searchnas" 
+                          style="width:30%;border: none;border-bottom: 2px solid ;font-size: 15px;">
+                      </th>
+                    </thead>
+                  </table>
+                  <div class="table-wrapper">
+                    <table class="table table-bordered table-striped">
+                      <tr>
+                        <th class="text-center">
+                          <label class="containerbox">All
+                            <input type="checkbox" name="all"
+                              (change)="resellcheck($event.target.checked);checkedreselitems();" />
+                            <span class="checkmarkbox"></span>
+                          </label>
+                        </th>
+                        <th>NAS Name <span style="color:red;">*</span></th>
+                      </tr>
+                      <tr *ngFor="let item of srvnas | grdFilter: {n_name : searchnas}; let i=index;"
+                        style="text-transform: uppercase;">
+                        <td class="text-center">
+                          <label class="containerbox">
+                            <input type="checkbox" name="sizecb[]" [ngModelOptions]="{standalone:true}"
+                              [(ngModel)]="item.data" (change)="checkedreselitems()" />
+                            <span class="checkmarkbox"></span>
+                          </label>
+                        </td>
+                        <!-- <td><a>{{item.shortname+" ("+item.nasname+")"}}</a> </td> -->
+                        <td><a>{{item.n_name}}</a> </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="AddServiceMapForm.value['serassign_type']=='2'">
+                <div class="col-sm-6" style="overflow: scroll;height: 68vh;">
+                  <table class="table table-header table-bordered table-striped">
+                    <thead>
+                      <th colspan="5">
+                        <input placeholder="Search Reseller Here" class="form-control"
+                          [ngModelOptions]="{standalone:true}" [(ngModel)]="searchresell"
+                          style="width:30%;border: none;border-bottom: 2px solid ;font-size: 15px;">
+                      </th>
+                    </thead>
+                  </table>
+                  <div class="table-body table-wrapper table-scroll ">
+                    <table class="table table-bordered table-striped">
+                      <tr>
+                        <th class="text-center">
+                          <label class="containerbox">All
+                            <input type="checkbox" name="all"
+                              (change)="resellcheck($event.target.checked);checkedreselitems();" />
+                            <span class="checkmarkbox"></span>
+                          </label>
+                        </th>
+                        <th>Reseller Name</th>
+                       </tr>
+                      <tr *ngFor="let item of srvmanitems | grdFilter: {company: searchresell }; let i=index;"
+                        style="text-transform: uppercase;">
+                        <td class="text-center">
+                          <label class="containerbox">
+                            <input type="checkbox" name="sizecb[]" [ngModelOptions]="{standalone:true}"
+                              [(ngModel)]="item.data" (change)="checkedreselitems()" />
+                            <span class="checkmarkbox"></span>
+                          </label>
+                        </td>
+                        <td><a>{{item.company}}</a> </td>
+                       </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+      </div><br><br><br><br><br><br><br><br><br><br><br><br>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-md btn-success" >Update</button>
+        <button class="btn btn-md btn-danger "[routerLink]="['/pages/service/service-list']">Cancel</button>
+      </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

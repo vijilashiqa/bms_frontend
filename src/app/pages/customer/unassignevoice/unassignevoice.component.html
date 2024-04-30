@@ -1,0 +1,37 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <!-- <toaster-container [toasterconfig]="config"> </toaster-container> -->
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="UnassignForm" (ngSubmit)="Unassignsubmit()">
+   <div class="modal-body">
+      <div class="form-group row">
+         <div class="col-sm-3">
+            <label>ISP Name <span style="color: red;">*</span></label>
+            <input type="text" readonly formControlName="bus_id" placeholder="ISP Name"
+               [ngClass]="{'form-control':true,'form-control-danger':UnassignForm.controls.bus_id.invalid&&submit}">
+         </div>
+         <div class="col-sm-3">
+            <label>Voice NO <span style="color: red;">*</span></label>
+            <input type="number" readonly formControlName="voice_num" placeholder="Voice Number"
+               [ngClass]="{'form-control':true,'form-control-danger':UnassignForm.controls.voice_num.invalid&&submit}">
+         </div>
+         <div class="col-sm-3">
+            <label>Subscriber-ID <span style="color: red;">*</span></label>
+            <input type="text" readonly formControlName="sub_id" placeholder="subscriber ID"
+             [ngClass]="{'form-control':true,'form-control-danger':UnassignForm.controls.sub_id.invalid&&submit}">
+          </div>
+          <div class="col-sm-3">
+            <label>Status <span style="color: red;">*</span></label>
+            <select formControlName="status" [ngClass]="{'form-control':true,'form-control-danger':UnassignForm.controls.status.invalid&&submit}">
+               <option value="0">Un-Assign</option>
+            </select>
+          </div>
+      </div>
+   </div>
+   <div class="modal-footer" >
+      <button type="submit"  class="btn btn-md btn-primary">Update</button>
+   </div>
+</form>

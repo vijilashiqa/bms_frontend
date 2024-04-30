@@ -1,0 +1,39 @@
+<div class="modal-header">
+	<span>{{ modalHeader }}</span>
+	<button class="close" aria-label="Close" (click)="closeModal()">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<form [formGroup]="InvAckForm" *ngIf="InvAckForm" (ngSubmit)="addACK();">
+	<div class="modal-body">
+		<div class="form-group row">
+			<div class="col-sm-4" *ngIf="role.getroleid()>777"><br>
+				<label>ISP Name <span style="color:red;">*</span></label>
+				<select formControlName="bus_id"
+					[ngClass]="{'form-control':true,'form-control-danger':InvAckForm.controls.bus_id.invalid&&submit}"
+					>
+					<option value="" selected>Select ISP Name</option>
+					<option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+				</select>
+				<small *ngIf="InvAckForm.controls.bus_id.invalid&&submit" class="form-text error">ISP name is
+					Required!</small>
+			</div>
+			<div class="col-sm-4">
+				<a href="/assets/public/Invoice_ACK.xlsx" target="_blank" download><b  style="color: blue;">Download Sample
+					Here(24 HRS DATE FORMAT:yyyy-mm-dd hh:mm:ss)</b></a>
+			</div>
+			<div class="col-sm-4"><br>
+				<label>EInvoice Details</label>
+				<input type="file" (change)="changeListener($event.target.files[0])" class="form-control"
+					accept=".xlsx">
+				<!-- <small style="color: red;">NasType:0-Mikrotik,1-StarOS,2-ChillSpot,3-Cisco,4-pfSense,255-Other
+					Cisco Bandwith Mode:0-None,1-Rate Limit,2-PolicyMap
+				</small> -->
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<button type="submit" class="btn btn-md btn-success">Acknowledg</button>
+		</div>
+	</div>
+</form>

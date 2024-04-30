@@ -1,0 +1,37 @@
+<div class="col-md-12">
+  <nb-card>
+    <ngx-loading [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+    </ngx-loading>
+    <nb-card-header>Bulk Limit Update</nb-card-header>
+    <nb-card-body>
+      <toaster-container [toasterconfig]="config"></toaster-container>
+      <form  (ngSubmit)="updatLimit()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-8">
+              <nb-card>
+                <nb-card-header style="background-color :  #01a7ee">Limit Update</nb-card-header>
+                <nb-card-body>
+                  <div class="form-group row">
+                    <div class="col-sm-6">
+                      <a href="/assets/public/BulkUpdateLimit.xlsx" target="_blank" download><b>Download Sample Here</b></a>
+                    </div>
+                    <div class="col-sm-6">
+                      <label>Limit Details</label>
+                      <input type="file" (change)="changeListener($event.target.files[0])" class="form-control"
+                        accept=".xlsx">
+                    </div>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success">Update </button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</div>

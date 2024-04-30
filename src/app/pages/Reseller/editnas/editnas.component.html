@@ -1,0 +1,24 @@
+<div class="modal-header">
+   <span>{{ modalHeader }}</span>
+   <toaster-container [toasterconfig]="config"> </toaster-container>
+   <button class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+   </button>
+</div>
+<form [formGroup]="AddNasForm" (ngSubmit)="editreselNas()">
+   <div class="modal-body">
+      <div class="form-group row">
+         <div class="col-sm-12">
+            <label>Nas Name <span style="color: red;">*</span></label>
+            <auto-completen   [addclass]="{'form-control' : true,'form-control-danger':AddNasForm.controls.nas_id.invalid&&submit}"
+               optValues="shortname" (keyUp)="shownas($event)" placeholder="Select NAS" formControlName="nas_id"
+               id="id" [item]="anas">
+            </auto-completen>
+            <small *ngIf="AddNasForm.controls.nas_id.invalid&&submit" class="form-text error">Nas Name is Required!</small>
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button type="submit" class="btn btn-md btn-primary">Update</button>
+   </div>
+</form>

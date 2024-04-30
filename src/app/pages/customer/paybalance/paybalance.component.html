@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="activeModal.close(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="PayBalanceForm" class="form-horizontal" (ngSubmit)="payment();">
+  <div class="modal-body">
+    <ngx-loading *ngIf="loading" [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+    </ngx-loading>
+    <toaster-container [toasterconfig]></toaster-container>
+
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <label>Pay Amount <span style="color:red;">*</span></label>
+        <input type="number" formControlName="pay_amt" placeholder="Pay Amount"
+          [ngClass]="{'form-control':true,'form-control-danger':PayBalanceForm.controls.pay_amt.invalid&&submit}">
+      </div>
+      <div class="col-sm-12">
+        <label>Payment Mode</label>
+        <select formControlName="paytype"
+          [ngClass]="{'form-control':true,'form-control-danger':PayBalanceForm.controls.paytype.invalid&&submit}">
+          <option value="" selected>Select Payment Type</option>
+          <option value="1">Cash</option>
+          <option value="2">Online Payment</option>
+          <option value="3">Cheque</option>
+        </select>
+      </div>
+      <div class="col-sm-12">
+        <label>Collected By</label>
+        <auto-completen
+          [addclass]="{'form-control':true,'form-control-danger':PayBalanceForm.controls.collect_by.invalid&&submit}"
+          addclass="form-control" optValues="company" formControlName="collect_by" (keyUp)="showReseller($event)"
+          placeholder='Select Reseller' id="id" [item]="resel">
+        </auto-completen>
+      </div>
+      <div class="col-sm-12">
+        <label>Payment Date</label>
+        <input type="date" formControlName="receipt_date" placeholder="Payment Date"
+          [ngClass]="{'form-control':true,'form-control-danger':PayBalanceForm.controls.receipt_date.invalid&&submit}">
+      </div>
+      <div class="col-sm-12">
+        <label>Remarks</label>
+        <input type="text" formControlName="rnote" placeholder="Remarks"
+          [ngClass]="{'form-control':true,'form-control-danger':PayBalanceForm.controls.rnote.invalid&&submit}">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-md btn-success">Update</button>
+  </div>
+</form>

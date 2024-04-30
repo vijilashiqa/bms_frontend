@@ -1,0 +1,71 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="activeModal.close(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="AddTypeForm" class="form-horizontal" (ngSubmit)="addType();">
+  <div class="modal-body">
+    <div class="form-group row">
+      <div class="col-sm-3" *ngIf="role.getroleid()>777">
+        <label>ISP Name <span style="color:red;">*</span></label>
+        <select formControlName="bus_id"
+					[ngClass]="{'form-control':true,'form-control-danger':AddTypeForm.controls.bus_id.invalid&&submit}" (change)="GroupName();profile()">
+					<option value="" selected>Select ISP Name</option>
+					<option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+				</select>
+				<small *ngIf="AddTypeForm.controls.bus_id.invalid&&submit" class="form-text error">Business name is
+					Required!</small>
+      </div>
+      <div class="col-sm-3" *ngIf="role.getroleid()>775">
+				<label>Circle <span style="color:red;">*</span></label>
+				<select formControlName="groupid" 
+					[ngClass]="{'form-control':true,'form-control-danger':AddTypeForm.controls.groupid.invalid&&submit}">
+					<option value="" selected="">Select Circle</option>
+					<option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+				</select>
+				<small *ngIf="AddTypeForm.controls.groupid.invalid&&submit" class="form-text error">Circle Name is
+					Required!</small>
+      </div>
+      <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+        <label>Reseller Type <span style="color:red;">*</span></label>
+        <select name="Role" formControlName="Role"
+          [ngClass]="{'form-control' : true,'form-control-danger':AddTypeForm.controls.Role.invalid&&submit}"
+          (change)="showReseller() ">
+          <option value="" selected>Select Reseller Type</option>
+          <option *ngFor="let item of pro" [ngValue]="item.role">{{item.menu_name}}</option>
+        </select>
+        <small *ngIf="AddTypeForm.controls.Role.invalid&&submit" class="form-text error">Profile Is
+          Required!</small>
+      </div>
+      <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+        <label>Reseller Name <span style="color:red;">*</span></label>
+        <auto-completen [addclass]="{'form-control':true,'form-control-danger':AddTypeForm.controls.reseller.invalid&&submit}"
+          addclass="form-control" optValues="company" formControlName="reseller" (keyUp)="showReseller($event)"
+          placeholder='Select Reseller' id="id" [item]="resell">
+        </auto-completen>
+        <small *ngIf="AddTypeForm.hasError('required','reseller')&&submit" class="form-text error">Reseller
+           is required! </small>
+     </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-3">
+        <label>Model Type <span style="color:red;">*</span></label>
+        <input type="text" formControlName="model_type" placeholder="Model Type" [ngClass]="{'form-control':true,'form-control-danger':AddTypeForm.controls.model_type.invalid&&submit}">
+        <small *ngIf="AddTypeForm.hasError('required','model_type')&&submit" class="form-text error">Model Type is Required!</small>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="status" formControlName="status" />
+          <label class="custom-control-label" for="status">Active</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-md btn-success">{{item ? 'Update' : 'Add'}}</button>
+    <button type="button" class="btn btn-md btn-danger " (click)='closeModal()'>Back</button>
+  </div>
+</form>

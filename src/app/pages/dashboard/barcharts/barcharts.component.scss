@@ -1,0 +1,13 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  
+    ngx-barcharts,
+  
+   
+
+  /deep/ .echart {
+    height: 100%;
+    width: 100%;
+  }
+}

@@ -1,0 +1,37 @@
+<div class="col-md-12">
+   <div class="row">
+      <div class="col-md-3">
+      </div>
+      <div class="col-md-6">
+         <nb-card>
+            <nb-card-header *ngIf="status==0" style="background-color: green; text-align: center;">Transaction Status-(Success)</nb-card-header>
+            <nb-card-header *ngIf="status!=0" style="background-color: red; text-align: center;">Transaction Status (Failed/Canceled)</nb-card-header>
+            <nb-card-body>
+               <toaster-container [toasterconfig]="config"></toaster-container>
+               <div class="row">
+                  <div class="col-md-8">
+                     <a>Please Do Not Refresh the Page</a><br>
+                     &nbsp;
+                     <table class="table table-bordered table-hover table-striped">
+                        <tr *ngIf="msg!=''">
+                           <th>Status</th>
+                           <td><b>{{msg ? msg:''}}</b></td>
+                        </tr>
+                        <tr>
+                           <th>Transaction ID</th>
+                           <td><b>{{txnid ? txnid : ''}}</b></td>
+                        </tr>
+                        <th>Order ID</th>
+                        <td><b>{{orderid ? orderid : ''}}</b></td>
+                     </table>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="submit" class="btn btn-sm btn-success" (click)="redirect()">Redirect</button>
+               </div>
+            </nb-card-body>
+         </nb-card>
+      </div>
+   </div>
+
+</div>

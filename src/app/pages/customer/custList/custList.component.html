@@ -1,0 +1,530 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>
+    List Subscriber
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <button *ngIf="!role.getmenurole(702)" 
+      class="btn btn-sm btn-success" [routerLink]="['/pages/cust/add-cust']">Add</button>
+    <!-- <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i> -->
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-2" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();servicetype();showgst();showService();showProfileReseller();showUser();showResellerBranch();changeclear(1)"
+            placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" (changed)="showUser();showResellerBranch();changeclear(2)"
+            addclass="form-control" optValues="groupname" placeholder='Select Circle' optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775)||(role.getroleid() > 444)">
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" addclass="form-control"
+            (changed)="showResellerName();showUser();changeclear(3)" (keyUp)="showProfileReseller($event)"
+            optValues="menu_name" placeholder='Select Reseller Type' optId="role" [item]="profile">
+          </auto-completen>
+          <small style="color: blueviolet;">Select Profile</small>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775)||(role.getroleid() > 444)">
+          <label>Reseller Name</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company"
+            (keyUp)="showResellerName($event)"
+            (changed)="showService();showUser();showgst();showResellerBranch();changeclear(4)"
+            placeholder='Select Reseller' id="id" [item]="res1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Service Type </label>
+          <auto-completen [(ngModel)]="serv_type" (changed)="showUser();changeclear(5)" addclass="form-control"
+            optValues="service_name" placeholder='Select Select Type' optId="srv_id" [item]="servtype">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Service Name</label>
+          <auto-completen [(ngModel)]="name" (keyUp)="showService($event)" (changed)="showUser();changeclear(6)"
+            addclass="form-control" optValues="srvname" placeholder='Select Service name' optId="srvid" [item]="nam1">
+          </auto-completen>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <label>Profile ID</label>
+          <auto-completen [(ngModel)]="cust_name" (keyUp)="showUser($event)" (changed)="showgst();subs_gst=''"
+            addclass="form-control" optValues="profileid" placeholder='Select Subs AccountID' optId="uid"
+            [item]="custname">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Subscriber GST</label>
+          <auto-completen [(ngModel)]="subs_gst" addclass="form-control" optValues="gst" placeholder='Select GST Number'
+            optId="gst" (keyUp)="showgst($event)" [item]="gst">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label>Accout Type</label>
+          <select [(ngModel)]="acnt_type" class="form-control">
+            <option value="" selected>Select Account Type</option>
+            <option value="1">Prepaid</option>
+            <option value="2">Postpaid</option>
+            <option value="3">Demo</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <label>Subscriber Type</label>
+          <select [(ngModel)]="subs_type" class="form-control">
+            <option value="" selected>Select Subscriber Type</option>
+            <option value="0">SME</option>
+            <option value="1">BroadBand</option>
+            <option value="2">Corporate</option>
+            <option value="3">Education/Institute</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <label>Subs Account Type</label>
+          <select [(ngModel)]="acc_type" class="form-control">
+            <option value="" selected>Select Account type</option>
+            <option value="0">Regular</option>
+            <option value="1">MAC</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <label>Connection Type</label>
+          <select [(ngModel)]="conn_type" class="form-control">
+            <option value="" selected>Select Connection Type </option>
+            <option value="0">Wired(RPY)</option>
+            <option value="1">Wireless</option>
+            <option value="2">Fibre</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <label>Active Status</label>
+          <select [(ngModel)]="act_status" (change)="changeclear(7)" class="form-control">
+            <option value="" selected>Select Connection status</option>
+            <option value="1">Active</option>
+            <option value="2">Expired</option>
+            <option value="3">Suspended</option>
+            <option value="4">Hold</option>
+          </select>
+        </div>
+        <div class="col-sm-2" *ngIf="act_status=='1' || act_status== '2'">
+          <label *ngIf="act_status==1">Active Start-Date</label>
+          <label *ngIf="act_status==2">Expired Start-Date</label>
+          <input type="text" [nbDatepicker]="renstart_date" [(ngModel)]="st_date" class="form-control"
+            placeholder="Select Start Date" />
+          <nb-datepicker #renstart_date></nb-datepicker>
+        </div>
+        <div class="col-sm-2" *ngIf="act_status=='1' || act_status== '2'">
+          <label *ngIf="act_status==1">Active End-Date</label>
+          <label *ngIf="act_status==2">Expired End-Date</label>
+          <input type="text" [nbDatepicker]="renend_date" [(ngModel)]="en_date" class="form-control"
+            placeholder="Select End Date" />
+          <nb-datepicker #renend_date></nb-datepicker>
+        </div>
+        <div class="col-sm-2" *ngIf="act_status=='2'">
+          <label>Expiry Track</label>
+          <input type="number" [(ngModel)]="exp_track" class="form-control" placeholder="Expiry Tracy">
+        </div>
+        <div class="col-sm-2">
+          <label>Online Status</label>
+          <select [(ngModel)]="on_status" class="form-control">
+            <option value="" selected>Select status</option>
+            <option value="1">Online</option>
+            <option value="2">Offline</option>
+            <option value="3">Offline Tag</option>
+
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <label>Branch Name</label>
+          <auto-completen [(ngModel)]="s_branch" addclass="form-control" optValues="branch" placeholder='Select Branch'
+            optId="b_id" [item]="sbranch">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="this.role.getroleid()>=775">
+          <label>State</label>
+          <auto-completen [(ngModel)]="state_id" addclass="form-control" optValues="name" placeholder='Select State'
+            id="id" (keyUp)="showState($event)" [item]="state">
+          </auto-completen>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          <label>Created Start Date</label>
+          <input type="text" [nbDatepicker]="createst_date" [(ngModel)]="cstart_date" class="form-control"
+            placeholder="Start Date" />
+          <nb-datepicker #createst_date></nb-datepicker>
+        </div>
+        <div class="col-sm-2">
+          <label>Created End Date</label>
+          <input type="text" [nbDatepicker]="createend_date" [(ngModel)]="cend_date" class="form-control"
+            placeholder="End Date" />
+          <nb-datepicker #createend_date></nb-datepicker>
+        </div>
+        <div class="col-sm-2">
+          <label>Registered Start Date</label>
+          <input type="text" [nbDatepicker]="regst_date" [(ngModel)]="start_date" class="form-control"
+            placeholder="Start Date" />
+          <nb-datepicker #regst_date></nb-datepicker>
+        </div>
+        <div class="col-sm-2">
+          <label>Registered End Date</label>
+          <input type="text" [nbDatepicker]="regend_date" [(ngModel)]="end_date" class="form-control"
+            placeholder="End Date" />
+          <nb-datepicker #regend_date></nb-datepicker>
+        </div>
+
+        <!-- <div class="col-sm-2">
+          <label>Expiry Start Date</label>
+          <input type="text" [nbDatepicker]="expst_date" [(ngModel)]="start_exp" class="form-control"
+            placeholder="Start Date" />
+          <nb-datepicker #expst_date></nb-datepicker>
+        </div>
+        <div class="col-sm-2">
+          <label>Expiry End Date</label>
+          <input type="text" [nbDatepicker]="expend_date" [(ngModel)]="end_exp" class="form-control"
+            placeholder="End Date" />
+          <nb-datepicker #expend_date></nb-datepicker>
+        </div> -->
+
+        <div class="col-sm-2">
+          <label>Start Date</label>
+          <input type="date" pattern="Start Date" [(ngModel)]="start_exp" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <label>End Date</label>
+          <input type="date" placeholder="End Date" [(ngModel)]="end_exp" class="form-control">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          <label>Ip Mode</label>
+          <select [(ngModel)]="ip_mode" class="form-control" (change)="showPublicIp();public_ip='';static_ip=''">
+            <option value="" selected>Select status</option>
+            <option value="0">Dynamic</option>
+            <option value="1">Ippool</option>
+            <option value="2">Static</option>
+            <option value="3">Public</option>
+          </select>
+        </div>
+        <div class="col-sm-2" *ngIf="ip_mode ==2">
+          <label>Static IP</label>
+          <input type="text" [(ngModel)]="static_ip" class="form-control">
+        </div>
+        <div class="col-sm-2" *ngIf="ip_mode ==3">
+          <label>Dynamic IP</label>
+          <auto-completen [(ngModel)]="public_ip" (keyUp)="showPublicIp($event)" addclass="form-control"
+            optValues="ipaddr" placeholder='Select PublicIp' optId="ipaddr" [item]="publicIp">
+          </auto-completen>
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col-sm-2" *ngIf="on_status ==1 && role.getroleid()>=775">
+          <label>Nasname</label>
+          <auto-completen [(ngModel)]="nasname" addclass="form-control" optValues="nas_ip" placeholder='Select Nas'
+          id="id" (keyUp)="showState($event)" [item]="nas_list">
+        </auto-completen>
+        </div>
+      </div> -->
+      <br>
+      <button type="button" class="btn btn-md btn-success middle" (click)='page=1;initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <br>
+    <table class="table table-bordered table-striped">
+      <thead class="success">
+        <th style="text-align: left;color: white;" colspan="9" class="black-muted-bg"><b> Total Subscribers :
+          </b>{{tot?tot:0}}</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center;" class="changesize"><b> Regular
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> MAC
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Active
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Expired
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Online
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Disconnect
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Quarantine
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Suspended
+            </b>
+          </td>
+          <td style="text-align: center;" class="changesize"><b> Holded
+            </b>
+          </td>
+
+        </tr>
+        <tr>
+          <td style="text-align: center;"> {{regular_user || 0 }}</td>
+          <td style="text-align: center;"> {{mac_user || 0 }}</td>
+          <td style="text-align: center;"> {{active_status || 0 }}</td>
+          <td style="text-align: center;"> {{expiry_status || 0 }}</td>
+          <td style="text-align: center;"> {{online_status || 0 }}</td>
+          <td style="text-align: center;"> {{disconnected || 0 }}</td>
+          <td style="text-align: center;"> {{on_exp || 0 }}</td>
+          <td style="text-align: center;"> {{suspend || 0 }}</td>
+          <td style="text-align: center;"> {{hold || 0 }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="pagination">
+          <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+            <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+              (click)="getlist(page)">{{page}}</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+              (click)="page=pager.totalPages;getlist();">Last</a>
+          </ul>
+          <br>
+          <select [(ngModel)]="limit" (change)="initiallist()" class="form-control"
+            style="height: calc(2rem + 10px); width: 51px; padding: 0rem;  border-radius: 7px;margin-right: 1vh;">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="75">75</option>
+            <option value="100">100</option>
+          </select>
+          <br>
+          <!-- Online Users -->
+          <div *ngIf="on_status == 1 || dashstatus == 2 || on_status == 3 || dashstatus == 7">
+            <button
+              style="height: calc(2rem + 10px); width: 65px; padding: 0rem;  border-radius: 7px;margin-right: 1vh;"
+              class="btn btn-xs btn-outline-primary" (click)="logoffAll()"><b>Log Off All</b></button>
+          </div>
+          <div *ngIf="on_status == 1 || dashstatus == 2 || on_status == 3 || dashstatus == 7">
+            <button style="height: calc(2rem + 10px); width: 95px; padding: 0rem;  border-radius: 7px;"
+              class="btn btn-xs btn-outline-primary" (click)="closeAll()"><b>Close Session All</b></button>
+          </div>
+
+          <!-- Quarantine Users---- -->
+          <!-- <div *ngIf="on_status == 3 || dashstatus == 7">
+            <button
+              style="height: calc(2rem + 10px); width: 65px; padding: 0rem;  border-radius: 7px;margin-right: 1vh;"
+              class="btn btn-xs btn-outline-primary" (click)="logoffAll()"><b>Log Off All</b></button>
+          </div>
+          <div *ngIf="on_status == 3 || dashstatus == 7">
+            <button style="height: calc(2rem + 10px); width: 95px; padding: 0rem;  border-radius: 7px;"
+              class="btn btn-xs btn-outline-primary" (click)="closeAll()"><b>Close Session All</b></button>
+          </div> -->
+
+        </div>
+
+      </div>
+      <div class="col-md-6">
+        <!-- <button style = "position:relative;left:400px;top:2px;" class="btn btn-xs btn-outline-primary" (click)="logoff()"><b>Log Off All</b></button> -->
+        <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped">
+        <tr>
+          <th rowspan="2" style="border: 3px solid #aeb8b9;color: white;"
+            *ngIf="!role.getmenurole(703) ||!role.getmenurole(704) || !role.getmenurole(705)||!role.getmenurole(1032)">
+            <br>
+            Action
+          </th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="role.getroleid()>777"><br>AccNO</th>
+          <th style="border: 3px solid #aeb8b9!important;color: white;border-collapse: separate;" colspan="2">Status
+          </th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="role.getroleid()>549"><br>Reseller Name
+          </th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="3">Subscriber</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" *ngIf="dashstatus==2||on_status==1" rowspan="2"><br>IP
+            Address</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" *ngIf="dashstatus==2||on_status==1" rowspan="2"><br>MAC
+          </th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="3">Service</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus!=2 && on_status!=1">Subplan</th>
+
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="3">Time</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="3" *ngIf="dashstatus!=2 && on_status!=1">Limit</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" colspan="3" *ngIf="dashstatus==2||on_status==1">Data</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus==2||on_status==1"><br>Nas IP
+          </th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus!=2 && on_status!=1"><br>Expiry Date</th>
+          <!-- <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" [hidden]="dashstatus==2||on_status==1">
+            <br>Mobile Number</th> -->
+            <!-- Except online cuatomer shown all -->
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus!=2 && on_status!=1"><br>Address</th>  
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus!=2 && on_status!=1"><br>Branch</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus!=2 && on_status!=1"><br>Locality</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus!=2 && on_status!=1"><br>Connection Type</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus!=2 && on_status!=1">IpMode</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus!=2 && on_status!=1">Ip</th>
+          <th style="border: 3px solid #aeb8b9;color: white;" rowspan="2" *ngIf="dashstatus!=2 && on_status!=1">Email</th>
+
+        </tr>
+        <tr style="background-color :  #01a7ee;color:white;position: sticky;top: 38px;">
+          <th style="border: 3px solid #aeb8b9;"  >Account</th>
+          <th style="border: 3px solid #aeb8b9;">Connection </th>
+          <th style="border: 3px solid #aeb8b9;"> Login ID</th>
+          <th style="border: 3px solid #aeb8b9;"> Name</th>
+          <th style="border: 3px solid #aeb8b9;"> Mobile</th>
+          <th style="border: 3px solid #aeb8b9;"> Type </th>
+          <th style="border: 3px solid #aeb8b9;">Assigned </th>
+          <th style="border: 3px solid #aeb8b9;color: white;">Running </th>
+          <th style="border: 3px solid #aeb8b9;">Start</th>
+          <th style="border: 3px solid #aeb8b9;cursor: pointer;" class="online-sort" (click)="onlineTimeSort()">Online <span *ngIf="show_icon" >
+            <i 
+            [ngClass]="{'ion-arrow-up-a' : reverse == true ? true: false , 'ion-arrow-down-a': reverse ==false? true: false}"
+             ></i>
+          </span></th>
+          <th style="border: 3px solid #aeb8b9;color: white;">Last Log-Off</th>
+          <th style="border: 3px solid #aeb8b9;">D/L </th>
+          <th style="border: 3px solid #aeb8b9;">U/L </th>
+          <th style="border: 3px solid #aeb8b9;">Total </th>
+        </tr>
+        <tr *ngFor="let item of pagedItems">
+          <td *ngIf="!role.getmenurole(703) ||!role.getmenurole(704) || !role.getmenurole(705)||!role.getmenurole(1032)"
+            style=" padding: 1px;" class=" last" data-title="'Action'">
+            <div class="dropdown ghost-dropdown" ngbDropdown>
+              <button style="width: 70px;border: 2px solid #73a1ff;font-size: 10px;margin:3px;"
+                class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action&nbsp;
+              </button>
+              <ul style="width: 75px;margin:3px;z-index: 1;" class="dropdown-menu" ngbDropdownMenu>
+                <li *ngIf="!role.getmenurole(704)" class="dropdown-item" title="View"
+                  style="padding-top: 0px;padding-bottom: 2px;" (click)="view_user(item.uid)"><i
+                    style="font-size: 20px;" class="far fa-eye "></i>&nbsp;View</li>
+                <li *ngIf="(item.acc_type!=3 && (!role.getmenurole(705)))" style="padding-top: 0px;padding-bottom: 2px;"
+                  class="dropdown-item" title="Renew"
+                  (click)="renew_user(item.uid,item.mrole,item.createdon,item.expiration)">
+                  <i style="font-size: 20px;" class="fa fa-redo "></i>&nbsp;Renew
+                </li>
+                <li *ngIf="!role.getmenurole(703)" style="padding-top: 0px;padding-bottom: 2px;"
+                   class="dropdown-item" title="Edit"
+                  (click)="Edit_nas(item.uid)">
+                  <i style="font-size: 20px;" class="nb-edit"></i>&nbsp;Edit
+                </li>
+                <li *ngIf="!role.getmenurole(1032)" style="padding-top: 0px;padding-bottom: 2px;" class="dropdown-item"
+                  title="ChangePassword" (click)="propassword(item.uid)"><i style="font-size: 20px;"
+                    class="fa fa-keyboard"></i>&nbsp;Password
+                </li>
+                <li *ngIf="item.online_status==1 || dashstatus == 7 || on_status == 3"
+                  style="padding-top: 0px;padding-bottom: 2px;" class="dropdown-item" title="CloseSession"
+                  (click)="close(item.uid)"><i style="font-size: 20px;" class="fa fa-power-off"></i>&nbsp;CloseSesn
+                </li>
+                <li *ngIf="item.online_status==1 || dashstatus == 7 || on_status == 3"
+                  style="padding-top: 0px;padding-bottom: 2px;" class="dropdown-item" title="Log-Off"
+                  (click)="logoff(item.uid)"><i style="font-size: 20px;" class="fa fa-pause-circle"></i>&nbsp;Log-Off
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td *ngIf="role.getroleid()>777">{{item.uid}}</td>
+          <td (click)="view_user(item.uid)" style="cursor: pointer;">
+            <span *ngIf="((item.expiry_status==0) && (item.status!=3 && item.status!=2))"
+              style="background-color:#ff9900; color: #fafffb;font-weight:bold;border-radius: 3px; padding: 4px;">Expired</span>
+            <span
+              *ngIf="(((item.online_status==0||item.online_status==1) && item.expiry_status==1)&&(item.status!=3 && item.status!=2))"
+              style="background-color:#0380fc;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Active</span>
+            <span *ngIf="item.status==2"
+              style="background-color:#df2727;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Suspend</span>
+            <span *ngIf="item.status==3"
+              style="background-color:#f700ffe1;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Hold</span>
+          </td>
+          <td (click)="view_user(item.uid)" style="cursor: pointer;">
+            <span *ngIf="item.online_status==1 && item.expired_online ==0"
+              style="background-color:#1ac43c;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Online</span>
+            <span *ngIf="item.online_status==0 && item.expired_online ==0"
+              style="background-color:#565656;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Offline</span>
+            <span *ngIf="item.online_status==0 && item.expired_online ==1"
+              style="background-color:#7b878d;font-weight:bold;border-radius: 3px; padding: 4px; color: #fafffb">Offline</span>
+          </td>
+          <td *ngIf="role.getroleid()>549">{{item.company}}</td>
+          <td style="text-transform: none !important;text-align: left;">
+            <a><i
+                [ngClass]="{'fas fa-user':item.acctype!=1? true:false,'fa fa-address-book': item.acctype==1 ? true:false  }">
+              </i>&nbsp;{{item.cust_profile_id}}</a>
+          </td>
+          <td>{{item.cust_name}}</td>
+          <td>{{item.mobile=='' ? '--':item.mobile}}</td>
+          <td *ngIf="dashstatus==2||on_status==1">{{item.framedipaddress}}</td>
+          <td *ngIf="dashstatus==2||on_status==1">{{item.callingstationid}}</td>
+          <td>{{item.srvdatatype==1?'unlimited':'FUP'}}</td>
+          <td>{{item.srvname || 'N/A'}}</td>
+          <td>{{item.online_status==1?item.rsrvname:'--'}}</td>
+          <td *ngIf="dashstatus!=2 && on_status!=1">{{item.sub_plan || 'N/A'}}</td>
+          <td>{{item.acctstarttime == null? '--': item.acctstarttime | date:'d MMM y h:mm:ss a '}}</td>
+          <td>{{item.online_time== null ? '--':item.online_time}}</td>
+          <td>{{item.lastlogoff == null ? '--': item.lastlogoff | date:'d MMM y h:mm:ss a'}}</td>
+
+          <td *ngIf="dashstatus!=2 && on_status!=1" [ngStyle]="{ 'color' : item.lcdllimit==0 ? 'red' : 'black' }">{{item.srvdatatype==2?item.limitdl==0 ?'--':
+            item.lcdllimit==0?'data limit over':item.lcdllimit:'--'}}
+          </td>
+          <td *ngIf="dashstatus!=2 && on_status!=1" [ngStyle]="{ 'color' : item.lcuplimit==0 ? 'red' : 'black' }">{{item.srvdatatype==2?item.limitul==0 ?'--':
+            item.lcuplimit==0?'data limit over':item.lcuplimit:'--'}}
+          </td>
+          <td *ngIf="dashstatus!=2 && on_status!=1" [ngStyle]="{ 'color' : (item.srvdatatype==2 && item.lclimitcomb==0) ? 'red' : 'black' }">
+            {{item.srvdatatype==2?item.limitcomb==0 ?'--': item.lclimitcomb==0?'data limit over':item.lclimitcomb:'Unlimited'}}</td>
+
+          <td *ngIf="dashstatus==2||on_status==1" >{{item.download}}</td>
+          <td *ngIf="dashstatus==2||on_status==1" >{{item.upload}}</td>
+          <td *ngIf="dashstatus==2||on_status==1" >{{item.total}}</td>
+
+
+          <td *ngIf="dashstatus==2||on_status==1">{{item.nasipaddress}}</td>
+          <td *ngIf="item.expiration != '0000-00-00 00:00:00' &&(dashstatus!=2 && on_status!=1)">{{item.expiration| date : 'd MMM y h:mm:ss a'}}</td>
+          <td *ngIf="item.expiration == '0000-00-00 00:00:00' && (dashstatus!=2 && on_status!=1)">{{'--'}}</td>
+          <td *ngIf="dashstatus!=2 && on_status!=1" style="white-space:break-spaces">{{item.address || '--'}}</td>
+          <td *ngIf="dashstatus!=2 && on_status!=1">{{item.branch}}</td>
+          <td *ngIf="dashstatus!=2 && on_status!=1">{{item.area==0 ? 'Rural':item.area==1 ? 'Urban':'--'}}</td>
+          <td *ngIf="dashstatus!=2 && on_status!=1">{{item.subs_type==0?'SME':item.subs_type==1?'BroadBand':item.subs_type==2?'corporate':'Edu/Inst' }}</td>
+          <td *ngIf="dashstatus!=2 && on_status!=1">{{item.ipmodecpe ==0? 'Dynamic':item.ipmodecpe==1?'Ippool':(item.ipmodecpe==2 &&
+            item.staticip_flag==0)?'StaticIp':
+            (item.ipmodecpe==2 && item.staticip_flag==1)? 'PublicIp': '--'}}
+          </td>
+          <td *ngIf="dashstatus!=2 && on_status!=1">{{item.staticipcpe || '--'}}</td>
+          <td *ngIf="dashstatus!=2 && on_status!=1">{{item.email || '--'}}</td>
+        </tr>
+        <tr>
+          <td colspan="16" *ngIf="pagedItems==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+  </nb-card-body>
+</nb-card>

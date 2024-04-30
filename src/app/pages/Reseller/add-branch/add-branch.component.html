@@ -1,0 +1,72 @@
+<div class="col-md-12">
+  <nb-card>
+  <nb-card-header>{{id ? 'Edit':'Add'}}Reseller Branch</nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]="config"></toaster-container>
+    <form [formGroup]="AddBranchForm" (ngSubmit)="addBranch()">
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-sm-4" *ngIf="role.getroleid()>777">
+            <label>ISP Name <span style="color:red;">*</span></label>
+            <select formControlName="bus_id"
+              [ngClass]="{'form-control':true,'form-control-danger':AddBranchForm.controls.bus_id.invalid&&submit}"
+              (change)="GroupName()">
+              <option value="" selected>Select Business Name</option>
+              <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+            </select>
+            <small *ngIf="AddBranchForm.controls.bus_id.invalid&&submit" class="form-text error">Business name
+              is Required!</small>
+          </div>
+          <div class="col-sm-4">
+            <label>Circle<span style="color:red;">*</span></label>
+            <select  formControlName="groupid"
+              [ngClass]="{'form-control' : true,'form-control-danger':AddBranchForm.controls.groupid.invalid&&submit}"
+              (change)="showReseller()">
+              <option value="" selected>Select Circle</option>
+              <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+            </select>
+            <small *ngIf="AddBranchForm.hasError('required','groupid')&&submit" class="form-text error">Circle is
+              required! </small>
+          </div>
+          <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+            <label>Reseller Name <span style="color:red;">*</span></label>
+            <auto-completen [addclass]="{'form-control':true,'form-control-danger':AddBranchForm.controls.reseller.invalid&&submit}"
+              addclass="form-control" optValues="company" formControlName="reseller" (keyUp)="showReseller($event)"
+               placeholder='Select Reseller' id="id"
+              [item]="resell">
+            </auto-completen>
+            <small *ngIf="AddBranchForm.hasError('required','reseller')&&submit" class="form-text error">Reseller
+              is required! </small>
+          </div>
+        </div>
+        <div class="form-group row"> 
+          <div class="col-sm-4">
+            <label>Branch Name <span style="color:red;">*</span></label>
+            <input type="text" placeholder="Branch Name" formControlName="br_name"[ngClass]="{'form-control':true,'form-control-danger':AddBranchForm.controls.br_name.invalid&&submit}">
+            <small *ngIf="AddBranchForm.controls.br_name.invalid&&submit" class="form-text error">Branch Name is Required</small>
+          </div>
+          <div class="col-sm-4">
+            <label>Branch Address <span style="color:red;">*</span></label>
+            <textarea formControlName="branch_addr" placeholder="Branch Address" [ngClass]="{'form-control':true,'form-control-danger':AddBranchForm.controls.invalid&&submit}"></textarea>
+            <small *ngIf="AddBranchForm.controls.branch_addr.invalid&&submit" class="form-text error">Branch Address is Required!</small>
+          </div>
+          <div class="col-sm-4">
+            <label>Status <span style="color:red;">*</span></label>
+            <select formControlName="status" [ngClass]="{'form-control':true,'form-control-danger':AddBranchForm.controls.status.invalid&&submit}">
+              <option value="" selected>Select Status</option>
+              <option value="0">Inactive</option>
+              <option value="1">Active</option>
+            </select>
+            <small *ngIf="AddBranchForm.controls.status.invalid&&submit" class="form-text error">Status is Required!</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-md btn-success" >
+          {{id ? 'Update': 'Create'}}</button>
+          <button class="btn btn-md btn-danger "[routerLink]="['/pages/reseller/list-branch']">Back</button>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>
+</div>  

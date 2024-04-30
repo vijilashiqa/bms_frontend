@@ -1,0 +1,35 @@
+/*.dropdown-content a:first-child {
+	border-top-right-radius: 5px; 
+	border-top-left-radius: 5px; 
+}
+*/
+.dropdown-content a:last-child {
+	border-bottom: 0px;
+}
+
+.dropdown-content a:hover{
+	background-color: silver;
+}
+
+.dropdown-content a {
+	padding: 10px;
+	display: block;
+	text-align: left;
+	border-bottom-width: 0px;
+	color: #000;
+}
+
+.dropdown-content{
+	border:1px solid silver;
+	border-radius: 10px;
+	position: absolute;
+	background-color: #fff;
+	overflow: scroll;
+	max-height: 400px;
+	/*width: 100%;*/
+	z-index: 1;
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}

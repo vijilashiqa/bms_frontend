@@ -1,0 +1,60 @@
+<div class="col-md-12">
+  <nb-card>
+  <nb-card-header>{{id ? 'Edit':'Add'}} Complaint Type</nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]="config"></toaster-container>
+    <form [formGroup]="AddComptypeForm" (ngSubmit)="addcomptype()">
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-sm-4" *ngIf="role.getroleid()>777">
+            <label>ISP Name <span style="color:red;">*</span></label>
+            <select formControlName="bus_id" (change)="showProfileReseller()"
+               [ngClass]="{'form-control':true,'form-control-danger':AddComptypeForm.controls.bus_id.invalid&&submit}"
+               >
+               <option value="" selected>Select Business Name</option>
+               <option *ngFor="let item of busname" [ngValue]="item.id">{{item.busname}}</option>
+            </select>
+            <small *ngIf="AddComptypeForm.controls.bus_id.invalid&&submit" class="form-text error">Business name
+               is Required!</small>
+          </div>
+          <div class="col-sm-4" *ngIf="role.getroleid()>=775">
+            <label>Reseller Type <span style="color:red;">*</span></label>
+            <auto-completen formControlName="Role" [addclass]="{'form-control':true,'form-control-danger':AddComptypeForm.controls.Role.invalid&&submit}"
+              (changed)="showResellerName()" optValues="menu_name" placeholder='Select Reseller Type' optId="role" [item]="profile">
+            </auto-completen>
+            <small *ngIf="AddComptypeForm.controls.Role.invalid&&submit" class="form-text eror">Reseller Type is Rquired!</small>
+          </div>
+          <div class="col-sm-4" *ngIf="role.getroleid()>=775"> 
+            <label>Reseller Name <span style="color:red;">*</span></label>
+            <auto-completen formControlName="reseller" [addclass]="{'form-control':true,'form-control-danger':AddComptypeForm.controls.reseller.invalid&&submit}"optValues="company"
+             placeholder='Select Reseller' (keyUp)="showResellerName($event)" id="id" [item]="resell">
+          </auto-completen>
+            <small *ngIf="AddComptypeForm.controls.reseller.invalid&&submit" class="form-text error">Reseller name is required! </small>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-4">
+            <label>Complaint Type Name <span style="color:red;">*</span></label>
+            <input type="text" placeholder="Complaint Type" formControlName="comp_type" [ngClass]="{'form-control':true,'form-control-danger':AddComptypeForm.controls.comp_type.invalid&&submit}"/>
+            <small *ngIf="AddComptypeForm.hasError('required','comp_type')&&submit" class="form-text error">Complaint type is required</small>
+          </div>
+          <div class="col-sm-4">
+            <label>Description</label>
+              <textarea name="descp" formControlName="descp" placeholder="Description" [ngClass]="{'form-control' : true,'form-control-danger':AddComptypeForm.controls.descp.invalid&&submit}"></textarea>
+          </div>
+          <div class="col-sm-4">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="status" formControlName="status">
+              <label class="custom-control-label" for="status">Status</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-md btn-success" >{{id ? 'Update': 'Create'}}</button>
+          <button class="btn btn-md btn-danger "[routerLink]="['/pages/complaint/list-comptype']">Back</button>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>
+</div>  

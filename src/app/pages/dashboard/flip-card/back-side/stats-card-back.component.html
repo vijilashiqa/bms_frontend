@@ -1,0 +1,38 @@
+<nb-card-header style="background-color: #ba7fec;">
+  <div class="header-container">
+    <div class="icon">
+      <i class="fas fa-rupee-sign"></i>
+    </div>
+    <span class="title">Payment</span>
+  </div>
+</nb-card-header>
+<nb-card-body class="p-3">
+  <div class="modal-body">
+    <div class="row">
+      <div class="info">
+        <div class="period latest" style="padding-left: 10%;">
+          <span class="time-interval">Last Month Manual Deposit</span>
+          <div class="value">
+            <i class="fas fa-rupee-sign"></i>
+            {{lmMDeposit}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="info">
+        <div class="period" style="padding-left: 10%;">
+          <span class="time-interval" >Last Month Online Deposit</span>
+          <div class="value">
+            <i class="fas fa-rupee-sign"></i>
+            {{lmODeposit}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  <ngx-stats-ares-chart></ngx-stats-ares-chart> -->
+</nb-card-body>
+<nb-card-footer style="border: none;">
+  <!-- <button type="submit" class="btn btn-md btn-primary" (click)="recharge()">Top UP </button> -->
+</nb-card-footer>

@@ -1,0 +1,122 @@
+<div class="col-md-12">
+  <nb-card>
+     <toaster-container></toaster-container>
+    <nb-card-header>{{id ? 'Edit' : 'Add'}} Enquiry Details</nb-card-header>
+    <nb-card-body>
+      <form [formGroup]="AddEnquiryForm" class="form-horizontal" (ngSubmit)="addNas();">  
+        <div class="modal-body">
+          <div class="form-group row">          
+            <div class="col-sm-4">
+              <label>Reseller Name*</label>
+              <select name="reseller_name" formControlName="reseller_name" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.reseller_name.invalid&&submit}">
+              <small *ngIf="AddEnquiryForm.hasError('required','reseller_name')&&submit" class="form-text error">Reseller name is required! </small>
+              <option value="" selected> Select Reseller</option>
+              <option *ngFor="let item of resell" [ngValue]="item.user_id">{{item.user_login_id}}</option>
+              </select>   
+            </div>  
+            <div class="col-sm-4">
+              <label>Select Location*</label>
+              <select name="enq_loc" formControlName="enq_loc" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.enq_loc.invalid&&submit}">
+              <small *ngIf="AddEnquiryForm.hasError('required','enq_loc')&&submit" class="form-text error">Location is required! </small>
+              <option value="" selected>Select City</option>
+                      <option value="4">Chennai</option>
+                      <option value="5">Madurai</option>
+                      <option value="6">Nagari</option>
+                      <option value="7">Cochin</option>
+
+              </select>   
+            </div>
+            <div class="col-sm-4">
+              <label>Select Branch*</label>
+              <select name="branch" formControlName="branch" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.branch.invalid&&submit}">
+              <small *ngIf="AddEnquiryForm.hasError('required','branch')&&submit" class="form-text error">Branch is required! </small>
+              <option value="" selected> Select Branch</option>
+             <option value="1" selected> Kilpauk</option>
+             <option value="2" selected> Kolathur</option>
+             <option value="3" selected> Urapakkam</option>
+
+              </select>   
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label>Select Area</label>
+              <select name="area" formControlName="area" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.area.invalid&&submit}">
+              <small *ngIf="AddEnquiryForm.hasError('required','area')&&submit" class="form-text error">Area is required! </small>
+              <option value="" selected> Select Area</option>
+             <option value="1" selected> chennai</option>
+             <option value="2" selected> Nagari</option>
+             <option value="3" selected> kerala</option>
+
+
+
+              </select>   
+            </div>       
+            <div class="col-sm-4">
+              <label>Assign to Employee</label>
+              <select name="assign_emp" formControlName="assign_emp" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.assign_emp.invalid&&submit}">
+              <option value="" selected> Select Employee</option>
+            <option value="1" selected> chennai</option>
+             <option value="2" selected> Nagari</option>
+             <option value="3" selected> kerala</option>
+              </select>   
+            </div>
+            <div class="col-sm-4">
+              <label>Customer Name</label>
+              <input type="text" name="cust_name" formControlName="cust_name" placeholder="customer name" [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.cust_name.invalid&&submit}"/>
+              <small *ngIf="AddEnquiryForm.hasError('required','cust_name')&&submit" class="form-text error">Customer Name is required ! </small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label>Status</label>
+              <select name="enq_status" formControlName="enq_status" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.enq_status.invalid&&submit}">
+              
+              <small *ngIf="AddEnquiryForm.hasError('required','enq_status')&&submit" class="form-text error">Status is required! </small>
+               <option value="" selected> Select status</option>
+             <option value="1" selected> Open</option>
+             <option value="2" selected> Confirmed</option>
+             <option value="3" selected> Interested</option>
+
+              </select>   
+            </div>
+            <div class="col-sm-4">
+              <label>Lead Type*</label>
+              <select name="enq_lead" formControlName="enq_lead" placeholder="" [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.enq_lead.invalid&&submit}">
+              <small *ngIf="AddEnquiryForm.hasError('required','enq_lead')&&submit" class="form-text error">Lead type is required! </small>
+              <option value="" selected> Select Lead</option>
+              <option value="1" selected> New Connection</option>
+              <option value="2" selected> General Enquiry</option>
+              </select>   
+            </div>
+            <div class="col-sm-4">
+              <label>Address</label>
+              <textarea name="enq_address" formControlName="enq_address" placeholder=" Address" [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.enq_address.invalid&&submit}"></textarea>
+              <small *ngIf="AddEnquiryForm.hasError('required','enq_address')&&submit" class="form-text error">Address is required! </small>   
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label>Mobile No*</label>
+              <input [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.enq_mobnum.invalid&&submit}" formControlName="enq_mobnum" name="enq_mobnum" type="text" placeholder="Phone No * " size="30" maxlength="60">
+              <small *ngIf="AddEnquiryForm.controls.enq_mobnum.invalid&&submit" class="form-text error"> Mobile number is required! </small>
+            </div>
+            <div class="col-sm-4">
+              <label>Email</label>
+              <input type="email" name="enq_mail" formControlName="enq_mail" placeholder="Email " [ngClass]="{'form-control' : true,'form-control-danger':AddEnquiryForm.controls.enq_mail.invalid&&submit}"/>
+              <small *ngIf="AddEnquiryForm.controls.enq_mail.invalid&&submit" class="form-text error"> Mail id is required! </small>
+            </div>
+            <div class="col-sm-4">
+              <label>Notes</label>
+              <textarea name="notes" formControlName="notes"  class="form-control"> </textarea>
+            </div>
+          </div>
+        </div>    
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-md btn-success">{{id ? 'Update' : 'Submit'}}</button>
+          <button class="btn btn-md btn-danger" [routerLink]="['/pages/enquiry/list_enquiry']">Back</button>
+        </div>
+      </form>  
+    </nb-card-body>
+  </nb-card>
+</div>1

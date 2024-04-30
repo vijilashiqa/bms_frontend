@@ -1,0 +1,73 @@
+.table-wrapper{
+    overflow-y: scroll;
+    height: 1200px;
+  }
+  
+  .table-wrapper th{
+      position: sticky;
+      top: -1px;
+  }
+  
+  
+  .table-wrapper{
+    background: white;
+  }
+  
+  table{
+    border-collapse: collapse;
+    width: 100%;
+  
+  }
+  // .table {
+  //   border-collapse: separate;
+  // }
+  
+  th{
+      background:#01a7eee5;
+      text-align: center;
+   }
+  
+  td,th{
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .table td {
+    white-space: nowrap;
+   
+  }
+  .table th {
+    white-space: nowrap;
+      z-index:998;
+  }
+  
+  .btn.btn-primary:hover {
+    background-color:#73a1ff!important;
+    font-weight:700!important;
+    color:white;
+  
+  }
+  
+  .btn.btn-primary:focus {
+    background-color:#73a1ff!important;
+    font-weight:700!important;
+    color:white;
+  }
+  
+  .btn.btn-primary:active {
+    background-color:#73a1ff!important;
+    font-weight:700!important;
+    color:white;
+  
+  }
+ 
+  .fix {
+    position: absolute;
+    *position: relative; /*ie7*/
+    margin-left: -100px;
+    width: 100px;
+  }
+
+  .custom .bs-datepicker-head button:nth-child(3){
+    display:none!important;
+  }

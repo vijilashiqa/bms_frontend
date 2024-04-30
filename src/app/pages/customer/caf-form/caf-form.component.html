@@ -1,0 +1,650 @@
+<div class="modal-header" style="background-color: #ba7fec;">
+    <span>{{ modalHeader }}</span>
+    <button class="close" aria-label="Close" (click)="closeModal()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div *ngIf="status == 0 || status ==3">
+<nb-card style="width: 100%">
+    <div class="modal-body" style="width: 100%">
+        <div id="main_cont" style="background-color: #FFFFFF;">
+            <div class="page" style="width:98%;height: 50%">
+                <table style="width:100%;">
+                    <tbody>
+                        <p style="color: darkblue;margin-bottom: 2px;font-weight: 400;">
+                            <img style="width:180px" src="/assets/images/Bluelotus_logo_bold4.png">
+                            <img style="width:100px;float:right;" [src]='pro_pic ? pro_pic.profile_photo:" "'>
+                            <br>
+                            <span
+                                style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{data?data.busname:'--'}}<br>
+                            </span>
+                            <span style="white-space: break-spaces;font-weight: bolder;">&nbsp;{{bus_address ?
+                                bus_address:'--'}}<br>
+                            </span>
+                        </p>
+                    </tbody>
+                </table><br>
+                <div style="text-align: center;font-size: larger;">
+                    <b>CUSTOMER APPLICATION FORM</b><br>
+                </div>
+                <table style=" width:100%;">
+                    <tbody>
+                        <tr>
+                            <td>CAF No&nbsp;&nbsp;:<b>{{data?data.caf_no:'--'}}</b></td>
+                            <td style="text-align: center;"><b>Internet Access</b>
+                            <td style="text-align: right;">Date&nbsp;&nbsp;<b>{{data ? (data.c_date | date:'d MMM y'):''
+                                    }}</b>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div> Subcriber Type&nbsp;&nbsp;
+                    <span style="border:1px solid black;line-height: 2;">&nbsp;&nbsp;<b>
+                            {{data?(data.subs_type==0 ? 'SME':data.subs_type==1 ? 'Home User':data.subs_type==2 ?
+                            'Corporate':'Education or Institution'):''}}&nbsp;&nbsp;</b>
+                    </span>
+                </div>
+                <div style="border:1px solid black;width: 100%;padding: 1px;">
+                    <div style="border-bottom: 1px solid black;"> Name of Customer
+                        <span style="border-left: 1px solid black;">&nbsp;<b>{{data?data.cust_name:''}}</b>
+                            &nbsp;&nbsp;</span>
+                    </div>
+                    <div style="border-bottom: 1px solid black;"> Customer ProfileID
+                        <span style="border-left: 1px solid black;">&nbsp;<b>{{data?data.cust_profile_id:''}}</b>
+                            &nbsp;&nbsp;</span>
+                    </div>
+                    <div style="border-bottom: 1px solid black">
+                        <span>{{data?(data.address_flag==0 ? 'Billing Address':'Billing & Installation Address'):''}}</span>
+                        <span
+                            style="border-left: 1px solid black;">&nbsp;<b>{{data?data.billing_addr:''}}</b>&nbsp;</span>
+                    </div>
+                    <table style="border-bottom: 1px solid black; width:100%;">
+                        <thead>
+                            <tr>
+                                <th style="     -align:left; font-weight: normal;">City
+                                    &nbsp;:<b>{{data?data.city:''}}</b>&nbsp;&nbsp; </th>
+                                <th
+                                    style=" text-align:left;  border-left: 1px solid black;height: 16px; font-weight: normal;">
+                                    State&nbsp;:<b>{{data?data.state:''}}</b>&nbsp;&nbsp; </th>
+                                <!-- <th style="text-align:left;   border-left: 1px solid black;height: 16px; font-weight: normal;">PIN&nbsp;:624005
+                            &nbsp;&nbsp; 
+                         </th> -->
+                                <th
+                                    style=" text-align:left; border-left: 1px solid black; font-weight: normal;white-space: break-spaces;line-break: anywhere;">
+                                    Mobile
+                                    &nbsp;:<b>{{data?data.mobile:''}}</b>&nbsp; </th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style=" text-align:left;  height: 16px; font-weight: normal;">Telephone
+                                    &nbsp;:<b>{{data.phone || ' -- '}}</b>&nbsp;&nbsp; </th>
+                                <th
+                                    style="  text-align:left; border-left: 1px solid black;height: 16px; font-weight: normal;">
+                                    EMAIL&nbsp;:<b>{{data?data.email:''}}</b>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <br>
+                <table style="border: 1px solid black;border-collapse: collapse; width:100%;">
+                    <thead style=" border: 1px solid black;">
+                        <tr>
+                            <th style="text-align: center;border: 1px solid black;">Id Proof</th>
+                            <th style="text-align: center;border: 1px solid black;">ID no</th>
+                        </tr>
+                    </thead>
+                    <tbody style="border: 1px solid black;border-collapse: collapse;">
+                        <tr>
+                            <td style="text-align: center;border: 1px solid black;">
+                                <b> {{data?(data.proof_type==0 ? 'Aadhaar':data.proof_type==1 ? 'Ration Card':'PanCard'):''}}</b>
+                            </td>
+                            <td style="text-align: center;border: 1px solid black;">
+                                <b>{{data?data.ProofID:''}}</b>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <br>
+                <div class="hide" [hidden]="data?data.address_flag=='1':''">
+                    <div style="text-align: center;"><u>
+                            Service Installation Address</u>
+                    </div>
+                    <div style="border:1px solid black;width: 100%;padding: 1px;">
+                        <div style="border-bottom: 1px solid black">Address
+                            <span
+                                style="border-left: 1px solid black;">&nbsp;<b>{{data?data.address:''}}</b>&nbsp;</span>
+                        </div>
+                        <!-- <table style="border-bottom: 1px solid black; width:100%;"> -->
+                            <table>
+                            <thead>
+                                <tr>
+                                    <th style="  text-align:left; font-weight: normal;">City
+                                        &nbsp;:<b>{{data?data.city:''}}</b>&nbsp;&nbsp; </th>
+                                    <th
+                                        style=" text-align:left;  border-left: 1px solid black;height: 16px; font-weight: normal;">
+                                        State&nbsp;:<b>{{data?data.state:''}}</b>&nbsp;&nbsp; </th>
+                                    <!-- <th
+                                        style=" text-align:left; border-left: 1px solid black; font-weight: normal;white-space: break-spaces;line-break: anywhere;">
+                                        Mobile
+                                        &nbsp;:<b>{{data?data.mobile:''}}</b>&nbsp; </th> -->
+                                </tr>
+                            </thead>
+                        </table>
+                       <!--  <table>
+                            <thead>
+                                <tr>
+                                    <th style=" text-align:left;  height: 16px; font-weight: normal;">Telephone
+                                        &nbsp;:{{data.phone || '--'}}&nbsp;&nbsp; </th>
+                                    <th
+                                        style="  text-align:left; border-left: 1px solid black;height: 16px; font-weight: normal;">
+                                        EMAIL&nbsp;:<b>{{data?data.email:''}}</b>
+                                </tr>
+                            </thead>
+                        </table> -->
+                    </div>
+                </div>
+                <br>
+                <div style="text-align: center;"><u>
+                        Service Requirements</u>
+                </div>
+                <div style="border:1px solid black;width: 100%;padding: 1px;">
+                    <div style="border-bottom: 1px solid black;"> Plan Name
+                        <span style="border-left: 1px solid black;">&nbsp;<b>{{data?data.srvname:''}}</b>&nbsp;&nbsp;</span>
+                    </div>
+                     <!-- <div style="border-bottom: 1px solid black">Band Width
+                        <span style="border-left: 1px solid black;">&nbsp;nil&nbsp;</span>
+                    </div>
+                    <div style="border-bottom: 1px solid black">Additional KBPS Rate
+                        <span style="border-left: 1px solid black;">&nbsp;nil&nbsp;</span>
+                    </div>  -->
+                    <table style="border-bottom: 1px solid black; width:100%;">
+                        <thead>
+                            <tr>
+                                <th style="font-weight: normal;">IP's Required &nbsp;:&nbsp;&nbsp; </th>
+                                <th style="border-left: 1px solid black;height: 16px; font-weight: normal;">Static IP No
+                                    &nbsp;:<b>{{data?(data.ipmodecpe==2?data.staticipcpe:'--'):'--'}}</b>&nbsp;&nbsp;
+                            </tr>
+                        </thead>
+                    </table>
+                    <table style="border-bottom: 1px solid black; width:100%;">
+                        <thead>
+                            <tr>
+                                <th style="font-weight: normal;">OLT Brand</th>
+                                <th style="border-left: 1px solid black;height: 16px; font-weight: normal;">SI.No </th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table style="border-bottom: 1px solid black; width:100%;">
+                        <thead>
+                            <tr>
+                                <th style="font-weight: normal;">ONU Brand</th>
+                                <th style="border-left: 1px solid black;height: 16px; font-weight: normal;">ONU MAC ID
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div style="text-align: center;border-bottom: 1px solid black;"> <b>Terminating Network
+                            Equipment</b>
+                    </div>
+                    <table style="border-bottom: 1px solid black; width:100%;">
+                        <thead>
+                            <tr>
+                                <th style="font-weight: normal;">Router No</th>
+                                <th style="font-weight: normal;">Switch </th>
+                                <th style="font-weight: normal;">Standalone PC</th>
+                                <th style="font-weight: normal;">ONU</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div style="text-align: center;border-bottom: 1px solid black;"> <b>Customer Mile Details</b></div>
+                    <table style="border-bottom: 1px solid black; width:100%;">
+                        <thead>
+                            <tr>
+                                <th style="  font-weight: normal;">Coper</th>
+                                <th style=" border-left: 1px solid black;height: 16px;  font-weight: normal;">Fiber
+                                </th>
+                                <th style=" border-left: 1px solid black; height: 16px; font-weight: normal;">RF Tower
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table style=" width:100%;height: 16px">
+                        <thead>
+                            <tr>
+                                <th style="  font-weight: normal;">Date&nbsp;:{{ data?(data.c_date | date:'d MMM y'):''
+                                    }}&nbsp;&nbsp; </th>
+                                <th style=" border-left: 1px solid black;   font-weight: normal;">Place </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <br><br>
+                <table style="border-bottom: 1px solid black; width:100%;">
+                    <tbody>
+                        <tr>
+                            <td>Name Authorized Signatory</td>
+                            <td style="text-align: right;">Signature of Customer
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <div style="width:258px;height:70px;border:1px solid #000;font-style: italic;">Service Franchise</div>
+                <p style="text-align: center;"><b>***
+                        This is a Computer Generated CAF ***</b>
+                </p>
+                <!-- <p style="text-align: center;">Thankyou for being Our Business Partner</p> -->
+
+                <br><br><br> 
+                <div class="page-break"></div>
+
+                <div style="text-align: center;"><b>BLUE LOTUS SUPPORT SERVICES PVT LTD.</b>
+                    <br> <u> TERMS AND CONDITION</u>
+                </div>
+                <!-- TERMS AND CONDITIONS IN HTML PAGE ITSELF -->
+                <!-- <table style="width: 100%;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <td>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td
+                                                style="font-size: 9px;padding: 6px;white-space: normal;text-align:justify;">
+                                                <b>1.</b> SERVICE PROVIDER means the Broadband Internet Access Service
+                                                offered by BLUE
+                                                LOTUS
+                                                SUPPORT SERVICES PRIVATE LTD. having its registered office at BLUE
+                                                LOTUS SUPPORT SERVICES PRIVATE LTD. 18/7,1 Floor, Postal Colony Third
+                                                Street, West
+                                                Mambalam, Chennai 600033 and its Local Service Franchise.
+                                                <br> <b>2.</b> BLUE LOTUS SUPPORT SERVICES PRIVATE LTD. is providing
+                                                service
+                                                till Local service Franchisee's nearest BTS of Telecom Companies and
+                                                Local
+                                                Service Franchise providing service from their Control Room till
+                                                customer end through
+                                                their network.
+                                                <br> <b>3.</b> Service Provider in general included but not limited to
+                                                Internet Access,
+                                                E-mail,
+                                                world wide web Broadband Internet Telephony, Designing Hosting,
+                                                International Roaming
+                                                and other information Services that SERVICE PROVIDER offers, markets,
+                                                maintains and
+                                                supports
+                                                as of data and all updates and upgrade that may offer to the customer.
+                                                However service in
+                                                relation to the customer shall mean and cover only those service, which
+                                                the customer has
+                                                specifically availed.
+                                                <br><b>4.</b> The terms and conditions herein, acceptable usage policy
+                                                and responsible usage policy, published by Service Provider from time to
+                                                time shall
+                                                constitute and will be an integral part of the agreement between SERVICE
+                                                PROVIDER and
+                                                customer with respect to the service, SERVICE PROVIDER reserves the
+                                                right to change
+                                                any or all aspects of this agreement operating rules, usage guideline,
+                                                prices governing
+                                                the service, service plans the pricing structure or product/service
+                                                policies at any
+                                                time without prior intimation to the customer. The customer acknowledges
+                                                that it is
+                                                his/here sole responsibility to appraise himself/herself of the Terms
+                                                and conditions
+                                                and responsible usage policy, as amended form time to time and agree to
+                                                abide by the same.
+                                                <br><b>5.</b> Every subscriber registration must be done with complete
+                                                and correct details
+                                                sun as name,
+                                                address, telephone number and e-mail address etc.., in case of any
+                                                change the same should
+                                                be updated by
+                                                the respective subscriber without fail or delay.
+                                                <br><b>6.</b> The service is being provided subject to all the
+                                                applicable Indian Laws,
+                                                rules and
+                                                regulations.
+                                                <br><b>7.</b> SERVICE PROVIDER shall provide service to the customer in
+                                                accordance with
+                                                the terms
+                                                and conditions then in force and as amended form time to time, till the
+                                                expiry of the
+                                                specified
+                                                period for which customer has paid for.
+                                                <br> <b>8.</b> The service charge is payable in advance and is non-
+                                                refundable. All taxes,
+                                                duties,
+                                                charges or any other levies of any nature whatsoever, payable for the
+                                                service shall be
+                                                payable by the customer in addition to the service charges.
+                                                <br> <b></b> SERVICE PROVIDER will put its best effort and strive to
+                                                maintain the maximum
+                                                possible
+                                                uptime of the service. However SERVICE PROVIDER will not be
+                                                responsibility for downtime of
+                                                service due to reasons beyond its control.
+                                                <br> <b>9.</b> The customer also acknowledge and accepts that in the
+                                                very nature of the
+                                                service to be
+                                                provided there can be number of factors affecting the provision of the
+                                                service by SERVICE
+                                                PROVIDER and the obligation of SERVICE PROVIDER to provide the services
+                                                shall be on best
+                                                endeavor basis.
+                                                <br> <b>10.</b> SERVICE PROVIDER shall not be liable to the Customer for
+                                                any loss,
+                                                exprises or damage or
+                                                any kind in connection with the performance of its obligation under this
+                                                contract or
+                                                arising from
+                                                disruption, interruption, suspension or manufacture of the service, for
+                                                whatsoever reason
+                                                including force Majeure except when there is deliberate failure or
+                                                breach on the part of
+                                                SERVICE PROVIDER.
+                                                <br><b>11.</b>All third party software that may be provided with the
+                                                EASY Surf CD is
+                                                included for use
+                                                at the customer's option. SERVICE PROVIDER shall not be responsible for
+                                                any losses or
+                                                damages which
+                                                may occur resulting form the use of any third party software. Any
+                                                support that is needed
+                                                has to be
+                                                availed form the respective companies.
+                                                <br> <b>12.</b> SERVICE PROVIDER will be responsibility only for
+                                                carrying data packets and
+                                                is not responsible
+                                                for its nature or content. Customer guarantees that the software at his
+                                                end. It is
+                                                explicitly agreed that SERVICE PROVIDER does not undertake any
+                                                responsibility with regard
+                                                to procuring / installing / maintaining
+                                                the hardware and / or software at the customers end.
+                                                <br><b>13.</b> The Ethernet Card installed by in customer's Pc has been
+                                                done purely on
+                                                request basis and
+                                                SERVICE PROVIDER will not responsible for any failure of the Card.
+                                                Further SERVICE
+                                                PROVIDER will not be
+                                                responsible for the problems related to Customers PC and the software
+                                                loaded on it.
+                                                <br> <b>14.</b>Customer hereby undertakes to indemnify and hold harmless
+                                                SERVICE PROVIDER
+                                                against
+                                                liability which may arise for any and all, acts on the part of the
+                                                customer in availing
+                                                the
+                                                service.
+                                                <br><b>15.</b> The customer shall take full and sole responsibility for
+                                                preserving the
+                                                secrecy of the
+                                                password. The customer acknowledge and accept the considering the nature
+                                                of the service
+                                                there
+                                                will be a
+                                                need to change the password from time to time to avoid misuse and to
+                                                maintain secrecy
+                                                SERVICE
+                                                PROVIDER shall not be responsible for any wrongful or unauthorized use,
+                                                under any
+                                                circumstance.
+                                                <br><b>16.</b> The service to be provided shall be exclusively to the
+                                                customer. The
+                                                customer shall
+                                                not transfer, reassign, sell and / or offer or promote the service to
+                                                others or affiliates
+                                                of
+                                                the customer. Customer shall not do anything that is detrimental to
+                                                SERVICE PROVIDER
+                                                interests.
+                                                <br><b>17.</b>BLUE LOTUS SUPPORT SERVICES PRIVATE LTD. shall have
+                                                the right to
+                                                terminate the
+                                                services without any prior notice to the customer, in the event of
+                                                breach of these terms
+                                                and
+                                                conditions on the part of the customer, SERVICE PROVIDER and the shall
+                                                also have the right
+                                                to
+                                                terminate this Agreement at any time by giving 30 days prior notice in
+                                                writing to the
+                                                other and
+                                                without the need to assign any reason for such termination. In the event
+                                                of such
+                                                termination by
+                                                SERVICE PROVIDER the customer shall be entitled to the return of the
+                                                proportionate part of
+                                                the
+                                                charges paid for the unutilized period of service.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <td>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td
+                                                style="font-size: 9px;padding: 4px;white-space: normal;text-align:justify;">
+                                                <b>18.</b>SERVICE PROVIDER shall not be liable to refund any amount if
+                                                the termination is
+                                                by the
+                                                customer or
+                                                for breach or failure on the part of the customer. SERVICE PROVIDER
+                                                shall endeavor to
+                                                provide the best
+                                                of its service to the customer through a dedicated customer care service
+                                                team. The
+                                                customer
+                                                shall in all
+                                                communication to Kings including when interacting with its employees,
+                                                associates and
+                                                partner, maintain
+                                                decorum, decency and shall refrain form using any threatening,
+                                                unparliamentarily, abusive
+                                                language, SERVICE PROVIDER reserve the right to termination or
+                                                disconnect such customers
+                                                with an immediate Effect if
+                                                found using such language or disconnect such customers with an immediate
+                                                Effect if found
+                                                using such
+                                                language
+                                                <br><b>19.</b> The customer acknowledges that the service is provided as
+                                                is SERVICE
+                                                PROVIDER its
+                                                employees agents, suppliers vendors and distributors make no warranty of
+                                                any kind, either
+                                                expressed or implied regarding the quality, accuracy, or validity of the
+                                                data and /
+                                                or information available on its systems, or residing on or passing
+                                                through its interrupted
+                                                networks, or that the service will be uninterrupted or error free.
+                                                SERVICE PROVIDER
+                                                expressly excludes any
+                                                implied warranty of merchantability.
+                                                <br><b>20.</b> BLUE LOTUS SUPPORT SERVICES PRIVATE LTD. and the
+                                                customer hereby agree
+                                                that this
+                                                agreement together with the operational rules, Acceptable Usage Policy
+                                                and usage
+                                                guidelines and other terms notified by SERVICE PROVIDER shall constitute
+                                                the complete
+                                                terms and conditions between them and there shall be no addition
+                                                modification or deletion
+                                                to these terms and conditions unless it is to agreed in
+                                                writing and signed by both SERVICE PROVIDER and the customer.
+                                                <br> <b>21.</b> Telephony on Internet is permitted to a limited extent
+                                                i.e. (i) form PC to
+                                                PC
+                                                within or outside India (ii) in India to Telephone outside India (iii)
+                                                IP based H.323/SIP
+                                                Terminals connected
+                                                directly to SIP nodes to similar Terminals within or outside India. The
+                                                customers shall
+                                                strictly comply
+                                                with the above and the persons involved are liable to be proceeded with
+                                                and punished.
+                                                <br> <b>22.</b> It is illegal to terminate internet Telephony calls.
+                                                <br> <b>23.</b> The customer agrees that BLUE LOTUS SUPPORT SERVICES
+                                                PRIVATE LTD.
+                                                shall not be liable for Service downgrades where the last mile
+                                                connectivity is last
+                                                provided by BLUE LOTUS SUPPORT SERVICES PRIVATE LTD. The
+                                                responsibility of ensuring
+                                                last mile connectivity shall be on the last mile connectivity network
+                                                provided like cable
+                                                TV operator DID etc. and BLUE LOTUS SUPPORT SERVICES PRIVATE LTD.
+                                                Responsibility shall
+                                                be limited to ensure service till the point of presence of the last mile
+                                                network operator.
+                                                <br> <b>24.</b> SERVICE PROVIDER entire liability and the customer's
+                                                exclusive remedy for
+                                                any failure or reach on the part of the charges paid by the customer
+                                                relating the
+                                                unexpired period of the use. SERVICE PROVIDER disclaims all warranties
+                                                and conditions
+                                                express or implied including but not limited to implied warranties or
+                                                conditions of
+                                                merchantability fitness for a particular purpose with regard to the
+                                                service offered and in
+                                                no event SERVICE PROVIDER shall be liable for any other damages
+                                                including special indirect
+                                                or consequential damages loss of profits business interruption
+                                                whatsoever arising out of
+                                                use or inability to use the service.
+                                                <br> <b>25.</b> In using the service the customer agrees to comply with
+                                                all laws,
+                                                regulations and rule applicable and hereby indemnifies SERVICE PROVIDER
+                                                against any
+                                                claims, loss damage or consequence arising from non compliance of the
+                                                customer to any
+                                                applicable laws, rules, regulations etc.
+                                                <br> <b>26.</b> BLUE LOTUS SUPPORT SERVICES PRIVATE LTD. will not be
+                                                liable for any
+                                                act of the LOCAL SERVICE PROVIDER managing the service at customers end
+                                                outside the scope
+                                                of this service. The customer expressly acknowledges that the liability
+                                                of BLUE LOTUS
+                                                SUPPORT SERVICES PRIVATE LTD. is limited to the service rendered by
+                                                BLUE LOTUS
+                                                SUPPORT SERVICES PRIVATE LTD, and BLUE LOTUS SUPPORT SERVICES
+                                                PRIVATE LTD. shall not
+                                                be liable for any acts deeds of the LOCAL SERVICE FRANCHISEE.
+                                                <br> <b>27.</b>The customer hereby declares that he has read these terms
+                                                and conditions
+                                                and the order from completely and that he unconditionally agrees to
+                                                abide by these terms
+                                                and conditions, and as is applicable from time to time.
+                                                <br> <b>28.</b> The backbone i-e the cable, switches, etc. installed by
+                                                SERVICE PROVIDER
+                                                is the exclusive property of SERVICE PROVIDER and customer shall not
+                                                remove / relocate
+                                                these without prior consent from SERVICE PROVIDER.
+                                                <br> <b>29.</b> The service is exclusively for Home usage and not for
+                                                commercial usage.
+                                                Usage for more than 6 hours per day shall be commercial usage. SERVICE
+                                                PROVIDER reserve
+                                                the rights to disconnect the service without prior intimation, if the
+                                                usage is found to be
+                                                commercial.
+                                                <br> <b>30.</b> User acknowledges that spamming of e-mails is prohibited
+                                                spamming is the
+                                                transmission of any form of mail that can be interpreted as junk mail or
+                                                mail generated
+                                                via a distribution list which the recipient has not specifically
+                                                requested. The user can
+                                                transmit only a fixed number of out going mails as part of SERVICE
+                                                PROVIDER mail policy
+                                                and a violation of this will by considered as spamming. SERVICE PROVIDER
+                                                reserves the
+                                                right to block the user's mail id or even terminate the service if this
+                                                is violated by any
+                                                user.
+                                                <br> <b>31.</b> The speeds mentioned against various service plans are
+                                                as experienced
+                                                within the SERVICE PROVIDER network.
+                                                <br> <b>32.</b> For enhanced security, the SERVICE PROVIDER user ID as
+                                                choose by the user
+                                                at the time of registration, the IP address and the MAC address (unique
+                                                for each LAN card)
+                                                will be tied to each other. This means that a User ID can be used only
+                                                form that user's PC
+                                                and IP address allocated to the user. However it is possible for the
+                                                user to have multiple
+                                                user ids, with different service plans from the same PC.
+                                                <br> <b>33.</b>The customer shall not use the service provided by
+                                                SERVICE PROVIDER for any
+                                                illegal
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </div>
+                    </div>
+                </table> -->
+                <!--     </div> -->
+                <!-- TERMS AND CONDITION FETCH FROM DATABASE -->
+
+                <td style="font-size: 9px;" [innerHtml]="caftc"></td>
+                <table style="border-bottom: 1px solid black; width:100%;">
+                    <tbody>
+                        <tr>
+                             <td style="text-align: right;">Signature of Customer
+                                <span><b>({{data.cust_name}})</b></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 
+                    <table style="width:auto;" id="main_cont1"> -->
+
+        <!--   </table> -->
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success" (click)="printfront();">Print</button>
+            <!--    <button type="submit" class="btn btn-md btn-info" (click)="captureScreen();">Download</button>
+                      --> <button type="button" class="btn btn-md btn-danger"
+                (click)="activeModal.close();">Cancel</button>
+        </div>
+    </div>
+</nb-card>
+</div>
+
+<div *ngIf="status == 1 || status == 2">
+    <nb-card>
+        <div id="main_cont" style="background-color: #FFFFFF;">
+            <div class="page" style="width:98%;height: 50%">
+        <div front class="front">
+           <img style="width:100%;height: 100%;display: block;"
+              [src]='pro_pic ? pro_pic.caf_photo:""' #cafFront />
+        </div>
+        <div class="page-break"></div>
+
+        <div back class="terms">
+           <img #cafBack style="width:100%;height:100%;display: block;"
+              [src]='pro_pic ? pro_pic.caf_tc:""' />
+        </div>
+        </div></div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-md btn-success" (click)="printcaf();">Print</button>
+             <button type="button" class="btn btn-md btn-danger"
+                (click)="activeModal.close();">Cancel</button>
+        </div>
+       </nb-card>
+</div>

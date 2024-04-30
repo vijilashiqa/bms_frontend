@@ -1,0 +1,757 @@
+<div class="col-md-12">
+   <nb-card>
+      <nb-card-header>Add Price</nb-card-header>
+      <nb-card-body>
+         <toaster-container [toasterconfig]="config"></toaster-container>
+         <form [formGroup]="AddPriceForm" class="form-horizontal" (ngSubmit)="addserPrice();">
+            <div class="modal-body">
+               <div class="form-group row">
+                  <div class="col-sm-4" *ngIf="role.getroleid()>777">
+                     <label>ISP Name <span style="color:red;">*</span></label>
+                     <select formControlName="bus_id"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddPriceForm.controls.invalid&&submit}"
+                        (change)="AddPriceForm.controls.reseller.setValue('');group();showReseller();">
+                        <option value="" selected>Select ISP Name</option>
+                        <option *ngFor="let item of busname" [ngValue]=item.id>{{item.busname}}</option>
+                     </select>
+                     <small *ngIf="AddPriceForm.controls.bus_id.invalid&&submit" class="form-text error">ISP Name is
+                        Required!</small>
+                  </div>
+                  <div class="col-md-4" *ngIf="role.getroleid()>=775">
+                     <label>Circle</label>
+                     <select formControlName="groupid"
+                        (change)="AddPriceForm.controls.reseller.setValue('');showReseller();"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddPriceForm.controls.groupid.invalid&&submit}">
+                        <option value="" selected="">Select Circle</option>
+                        <option *ngFor="let item of grup" [ngValue]=item.groupid>{{item.groupname}}</option>
+                     </select>
+                  </div>
+                  <div class="col-sm-4" *ngIf="role.getroleid()>444">
+                     <label>Reseller <span style="color:red;">*</span> </label>
+                     <auto-completen
+                        [addclass]="{'form-control':true,'form-control-danger':AddPriceForm.controls.reseller.invalid&&submit}"
+                        addclass="form-control" optValues="company" formControlName="reseller"
+                        (keyUp)="showReseller($event)" (changed)="packshow();share();servicetype();"
+                        placeholder='Select Reseller' id="id" [item]="resell">
+                     </auto-completen>
+                     <small *ngIf="AddPriceForm.hasError('required','reseller')&&submit"
+                        class="form-text error">Reseller is
+                        required! </small>
+                  </div>
+               </div>
+               <div class="form-group row" *ngIf="role.getroleid()>=775">
+                  <div class="col-sm-4">
+                     <label>Sub-plan create Type <span style="color:red;">*</span></label>
+                     <select formControlName="create_type" (change)="bulkvalid()"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddPriceForm.controls.create_type.invalid&&submit}">
+                        <option value="" selected>Select Sub-plan Create Type</option>
+                        <option value="0">Individual Creation</option>
+                        <option value="1">Bulk Creation</option>
+                     </select>
+                     <small *ngIf="AddPriceForm.controls.create_type.invalid&&submit" class="form-text eror">Create Type
+                        is Required!</small>
+                  </div>
+                  <div class="col-sm-4" *ngIf="AddPriceForm.value['create_type']=='1'">
+                     <label></label><br>
+                     <a href="/assets/public/Bulk_Subplan.xlsx" target="_blank" download><b>Download Sample
+                           Here</b></a>
+                  </div>
+                  <div class="col-sm-4" *ngIf="AddPriceForm.value['create_type']=='1'">
+                     <label>SubPlan Details</label>
+                     <input type="file" (change)="changeListener($event.target.files[0])" class="form-control"
+                        accept=".xlsx">
+                     <small style="color:violet;">Date Format(YYYY-MM-DD)</small><br>
+                  </div>
+               </div>
+               <div class="form-group row" *ngIf="AddPriceForm.value['create_type']=='0'">
+                  <div class="col-sm-4">
+                     <label>Tax Calculation <span style="color:red;">*</span></label>
+                     <select formControlName="sertax_cal"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddPriceForm.controls.sertax_cal.invalid&&submit}">
+                        <option value="" selected>Select Tax Calculation</option>
+                        <option value="1">Including Tax</option>
+                        <option value="0">Excluding Tax</option>
+                     </select>
+                     <small *ngIf="AddPriceForm.controls.sertax_cal.invalid&&submit" class="form-text error">Tax
+                        Calculation is Required!</small>
+                  </div>
+                  <div class="col-sm-4">
+                     <label>Status <span style="color:red;">*</span></label>
+                     <select class="form-control" formControlName="status"
+                        [ngClass]="{'form-control':true,'form-control-danger':AddPriceForm.controls.sertax_cal.invalid&&submit}">
+                        <option value="" selected>Select Status</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                     </select>
+                     <small *ngIf="AddPriceForm.hasError('required','status')&&submit" class="form-text error">Status is
+                        required! </small>
+                  </div>
+               </div>
+               <div class="col-sm-12"
+                  *ngIf="((sharetyp==1&&reselrole==333) && AddPriceForm.value['create_type']=='0')||((reselrole==444 || reselrole ==443) && AddPriceForm.value['create_type']=='0')">
+                  <nb-card>
+                     <nb-card-header style="background-color :  #01a7ee; height:40px!important">Pricing</nb-card-header>
+                     <nb-card-body style="overflow: visible;">
+                        <div class="form-group row" formArrayName="priceDetails">
+                           <div class="col-sm-12">
+                              <div *ngFor="let user of priceDetails.controls;let idx = index;let last = last;">
+                                 <div class="form-group row" [formGroup]="user">
+                                    <div class="col-sm-2">
+                                       <label>Service Name <span
+                                             style="color: red; width: 137px!important;">*</span></label>
+                                       <auto-completen
+                                          [addclass]="{'form-control' : true,'form-control-danger':user['controls']['pack_name'].invalid&&submit}"
+                                          optValues="srvname" (keyUp)="packshow($event)"
+                                          placeholder='Select Service Name' formControlName="pack_name" optId="srvid"
+                                          [item]="pack">
+                                       </auto-completen>
+                                       <small *ngIf="AddPriceForm.hasError('required','pack_name')&&submit"
+                                          class="form-text error">Service Name is Required</small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Service Type <span style="color: red;">*</span></label>
+                                       <select class="form-control" formControlName="serv_type"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['serv_type'].invalid&&submit}">
+                                          <option value="" selected>Service Type</option>
+                                          <option *ngFor="let item of servtype" [ngValue]="item.srv_id">
+                                             {{item.service_name}}</option>
+                                       </select>
+                                       <small *ngIf="AddPriceForm.hasError('required','serv_type')&&submit"
+                                          class="form-text error">Service Type is Required</small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Sub Plan Name <span style="color:red;">*</span></label>
+                                       <input type="text" formControlName="sub_plan" placeholder="Plan Name"
+                                          style=" height:40px; width:137px!important" class="form-control"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['sub_plan'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','sub_plan')&&submit"
+                                          class="form-text error">Sub
+                                          Plan Name is Required</small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Internet Price <span style="color:red;">*</span></label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                           " class="form-control" formControlName="ser_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['ser_price'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','ser_price')&&submit"
+                                          class="form-text error">Price is required!
+                                       </small>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['serv_type']=='2'||user.value['serv_type']=='5'||user.value['serv_type']=='6'
+                                    ||user.value['serv_type']=='8'">
+                                       <label>Voice Price <span style="color:red;">*</span></label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                           " class="form-control" formControlName="vo_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['vo_price'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','vo_price')&&submit"
+                                          class="form-text error">Voice Price is required!
+                                       </small>
+                                    </div>
+                                    <!-- <div class="col-sm-2" *ngIf="user.value['serv_type']=='3'||user.value['serv_type']=='5'||user.value['serv_type']=='7'
+                                    ||user.value['serv_type']=='8'">
+                                             <label>OTT Price <span style="color:red;">*</span></label>
+                                             <input type="number" style=" height:40px; width:137px!important
+                                           " class="form-control" formControlName="ott_price"
+                                                [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['ott_price'].invalid&&submit}">
+                                             <small *ngIf="AddPriceForm.hasError('required','ott_price')&&submit"
+                                                class="form-text error">OTT Price is required!
+                                             </small>
+                                          </div> -->
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user">
+                                    <div class="col-sm-2" *ngIf="user.value['serv_type']=='4'||user.value['serv_type']=='6'||user.value['serv_type']=='7'
+                                    ||user.value['serv_type']=='8'">
+                                       <label>ADD Price <span style="color:red;">*</span></label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                           " class="form-control" formControlName="add_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['add_price'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','add_price')&&submit"
+                                          class="form-text error">ADD Price is required!
+                                       </small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Time Unit Type <span style="color:red;">*</span></label>
+                                       <select class="form-control" style=" height:40px; width:137px!important"
+                                          formControlName="timeunit_type"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['timeunit_type'].invalid&&submit}">
+                                          <option value="" selected>Time Unit Type</option>
+                                          <option value="0">Days</option>
+                                          <option value="1">Month</option>
+                                       </select>
+                                       <small *ngIf="AddPriceForm.hasError('required','timeunit_type')&&submit"
+                                          class="form-text error">Time unit type is
+                                          required! </small>
+                                    </div>
+                                    <!-- <div class="col-sm-2" *ngIf="user.value['timeunit_type']==0">
+                                       <label>Days <span style="color:red;">*</span></label>
+                                       <select class="form-control" style=" height:40px; width:137px!important"
+                                          formControlName="dayflag"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['dayflag'].invalid&&submit}">
+                                          <option value="" selected>Time Unit Type</option>
+                                          <option value="0">28 Days</option>
+                                          <option value="1">30 Days</option>
+                                       </select>
+                                       <small *ngIf="AddPriceForm.hasError('required','days')&&submit"
+                                          class="form-text error">Days is required!
+                                       </small>
+                                    </div> -->
+                                    <div class="col-sm-2" *ngIf="user.value['timeunit_type']==0">
+                                       <label>Days <span style="color:red;">*</span></label>
+                                       <input class="spin" min="1" max="30" type="number" formControlName="dayflag"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['dayflag'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','dayflag')&&submit"
+                                          class="form-text error">Days is required!
+                                       </small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Time Unit <span style="color:red;">*</span></label>
+                                       <input type="number" style=" height:40px; width:137px!important"
+                                          class="form-control" formControlName="time_unit"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['time_unit'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','time_unit')&&submit"
+                                          class="form-text error">Time unit is required!
+                                       </small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Additional Days</label>
+                                       <input type="number" style=" height:40px; width:137px!important"
+                                          class="form-control" formControlName="add_days" placeholder="Add Days"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['add_days'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Sub-Plan Validity</label>
+                                       <select class="form-sontrol" formControlName="subplan_validity"
+                                          style="height:40px; width:137px!important"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subplan_validity'].invalid&&submit}">
+                                          <option value="1">Disable</option>
+                                          <option value="2">Enable</option>
+                                       </select>
+                                    </div>
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user">
+                                    <div class="col-sm-2" *ngIf="user.value['subplan_validity']==2">
+                                       <label>Start Date <span style="color: red;">*</span></label>
+                                       <input type="text" placeholder="Start Date" [nbDatepicker]="subst_date"
+                                          class="form-control" formControlName="subst_date"
+                                          style=" height:40px; width:137px!important"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subst_date'].invalid&&submit}">
+                                       <nb-datepicker #subst_date></nb-datepicker>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['subplan_validity']==2">
+                                       <label>End Date</label>
+                                       <input type="text" placeholder="End Date" [nbDatepicker]="subend_date"
+                                          class="form-control" formControlName="subend_date"
+                                          style=" height:40px; width:137px!important"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subend_date'].invalid&&submit}">
+                                       <nb-datepicker #subend_date></nb-datepicker>
+                                    </div>
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user" *ngIf="user.value['serv_type']=='3'||user.value['serv_type']=='5'||user.value['serv_type']=='7'
+                                 ||user.value['serv_type']=='8'">
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(1): ''">
+                                       <nb-checkbox class="form-control" formControlName="hotstar"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['hotstar'].invalid&&submit}">
+                                          Hotstar
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="this.ottflag? this.ottflag.includes(2): ''">
+                                       <nb-checkbox class="form-control" formControlName="amazon"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['amazon'].invalid&&submit}">
+                                          Amazon
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="this.ottflag? this.ottflag.includes(3):''">
+                                       <nb-checkbox class="form-control" formControlName="netflix"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['netflix'].invalid&&submit}">
+                                          Netflix
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="this.ottflag? this.ottflag.includes(4): ''">
+                                       <nb-checkbox class="form-control" formControlName="sun"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['sun'].invalid&&submit}">
+                                          SunNXT
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(5):''">
+                                       <nb-checkbox class="form-control" formControlName="zee"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['zee'].invalid&&submit}">
+                                          ZEE5
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(6): ''">
+                                       <nb-checkbox class="form-control" formControlName="raj"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['raj'].invalid&&submit}">
+                                          RajNXT
+                                       </nb-checkbox>
+                                    </div>
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user" *ngIf="user.value['serv_type']=='3'||user.value['serv_type']=='5'||user.value['serv_type']=='7'
+                                 ||user.value['serv_type']=='8'">
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(7): ''">
+                                       <nb-checkbox class="form-control" formControlName="sony"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['sony'].invalid&&submit}">
+                                          Sony
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(8): ''">
+                                       <nb-checkbox class="form-control" formControlName="hungama"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['hungama'].invalid&&submit}">
+                                          Hungama
+                                       </nb-checkbox>
+                                    </div>
+                                    <!-- <div class="col-sm-2" *ngIf="role.getroleid()>=775">
+                                       <nb-checkbox class="form-control" formControlName="ottstatus"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['ottstatus'].invalid&&submit}">
+                                          OTTstatus
+                                       </nb-checkbox>
+                                    </div> -->
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user">
+                                    <div class="col-sm-2" *ngIf="user.value['hotstar']==true">
+                                       <label>Hotstar Price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="disney_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['disney_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['amazon']==true">
+                                       <label>Amazon Price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="amazon_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['amazon_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['netflix']==true">
+                                       <label>Netflix price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="netflix_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['netflix_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['sun']==true">
+                                       <label>SunNXT price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="sun_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['sun_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['zee']==true">
+                                       <label>ZEE5 price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="zee_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['zee_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['raj']==true">
+                                       <label>RajNXT price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="raj_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['raj_price'].invalid&&submit}">
+                                    </div>
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user">
+                                    <!-- <div class="col-sm-2" *ngIf="user.value['sun']==true">
+                                       <label>SunNXT price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="sun_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['sun_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['zee']==true">
+                                       <label>ZEE5 price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="zee_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['zee_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['raj']==true">
+                                       <label>RajNXT price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="raj_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['raj_price'].invalid&&submit}">
+                                    </div> -->
+                                    <div class="col-sm-2" *ngIf="user.value['sony']==true">
+                                       <label>Sony price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="sony_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['sony_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['hungama']==true">
+                                       <label>Hungama price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="hunga_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['hunga_price'].invalid&&submit}">
+                                    </div>
+                                    <!-- <div class="col-sm-2" *ngIf="role.getroleid()>=775 && user.value['ottstatus']==true && user.value['serv_type']=='3'||user.value['serv_type']=='5'||user.value['serv_type']=='7'
+                                       ||user.value['serv_type']=='8'">
+                                          <label>OTT Plan <span style="color:red;">*</span> </label>
+                                          <auto-completen
+                                             [addclass]="{'form-control' : true,'form-control-danger':user['controls']['ottplan'].invalid&&submit}"
+                                             optValues="oplan" placeholder='Select OTTPlan' formControlName="ottplan"
+                                             optId="ottplanid" [item]="plan">
+                                          </auto-completen>
+                                          <small *ngIf="AddPriceForm.hasError('required','ottplan')&&submit"
+                                             class="form-text error">ottplan is
+                                             required! </small>
+                                       </div> -->
+                                    <div *ngIf="last||idx !=0" class="col-sm-2">
+                                       <div class="dropdown ghost-dropdown" ngbDropdown style="width: 30px;">
+                                          <button style="width: 75px;font-size: 10px;margin-top: 31px;"
+                                             class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action
+                                          </button>
+                                          <ul class="dropdown-menu" ngbDropdownMenu style="width: 30px;">
+                                             <li (click)="addPrice()" class="dropdown-item" *ngIf="last"><i
+                                                   title="Edit Service" class="ion-ios-plus-outline"></i>&nbsp;ADD</li>
+                                             <li (click)="deletePricefield(idx)" class="dropdown-item" *ngIf="idx !=0">
+                                                <i title="Edit Service" class="ion-android-delete"></i>&nbsp;Delete
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </nb-card-body>
+                  </nb-card>
+               </div>
+               <div class="col-sm-12" *ngIf="((sharetyp==2&&reselrole==333)&& AddPriceForm.value['create_type']=='0')">
+                  <nb-card>
+                     <nb-card-header style="background-color :  #01a7ee; height:40px!important">Pricing With Share
+                     </nb-card-header>
+                     <nb-card-body style="overflow: visible;">
+                        <div class="form-group row" formArrayName="priceDetails">
+                           <div class="col-sm-12">
+                              <div *ngFor="let user of priceDetails.controls; index as idx;let last = last;">
+                                 <div class="form-group row" [formGroupName]="idx">
+                                    <div class="col-sm-2">
+                                       <label>Service Name <span
+                                             style="color: red; width: 137px!important;"></span></label>
+                                       <auto-completen
+                                          [addclass]="{'form-control' : true,'form-control-danger':user['controls']['pack_name'].invalid&&submit}"
+                                          optValues="srvname" (keyUp)="packshow($event)"
+                                          placeholder='Select Service Name' formControlName="pack_name" optId="srvid"
+                                          [item]="pack">
+                                       </auto-completen>
+                                       <small *ngIf="AddPriceForm.hasError('required','pack_name')&&submit"
+                                          class="form-text error">Service Name is
+                                          required! </small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Service Type <span style="color: red;">*</span></label>
+                                       <select class="form-control" formControlName="serv_type"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['serv_type'].invalid&&submit}">
+                                          <option value="" selected>Service Type</option>
+                                          <option *ngFor="let item of servtype" [ngValue]="item.srv_id">
+                                             {{item.service_name}}</option>
+                                       </select>
+                                       <small *ngIf="AddPriceForm.hasError('required','serv_type')&&submit"
+                                          class="form-text error">Service Type is Required</small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Sub Plan Name <span style="color:red;">*</span></label>
+                                       <input type="text" formControlName="sub_plan" placeholder="Plan Name" style=" height:40px; width:137px!important
+                                          " class="form-control"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['sub_plan'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','sub_plan')&&submit"
+                                          class="form-text error">Sub
+                                          Plan Name is Required</small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Internet Price <span style="color:red;">*</span></label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                             " class="form-control" formControlName="ser_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['ser_price'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','ser_price')&&submit"
+                                          class="form-text error">Price is required!
+                                       </small>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['serv_type']=='2'||user.value['serv_type']=='5'||user.value['serv_type']=='6'
+                                    ||user.value['serv_type']=='8'">
+                                       <label>Voice Price <span style="color:red;">*</span></label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                           " class="form-control" formControlName="vo_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['vo_price'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','vo_price')&&submit"
+                                          class="form-text error">Voice Price is required!
+                                       </small>
+                                    </div>
+                                    <!-- <div class="col-sm-2" *ngIf="user.value['serv_type']=='3'||user.value['serv_type']=='5'||user.value['serv_type']=='7'
+                                    ||user.value['serv_type']=='8'">
+                                             <label>OTT Price <span style="color:red;">*</span></label>
+                                             <input type="number" style=" height:40px; width:137px!important
+                                           " class="form-control" formControlName="ott_price"
+                                                [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['ott_price'].invalid&&submit}">
+                                             <small *ngIf="AddPriceForm.hasError('required','ott_price')&&submit"
+                                                class="form-text error">OTT Price is required!
+                                             </small>
+                                          </div> -->
+                                 </div>
+                                 <div class="form-group row" [formGroupName]="idx">
+                                    <div class="col-sm-2" *ngIf="user.value['serv_type']=='4'||user.value['serv_type']=='6'||user.value['serv_type']=='7'
+                                    ||user.value['serv_type']=='8'">
+                                       <label>ADD Price <span style="color:red;">*</span></label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                           " class="form-control" formControlName="add_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['add_price'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','add_price')&&submit"
+                                          class="form-text error">ADD Price is required!
+                                       </small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Time Unit Type <span style="color:red;">*</span></label>
+                                       <select class="form-control" style=" height:40px; width:137px!important"
+                                          formControlName="timeunit_type"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['timeunit_type'].invalid&&submit}">
+                                          <option value="" selected>Time Unit Type</option>
+                                          <option value="0">Days</option>
+                                          <option value="1">Month</option>
+                                       </select>
+                                       <small *ngIf="AddPriceForm.hasError('required','timeunit_type')&&submit"
+                                          class="form-text error">Time unit type is
+                                          required! </small>
+                                    </div>
+                                    <!-- <div class="col-sm-2" *ngIf="user.value['timeunit_type']==0">
+                                       <label>Days <span style="color:red;">*</span></label>
+                                       <select class="form-control" style=" height:40px; width:137px!important"
+                                          formControlName="dayflag"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['dayflag'].invalid&&submit}">
+                                          <option value="" selected>Time Unit Type</option>
+                                          <option value="0">28 Days</option>
+                                          <option value="1">30 Days</option>
+                                       </select>
+                                       <small *ngIf="AddPriceForm.hasError('required','dayflag')&&submit"
+                                          class="form-text error">Days is required!
+                                       </small>
+                                    </div> -->
+                                    <div class="col-sm-2" *ngIf="user.value['timeunit_type']==0">
+                                       <label>Days <span style="color:red;">*</span></label>
+                                       <input class="spin" min="1" max="30" type="number" formControlName="dayflag"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['dayflag'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','dayflag')&&submit"
+                                          class="form-text error">Days is required!
+                                       </small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Time Unit <span style="color:red;">*</span></label>
+                                       <input type="number" style=" height:40px; width:137px!important"
+                                          class="form-control" formControlName="time_unit"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['time_unit'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','time_unit')&&submit"
+                                          class="form-text error">Time unit is required!
+                                       </small>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                       <label>Inet ISP share</label>
+                                       <input type="number" style="height:40px; width:137px!important"
+                                          class="form-sontrol" formControlName="isp_share"
+                                          [ngClass]="{'form-control': true,'form-control-danger':user['controls']['isp_share'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','isp_share')&&submit"
+                                          class="form-text error">ISP Share is Required!</small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Inet Sub-ISP share</label>
+                                       <input type="number" style="height:40px; width:137px!important"
+                                          class="form-sontrol" formControlName="subisp_share"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subisp_share'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','subisp_share')&&submit"
+                                          class="form-text error">Sub ISP Share is Required!</small>
+                                    </div>
+                                 </div>
+                                 <div class="form-group row" [formGroupName]="idx">
+                                    <div class="col-sm-2">
+                                       <label>Inet Sub-Dist share</label>
+                                       <input type="number" style="height:40px; width:137px!important"
+                                          class="form-sontrol" formControlName="subdist_share"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subdist_share'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','subdist_share')&&submit"
+                                          class="form-text error">Sub Distributor Share is Required</small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Inet Reseller share</label>
+                                       <input type="number" style="height:40px; width:137px!important"
+                                          class="form-sontrol" formControlName="resel_share"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['resel_share'].invalid&&submit}">
+                                       <small *ngIf="AddPriceForm.hasError('required','resel_share')&&submit"
+                                          class="form-text error">Reseller Share is Required!</small>
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Additional Days</label>
+                                       <input type="number" placeholder="Add Days"
+                                          style=" height:40px; width:137px!important" class="form-control"
+                                          formControlName="add_days"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['add_days'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2">
+                                       <label>Sub-Plan Validity</label>
+                                       <select class="form-sontrol" formControlName="subplan_validity"
+                                          style="height:40px; width:137px!important"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subplan_validity'].invalid&&submit}">
+                                          <option value="1">Disable</option>
+                                          <option value="2">Enable</option>
+                                       </select>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['subplan_validity']==2">
+                                       <label>Start Date <span style="color: red;">*</span></label>
+                                       <input type="text" placeholder="Start Date" [nbDatepicker]="subst_date"
+                                          class="form-control" formControlName="subst_date"
+                                          style=" height:40px; width:137px!important"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subst_date'].invalid&&submit}">
+                                       <nb-datepicker #subst_date></nb-datepicker>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['subplan_validity']==2">
+                                       <label>End Date</label>
+                                       <input type="text" placeholder="End Date" [nbDatepicker]="subend_date"
+                                          class="form-control" formControlName="subend_date"
+                                          style=" height:40px; width:137px!important"
+                                          [ngClass]="{'form-control':true,'form-control-danger':user['controls']['subend_date'].invalid&&submit}">
+                                       <nb-datepicker #subend_date></nb-datepicker>
+                                    </div>
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user" *ngIf="user.value['serv_type']=='3'||user.value['serv_type']=='5'||user.value['serv_type']=='7'
+                                 ||user.value['serv_type']=='8'">
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(1): ''">
+                                       <nb-checkbox class="form-control" formControlName="hotstar"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['hotstar'].invalid&&submit}">
+                                          Hotstar
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="this.ottflag? this.ottflag.includes(2): ''">
+                                       <nb-checkbox class="form-control" formControlName="amazon"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['amazon'].invalid&&submit}">
+                                          Amazon
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="this.ottflag? this.ottflag.includes(3):''">
+                                       <nb-checkbox class="form-control" formControlName="netflix"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['netflix'].invalid&&submit}">
+                                          Netflix
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="this.ottflag? this.ottflag.includes(4): ''">
+                                       <nb-checkbox class="form-control" formControlName="sun"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['sun'].invalid&&submit}">
+                                          SunNXT
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(5):''">
+                                       <nb-checkbox class="form-control" formControlName="zee"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['zee'].invalid&&submit}">
+                                          ZEE5
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(6): ''">
+                                       <nb-checkbox class="form-control" formControlName="raj"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['raj'].invalid&&submit}">
+                                          RajNXT
+                                       </nb-checkbox>
+                                    </div>
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user" *ngIf="user.value['serv_type']=='3'||user.value['serv_type']=='5'||user.value['serv_type']=='7'
+                                 ||user.value['serv_type']=='8'">
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(7): ''">
+                                       <nb-checkbox class="form-control" formControlName="sony"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['sony'].invalid&&submit}">
+                                          Sony
+                                       </nb-checkbox>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf=" this.ottflag? this.ottflag.includes(8): ''">
+                                       <nb-checkbox class="form-control" formControlName="hungama"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['hungama'].invalid&&submit}">
+                                          Hungama
+                                       </nb-checkbox>
+                                    </div>
+                                    <!-- <div class="col-sm-2" *ngIf="role.getroleid()>=775">
+                                       <nb-checkbox class="form-control" formControlName="ottstatus"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['ottstatus'].invalid&&submit}">
+                                          OTTstatus
+                                       </nb-checkbox>
+                                    </div> -->
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user">
+                                    <div class="col-sm-2" *ngIf="user.value['hotstar']==true">
+                                       <label>Hotstar Price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="disney_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['disney_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['amazon']==true">
+                                       <label>Amazon Price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="amazon_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['amazon_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['netflix']==true">
+                                       <label>Netflix price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="netflix_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['netflix_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['sun']==true">
+                                       <label>SunNXT price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="sun_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['sun_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['zee']==true">
+                                       <label>ZEE5 price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="zee_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['zee_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['raj']==true">
+                                       <label>RajNXT price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="raj_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['raj_price'].invalid&&submit}">
+                                    </div>
+                                 </div>
+                                 <div class="form-group row" [formGroup]="user">
+                                    <div class="col-sm-2" *ngIf="user.value['sony']==true">
+                                       <label>Sony price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="sony_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['sony_price'].invalid&&submit}">
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="user.value['hungama']==true">
+                                       <label>Hungama price</label>
+                                       <input type="number" style=" height:40px; width:137px!important
+                                       " class="form-control" formControlName="hunga_price"
+                                          [ngClass]="{'form-control' : true,'form-control-danger':user['controls']['hunga_price'].invalid&&submit}">
+                                    </div>
+                                    <!-- <div class="col-sm-2" *ngIf="role.getroleid()>=775 && user.value['ottstatus']==true && user.value['serv_type']=='3'||user.value['serv_type']=='5'||user.value['serv_type']=='7'
+                                       ||user.value['serv_type']=='8'">
+                                          <label>OTT Plan <span style="color:red;">*</span> </label>
+                                          <auto-completen
+                                             [addclass]="{'form-control' : true,'form-control-danger':user['controls']['ottplan'].invalid&&submit}"
+                                             optValues="oplan" placeholder='Select OTTPlan' formControlName="ottplan"
+                                             optId="ottplanid" [item]="plan">
+                                          </auto-completen>
+                                          <small *ngIf="AddPriceForm.hasError('required','ottplan')&&submit"
+                                             class="form-text error">ottplan is
+                                             required! </small>
+                                       </div> -->
+                                    <div *ngIf="last||idx !=0" class="col-sm-2">
+                                       <div class="dropdown ghost-dropdown" ngbDropdown style="width: 30px;">
+                                          <button style="width: 75px;font-size: 10px;margin-top: 31px;"
+                                             class="btn btn-primary btn-icon" type="button" ngbDropdownToggle>Action
+                                          </button>
+                                          <ul class="dropdown-menu" ngbDropdownMenu style="width: 30px;">
+                                             <li (click)="addPrice()" class="dropdown-item" *ngIf="last"><i
+                                                   title="Edit Service" class="ion-ios-plus-outline"></i>&nbsp;ADD</li>
+                                             <li (click)="deletePricefield(idx)" class="dropdown-item" *ngIf="idx !=0">
+                                                <i title="Edit Service" class="ion-android-delete"></i>&nbsp;Delete
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </nb-card-body>
+                  </nb-card>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="submit" class="btn btn-md btn-success">Create</button>
+               <button class="btn btn-md btn-danger " [routerLink]="['/pages/service/list-price']">Cancel</button>
+            </div>
+         </form>
+      </nb-card-body>
+   </nb-card>
+</div>

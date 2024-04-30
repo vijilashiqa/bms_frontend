@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <span>{{ modalHeader }}</span>
+    <button class="close" aria-label="Close" (click)="closeModal()">
+  <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<table class="table table-hover table-striped">
+  <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+    <th>Role</th>
+    <th>Reseller Name</th>
+    <th>Company Name</th>
+    <th>Sharing Type</th>
+  </tr>
+  <tr *ngFor="let item of item">
+    <td>{{item.role==333 ? 'Deposit': item.role==444 ? 'Bulk': item.role==555 ?  'Sub ISP Deposit'
+      :item.role==551 ? 'Sub Dist Deposit' : item.role==666 ? 'Sub ISP Bulk': 'Sub Dist Bulk'}}</td>
+    <td>{{item.res_name}}</td>
+    <td>{{item.company}}</td>
+    <td>{{item.sharing_type==1 ? 'Common Sharing':'Packagewise Sharing'}}</td>
+  </tr>
+ </table>
+<div class="modal-footer">
+  <button type="button" class="btn btn-md btn-success " style="margin:auto;" (click)="closeModal()">OK</button>
+</div>

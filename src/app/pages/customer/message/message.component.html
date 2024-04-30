@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <ngx-loading *ngIf="loading" [show]="loading"
+      [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+    </ngx-loading>
+    <toaster-container [toasterconfig]></toaster-container>
+  <span>{{ modalHeader }}</span>
+    <button class="close" aria-label="Close" (click)="closeModal()">
+  <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+ <div style="overflow: auto;">
+ 
+  <div style="margin: 1em;text-align: center;-webkit-box-align: center;">
+    <!-- Are you sure want to change Invoice Status to Unpaid -->
+  <table class="table table-bordered table-striped">
+    <tr>
+      <th> Are you sure want to change Invoice Status to Unpaid</th>
+      <!-- <th>Error Code</th> -->
+    </tr>
+    <!-- <ng-container *ngFor="let item of item">
+      <tr>
+        <td><b>{{item.msg}}</b></td>
+        <td>{{item.error_msg}}</td>
+      </tr>
+    </ng-container> -->
+  </table>
+</div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-md btn-success" style="margin:auto;" (click)="paymentStatus()">OK</button>
+ 
+</div>

@@ -1,0 +1,156 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header> List Nas
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container></toaster-container>
+    <button *ngIf="!role.getmenurole(303)" class="btn btn-sm btn-success" (click)="Add_nas();">Add</button>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-3" *ngIf="role.getroleid()>777">
+          <label>Business Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="showGroupName();showGroupNas();nasipaddr();changeclear(1)" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+          <label>Circle</label>
+          <auto-completen [(ngModel)]="group_name" addclass="form-control" (changed)="showGroupNas();changeclear(2);nasipaddr()"
+            optValues="groupname" placeholder='Select Circle' optId="groupid" [item]="group1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Nas Name</label>
+          <auto-completen [(ngModel)]="nas_name" addclass="form-control" optValues="shortname" placeholder='Select Nas'
+            id="id" (keyUp)="showGroupNas($event)" (changed)="nasipaddr();nas_ip=''" [item]="nas1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-3">
+          <label>Nas-IP</label>
+          <auto-completen [(ngModel)]="nas_ip" addclass="form-control" optValues="nasname" placeholder='Select Nas'
+            id="id" (keyUp)="nasipaddr($event)" [item]="nasip">
+          </auto-completen>
+        </div>
+      </div>
+      <button type="button" class="btn btn-md btn-success middle" (click)='page=1;initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <label *ngIf="role.getroleid()<775">
+      <h5>Total Count: {{count}}</h5>
+    </label>
+    <div class="table-wraper">
+      <table class="table table-bordered table-striped" *ngIf="role.getroleid()>=775">
+        <tr>
+          <th style="color: white;">Total Nas</th>
+          <th style="color: white;">Up-Status&nbsp;&nbsp;<i style="color:#16f805 ;" class="fa fa-arrow-up"></i></th>
+          <th style="color: white;">Down-Status&nbsp;&nbsp;<i style="color:#df2727" class="fa fa-arrow-down"></i></th>
+        </tr>
+        <tr>
+          <td>{{count}}</td>
+          <td>{{upcount}}</td>
+          <td>{{downcount}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="pagination">
+          <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+            <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+              (click)="getlist(page)">{{page}}</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+              (click)="page=pager.totalPages;getlist();">Last</a>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+      </div>
+    </div>
+    <table class="table table-hover table-striped">
+      <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+        <th *ngIf="!role.getmenurole(304)">Action</th>
+        <th *ngIf="role.getroleid()>777">ID</th>
+        <th *ngIf="role.getroleid()>777">ISP Name</th>
+        <th *ngIf="role.getroleid()>=775">Circle</th>
+        <th *ngIf="role.getroleid()<=666">Reseller Business Name</th>
+        <th *ngIf="role.getroleid()>666">Status</th>
+        <th *ngIf="role.getroleid()>666">Time</th>
+        <th *ngIf="role.getroleid()>666">Start Time</th>
+        <th *ngIf="role.getroleid()>666">End Time</th>
+        <th>NAS name</th>
+        <th>Type</th>
+        <th>IP address</th>
+        <th>Version</th>
+        <th>Description</th>
+      </tr>
+      <tr *ngFor="let item of pagedItems">
+        <td *ngIf="!role.getmenurole(304)"><a class="lightedit" (click)="Edit_nas(item.id)" style="cursor: pointer;border: 2px solid #01a7ee;padding: 3px 8px 3px 5px;
+          border-radius: 10px;font-size:11px;"><i class="nb-edit"></i>Edit</a></td>
+        <td *ngIf="role.getroleid()>777">{{item.id}}</td>
+        <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+        <td *ngIf="role.getroleid()>=775">{{item.groupname}}</td>
+        <td *ngIf="role.getroleid()<=666">{{item.company}}</td>
+        <td *ngIf="role.getroleid()>666" style="padding:3px;">
+          <span *ngIf="item.ping==1 && item.mstatus==1" style="color: #1ac43c;" class="fa fa-arrow-up"></span>
+          <span *ngIf="item.ping==0">--</span>
+          <span *ngIf="item.ping==1 && item.mstatus==2" style="color: #df2727;" class="fa fa-arrow-down"></span>
+        </td>
+        <td *ngIf="role.getroleid()>666">{{item.ping==1 ? item.diff_time:'--'}}</td>
+        <td *ngIf="role.getroleid()>666">{{item.ping==1 ?  (item.start_time | date: 'd MMM y h:mm:ss a'):'--'}}</td>
+        <td *ngIf="role.getroleid()>666">{{item.ping==1 ? (item.end_time | date: 'd MMM y h:mm:ss a'):'--'}}</td>
+        <td>{{item.shortname}}</td>
+        <td>{{item.type == 0 ? 'Mikrotik':item.type == 1 ? 'StarOS':item.type == 2 ? 'ChilliSpot':item.type == 3 ?
+          'Cisco':item.type == 4 ? 'pfSense':'Other'}}</td>
+        <td>{{item.nasname}}</td>
+        <td>{{item.type==0?(item.apiver==0 ? 'Pre 6.45.1':item.apiver==1? '6.45.1 or Newer':'N/A'):'N/A'}}</td>
+        <td>{{item.description}}</td>
+      </tr>
+      <tr>
+        <td colspan="14" *ngIf="pagedItems==''">NO DATA FOUND</td>
+      </tr>
+    </table><br>
+    <div class="pagination">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+        <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+          (click)="getlist(page)">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+          (click)="page=pager.totalPages;getlist();">Last</a>
+      </ul>
+    </div>
+    <!-- <ul *ngIf="data.length" class="pagination">
+      <li>
+          <a>First</a>
+      </li>
+      <li>
+          <a>Previous</a>
+      </li>
+      <li *ngFor="let page of pages" [ngClass]="{active:page === page}">
+          <a>{{page}}</a>
+      </li>
+      <li [ngClass]="{disabled:page === totalpage}">
+          <a>Next</a>
+      </li>
+      <li [ngClass]="{disabled:page === totalpage}">
+          <a>Last</a>
+      </li>
+    </ul> -->
+
+  </nb-card-body>
+</nb-card>

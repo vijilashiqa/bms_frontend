@@ -1,0 +1,34 @@
+<ngx-loading [show]="loading"
+  [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+</ngx-loading>
+<div class="modal-header" style="background-color :  #01a7ee">
+  <span>{{ modalHeader }}</span>
+  <button class="close" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="ChangeSimuseForm" (ngSubmit)="changeSimusesubmit()">
+  <div class="modal-body">
+    <table style="width: 100%">
+      <tr>
+        <th>Simultaneous-Use <span style="color:red;">*</span></th>
+        <td>
+          <input type="number" formControlName="simultaneous_use" placeholder="Simultaneous Use"
+          [ngClass]="{'form-control' : true,'form-control-danger':ChangeSimuseForm.controls.simultaneous_use.invalid&&submit}" />
+          <small *ngIf="ChangeSimuseForm.controls.simultaneous_use.invalid&&submit" class="form-text error">Simultaneous use Is
+          Required!</small>
+        </td>
+      </tr>
+      <tr>
+        <th>Reason <span style="color:red;">*</span></th>
+        <td>
+          <input type="text" formControlName="reason"
+          [ngClass]="{'form-control' : true,'form-control-danger':ChangeSimuseForm.controls.reason.invalid&&submit}">
+          <small *ngIf="ChangeSimuseForm.controls.reason.invalid&&submit" class="form-text error">Reason Is
+            Required!</small>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <button type="submit" class="btn btn-md btn-success" style="margin: auto; display: block;">Update</button>
+</form>

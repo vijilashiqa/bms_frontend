@@ -1,0 +1,61 @@
+<div class="col-md-12">
+   <nb-card>
+      <nb-card-header>Subscriber Service Maping</nb-card-header>
+      <nb-card-body>
+         <toaster-container [toasterconfig]="config"></toaster-container>
+         <form [formGroup]="MapServiceForm" class="form-horizontal" (ngSubmit)="mapService();">
+            <div class="moal-body">
+               <div class="form-group row">
+                  <div class="col-sm-3" *ngIf="role.getroleid()>777">
+                     <label>ISP Name <span style="color:red;">*</span></label>
+                     <select formControlName="bus_id"
+                        [ngClass]="{'form-control':true,'form-control-danger':MapServiceForm.controls.bus_id.invalid&&submit}"
+                        (change)="showProfile();MapServiceForm.controls['resel_type'].setValue('');MapServiceForm.controls['reseller'].setValue('');">
+                        <option value="" selected>Select Business Name</option>
+                        <option *ngFor="let item of busdata" [ngValue]="item.id">{{item.busname}}</option>
+                     </select>
+                     <small *ngIf="MapServiceForm.controls.bus_id.invalid&&submit" class="form-text error">Business name
+                        is Required!</small>
+                  </div>
+                  <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+                     <label>Reseller Type</label>
+                     <auto-completen  formControlName="resel_type" addclass="form-control" (changed)="resellername();MapServiceForm.controls['reseller'].setValue('');"
+                       optValues="menu_name" placeholder='Select Reseller Type' optId="role" [item]="profile">
+                     </auto-completen>
+                   </div>
+                  <div class="col-sm-3" *ngIf="role.getroleid()>=775">
+                     <label>Reseller Name <span style="color:red;">*</span></label>
+                     <auto-completen
+                        [addclass]="{'form-control':true,'form-control-danger':MapServiceForm.controls.reseller.invalid&&submit}"
+                        addclass="form-control" optValues="company" formControlName="reseller"
+                        (keyUp)="resellername($event)" (changed)="package()" placeholder='Select Reseller' id="id"
+                        [item]="reseldata">
+                     </auto-completen>
+                     <small *ngIf="MapServiceForm.hasError('required','reseller')&&submit"
+                        class="form-text error">Reseller
+                        is required! </small>
+                  </div>
+               </div>
+               <nb-card *ngIf="MapServiceForm.value['reseller']!=''">
+                  <ngx-loading [show]="loading"
+                     [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+                  </ngx-loading>
+                  <nb-card-header style="background-color: #01a7ee;">Service Maping</nb-card-header>
+                  <nb-card-body>
+                     <div class="form-group row" >
+                        <div class="col-sm-12" style="height: 500px;">
+                           <tree-root #tree [options]="options" [nodes]="nodes"></tree-root>
+                        </div>
+                     </div>
+                  </nb-card-body>
+               </nb-card>
+               
+            </div>
+            <!-- <br><br><br><br><br><br><br><br><br> -->
+            <div class="modal-footer">
+               <button type="submit" style="border:none" class="btn btn-md btn-success">Update</button>
+            </div>
+         </form>
+      </nb-card-body>
+   </nb-card>
+</div>

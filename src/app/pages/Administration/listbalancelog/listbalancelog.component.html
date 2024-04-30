@@ -1,0 +1,140 @@
+<nb-card>
+  <ngx-loading [show]="loading"
+    [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, secondaryColour: secondaryColour, backdropBorderRadius: '3px'}">
+  </ngx-loading>
+  <nb-card-header>
+    Deposit Report
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;
+    background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer; padding-right: 3px;color:white;" (click)="search=!search;"><i
+        class="fa fa-search"></i></a>
+    <a type="button" class="btn btn-primary btn-sm btn-floating "
+      style="float: right; margin: 5px;background-color: #01a7ee;padding-top: 5px;padding-bottom: 5px;padding-left: 3px; cursor: pointer ;padding-right: 3px;color:white;"
+      (click)="refresh()"><i class="fa fa-sync"></i></a>
+  </nb-card-header>
+  <nb-card-body>
+    <toaster-container [toasterconfig]></toaster-container>
+    <hr style="border: 0px;">
+    <div class="modal-body" autocomplete="off" [hidden]='!search'>
+      <div class="form-group row">
+        <div class="col-sm-2" *ngIf="role.getroleid()>777">
+          <label>ISP Name</label>
+          <auto-completen [(ngModel)]="bus_name" addclass="form-control" optValues="busname"
+            (changed)="profile();changeclear(1);" placeholder='Select Business' id="bus_name" [item]="bus">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775) || (role.getroleid() > 444)">
+          <label>Reseller Type</label>
+          <auto-completen [(ngModel)]="resel_type" addclass="form-control" optValues="menu_name"
+            (changed)="showResellerName();changeclear(2);" placeholder='Select Reseller Type' optId="role" [item]="pro">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2" *ngIf="(role.getroleid()>=775) || (role.getroleid() > 444)">
+          <label>Reseller</label>
+          <auto-completen [(ngModel)]="res_name" addclass="form-control" optValues="company"
+            placeholder='Select Reseller' id="mid" [item]="res1">
+          </auto-completen>
+        </div>
+        <div class="col-sm-2">
+          <label> Start Date</label>
+          <input type="date" class="form-control" [(ngModel)]="start_date" placeholder="Select start date" />
+        </div>
+        <div class="col-sm-2">
+          <label> End Date</label>
+          <input type="date" class="form-control" [(ngModel)]="end_date" placeholder="Select End date" />
+        </div>
+        <div class="col-sm-2">
+          <label>Reason</label>
+          <select [(ngModel)]="deposit_reason" name="deposit_reason" id="deposit_reason"
+            class="form-control no-range-feature-val video-codec-list">
+            <option value=0 selected="selected">ALL</option>
+            <option *ngFor="let item of reasondata" [ngValue]="item.id">{{ item.reason }}</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-md btn-success middle" (click)='initiallist();'
+        style="margin: auto; display: block;">Search</button>
+    </div>
+    <toaster-container [toasterconfig]></toaster-container>
+    <div class="row">
+      <div class="col-md-12">
+        <label class="left">
+          <h5>Total Count : {{tot}}</h5>
+        </label>
+      </div>
+    </div>
+    <i (click)="download()" class="green right fas fa-file-excel fa-2x" aria-hidden="true"></i>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="pagination">
+          <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+            <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+              (click)="getlist(page)">{{page}}</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+              (click)="page=pager.totalPages;getlist();">Last</a>
+          </ul>
+          <select [(ngModel)]="limit" (change)="initiallist()" class="form-control"
+            style="height: calc(2rem + 13px);max-width: 10vh;min-width: 74px;border-radius: 5px;">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="75">75</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class=table-wrapper>
+      <table class="table table-hover table-striped">
+        <tr style="background-color :  #01a7ee;color:white;font-size: medium;">
+          <th *ngIf="role.getroleid()>777">ISP Name</th>
+          <th *ngIf="role.getroleid()>444">Reseller Type</th>
+          <th *ngIf="role.getroleid()>444">Reseller Business</th>
+          <th>Before Amount</th>
+          <th>Amount</th>
+          <th>Balance</th>
+          <th>Notes</th>
+          <th>Reason</th>
+          <th>Date</th>
+          <th>Performed By</th>
+        </tr>
+        <tr *ngFor="let item of pagedItems">
+          <td *ngIf="role.getroleid()>777">{{item.busname}}</td>
+          <td *ngIf="role.getroleid()>444">{{item.role ==333? 'Deposit Reseller': item.role ==332? 'Deposit Employee':item.role==555? 'Sub ISP Deposit':
+            item.role==554?'Sub ISP Deposit Employee': item.role==551? 'Sub Distributor Deposit':
+             item.role ==550? 'Sub Distributor Deposit Employee': item.role == 444 ? 'Bulk Reseller': item.role == 666 ? 'Sub Isp Bulk':item.role == 661 ? 'SUb Distributor Bulk':''}}</td>
+          <td *ngIf="role.getroleid()>444">{{item.company}}</td>
+          <td>{{item.before_balance_amt}}</td>
+          <td>{{item.amt}}</td>
+          <td>{{((item.before_balance_amt * 1 + item.amt * 1) |  number : '1.2-3')}}</td>
+          <td>{{item.rnote==null ? '--':item.rnote}}</td>
+          <td>{{item.reason || '--'}}</td>
+          <td>{{item.c_date | date :'d MMM y h:mm:ss a'}}</td>
+          <td>{{item.cname}}</td>
+        </tr>
+        <tr>
+          <td colspan="8" *ngIf="pagedItems==''">NO DATA FOUND</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="pagination">
+          <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=1;getlist();">First</a>
+            <a [ngClass]="{disabled:pager.currentPage === 1}" (click)="page=page-1;getlist();">Previous</a>
+            <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}"
+              (click)="getlist(page)">{{page}}</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}" (click)="page=page+1;getlist();">Next</a>
+            <a [ngClass]="{disabled:pager.currentPage === pager.totalPages}"
+              (click)="page=pager.totalPages;getlist();">Last</a>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,35 @@
+<nb-card status="primary">
+  <!-- <nb-card-header>Customer State</nb-card-header> -->
+  <nb-card-header style=" padding: 0.15rem;background-color: #01a7ee;">
+    <div class="row">
+      <div class="col-sm-8">
+        <label style="margin-left: 9px; margin-top: 14px;padding-bottom: 7px;color: white; ">Subscriber Status</label>
+      </div>
+      <div class="col-sm-4">
+        <!-- <nb-select [selected]="bus_name"     *ngIf="role.getroleid()>777" placeholder="Select an Option">
+      <nb-option *ngFor="let list of busid" (click)="changebus(list.id)" [value]="list.id">{{ list.busname }}</nb-option>
+    </nb-select> -->
+        <select [(ngModel)]="bus_name" (change)="changebus()" class="form-control" style="background: white;width: 98%; margin-top: 3px;
+    height: fit-content;font-weight:bold;text-transform:uppercase;" *ngIf="role.getroleid()>777">
+          <option *ngFor="let list of busid" [value]="list.id">{{ list.busname }}</option>
+        </select>
+      </div>
+    </div>
+  </nb-card-header>
+  <div echarts [options]="options" class="echart"></div>
+</nb-card>
+
+<!-- <nb-card _ngcontent-jnl-c345="" _nghost-jnl-c81="">
+  <nb-card-header _ngcontent-jnl-c345="">Bar</nb-card-header>
+  <nb-card-body _ngcontent-jnl-c345="">
+    <ngx-chartjs-bar _ngcontent-jnl-c345="">
+      <chart type="bar" _nghost-jnl-c259="">
+        <div class="chartjs-size-monitor"
+         style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+         <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+          <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div>
+          <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+            <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+            <canvas width="834" height="1386" class="chartjs-render-monitor" style="display: block; height: 462px; width: 278px;"></canvas>
+      </chart></ngx-chartjs-bar>
+    </nb-card-body></nb-card> -->
